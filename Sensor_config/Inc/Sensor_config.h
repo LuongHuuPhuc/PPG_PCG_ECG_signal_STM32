@@ -30,7 +30,7 @@ extern "C" {
 
 //#include "Logger.h"
 
-#define LOGGER_QUEUE_LENGTH 35
+#define LOGGER_QUEUE_LENGTH 50
 
 #define SERROR_CHECK(expr) do {\
 	/* expr la bieu thuc ban muon truyen vao */ \
@@ -61,9 +61,19 @@ extern "C" {
 } while(0) //Dung khi muon kiem tra loi task
 
 // ====  INMP441_DMA　====
-#define PCG_DMA_BUFFER   1024
-#define I2S_SAMPLE_COUNT (PCG_DMA_BUFFER / sizeof(int32_t))
-#define MAX_TIMEOUT      100
+
+//1000Hz sample rate -> 1ms/sample -> Can xu ly 32 mau/lan (32ms) -> 32 x 4 bytes/sample = 128 bytes
+//8000Hz sample rate (toi thieu cua cubeMX) -> 0.125ms/sample -> Gap 8 lan -> Mac dinh trong 32ms thu duoc 256 samples -> 1024 bytes
+
+#define PCG_SAMPLE_RATE	 	8000 // 8000Hz (Hardware)
+#define TARGET_SAMPLE_RATE	1000 // 1000Hz (desired)
+#define DOWNSAMPLE_FACTOR	(PCG_SAMPLE_RATE / TARGET_SAMPLE_RATE) //8
+
+#define PCG_DMA_BUFFER   	1024 //bytes (8000Hz trong 32ms)
+#define I2S_SAMPLE_COUNT 	(PCG_DMA_BUFFER / sizeof(int32_t)) //256 samples
+#define DOWNSAMPLE_COUNT	(I2S_SAMPLE_COUNT / DOWNSAMPLE_FACTOR) //32 samples (mat mau do ep du lieu xuong 32)
+
+#define MAX_TIMEOUT     	100
 
 // ==== MAX30102 FIFO ====
 #define MAX_FIFO_SAMPLE  MAX30102_SAMPLE_LEN_MAX
@@ -94,8 +104,8 @@ extern SemaphoreHandle_t sem_adc, sem_mic, sem_max;
 // ===== Cac bien duoi day chi noi bo Sensor_config dung nen du co comment ca doan nay ma dinh nghia trong file.c thi van khong loi ======
 
 // INMP441
-extern int32_t buffer32[I2S_SAMPLE_COUNT];
-extern int16_t buffer16[I2S_SAMPLE_COUNT];
+extern volatile int32_t buffer32[I2S_SAMPLE_COUNT];
+extern volatile int16_t buffer16[I2S_SAMPLE_COUNT];
 extern volatile uint8_t __attribute__((unused))mic_dma_ready;
 extern volatile int16_t __attribute__((unused))mic_value; //Chi in 1 gia tri (mat mau)
 
@@ -105,7 +115,8 @@ extern volatile int16_t ecg_buffer[ECG_DMA_BUFFER]; //Bien luu gia tri tu DMA
 
 // MAX30102
 extern max30102_t max30102_obj;
-extern uint32_t ir_buffer[MAX_FIFO_SAMPLE], red_buffer[MAX_FIFO_SAMPLE]; //Bien luu gia tri tu FIFO
+extern uint32_t ir_buffer[MAX_FIFO_SAMPLE];
+extern uint32_t red_buffer[MAX_FIFO_SAMPLE]; //Bien luu gia tri tu FIFO
 
 typedef enum{
 	SENSOR_ECG,
@@ -145,29 +156,29 @@ typedef struct {
  */
 extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
-HAL_StatusTypeDef Max30102_init_no_int(I2C_HandleTypeDef *i2c); //Khoi tao khong co interrupt
-void Max30102_task_timer(void *pvParameter); //Task dung timer de trigger
 HAL_StatusTypeDef __attribute__((unused))Max30102_init_int(I2C_HandleTypeDef *i2c); //Khoi tao co interrupt
 uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj); //Xu ly ngat
 void __attribute__((unused))Max30102_task_int(void *pvParameter); //Task dung interrupt de trigger
+HAL_StatusTypeDef Max30102_init_no_int(I2C_HandleTypeDef *i2c); //Khoi tao khong co interrupt
+void Max30102_task_timer(void *pvParameter); //Task dung timer de trigger
 
 //==== INMP441 ====
 
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init(I2S_HandleTypeDef *i2s);
-void Inmp441_task(void *pvParameter);
+void Inmp441_dma_task(void *pvParameter);
 extern void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
 
 //==== AD8232 ====
 
 HAL_StatusTypeDef __attribute__((unused))Ad8232_init(ADC_HandleTypeDef *adc);
+void __attribute__((unused))Ad8232_task(void *pvParameter); //Task nay khong dung DMA
 void Ad8232_dma_task(void *pvParameter); //Task dug DMA + callback
 extern void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc); //Ham callback cho DMA cua ADC
-void __attribute__((unused))Ad8232_task(void *pvParameter); //Task nay khong dung DMA
 
 // ==== Terminal log ====
 
 extern void uart_printf(const char *fmt,...); //Muon dung ham nay cua Logger.h thi extern o day la xong
-void __attribute__((unused))StackCheck(UART_HandleTypeDef *uart);
+void __attribute__((unused))StackCheck(void);
 void __attribute__((unused))HeapCheck(void);
 
 // ==== TIM3 Trigger handler ====

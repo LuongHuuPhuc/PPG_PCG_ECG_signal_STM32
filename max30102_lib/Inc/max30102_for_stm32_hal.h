@@ -131,7 +131,7 @@ extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi
 void max30102_plot(uint32_t ir_sample, uint32_t red_sample);
 
 void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c);
-void max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen);
+HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen);
 HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen);
 
 void max30102_reset(max30102_t *obj);
@@ -160,7 +160,7 @@ void max30102_set_multi_led_slot_1_2(max30102_t *obj, max30102_multi_led_ctrl_t 
 void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t slot3, max30102_multi_led_ctrl_t slot4);
 
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full);
-void max30102_clear_fifo(max30102_t *obj);
+HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
 void max30102_read_fifo(max30102_t *obj); //In ra data luon, khong tra ve gi ca
 uint8_t max30102_read_fifo_values(max30102_t *obj, uint32_t *ir_buf, uint32_t *red_buf, uint8_t max_samples);
 

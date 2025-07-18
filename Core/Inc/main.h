@@ -62,7 +62,7 @@ void Error_Handler(void);
 #define INT_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
-extern volatile uint32_t global_sample_id;
+extern volatile uint32_t global_sample_id; //Nen de volatile vi co the bi thay doi tu ISR va tu cac task khac
 
 void Init_Sensor(void); //Ham chua cac ham khoi tao sensor
 

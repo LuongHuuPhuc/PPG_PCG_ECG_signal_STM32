@@ -26,12 +26,12 @@ typedef struct {
 	uint16_t count; //So luong mau trong mang
 	uint32_t sample_id; //Dung de dong bo du lieu
 	union {
-		int16_t ecg[ECG_DMA_BUFFER];
+		volatile int16_t ecg[ECG_DMA_BUFFER];
 		struct {
-			uint32_t ir[MAX_FIFO_SAMPLE];
-			uint32_t red[MAX_FIFO_SAMPLE];
+			volatile uint32_t ir[MAX_FIFO_SAMPLE];
+			volatile uint32_t red[MAX_FIFO_SAMPLE];
 		} ppg;
-		int16_t mic[32]; //PCG
+		volatile int16_t mic[DOWNSAMPLE_COUNT]; //PCG
 	};
 }sensor_block_t;
 

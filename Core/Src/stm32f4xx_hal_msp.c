@@ -292,10 +292,7 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     hdma_spi2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_spi2_rx.Init.Mode = DMA_NORMAL;
     hdma_spi2_rx.Init.Priority = DMA_PRIORITY_HIGH;
-    hdma_spi2_rx.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-    hdma_spi2_rx.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-    hdma_spi2_rx.Init.MemBurst = DMA_MBURST_SINGLE;
-    hdma_spi2_rx.Init.PeriphBurst = DMA_PBURST_SINGLE;
+    hdma_spi2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_spi2_rx) != HAL_OK)
     {
       Error_Handler();

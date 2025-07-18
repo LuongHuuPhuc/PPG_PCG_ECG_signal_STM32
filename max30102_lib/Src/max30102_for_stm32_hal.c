@@ -41,14 +41,19 @@ void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c)
  * @param buf Pointer containing the bytes to write.
  * @param buflen Number of bytes to write.
  */
-void max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
+HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
 {
     uint8_t *payload = (uint8_t *)malloc((buflen + 1) * sizeof(uint8_t));
     *payload = reg;
     if (buf != NULL && buflen != 0)
         memcpy(payload + 1, buf, buflen);
-    HAL_I2C_Master_Transmit(obj->_ui2c, MAX30102_I2C_ADDR << 1, payload, buflen + 1, MAX30102_I2C_TIMEOUT);
+    if(HAL_I2C_Master_Transmit(obj->_ui2c, MAX30102_I2C_ADDR << 1, payload, buflen + 1, MAX30102_I2C_TIMEOUT) != HAL_OK){
+    	uart_printf("[ERROR] max30102_write failed at Transmit at reg 0x%02x, HAL error: 0x%lx!\r\n", *payload, obj->_ui2c->ErrorCode);
+    	free(payload);
+    	return HAL_ERROR;
+    }
     free(payload);
+    return HAL_OK;
 }
 
 /**
@@ -86,6 +91,12 @@ void max30102_reset(max30102_t *obj)
 {
     uint8_t val = 0x40;
     max30102_write(obj, MAX30102_MODE_CONFIG, &val, 1);
+
+    //Kiem tra reset da xong chua
+    do {
+    	max30102_read(obj, MAX30102_MODE_CONFIG, &val, 1);
+    	vTaskDelay(pdMS_TO_TICKS(1));
+    } while(val & 0x40);
 }
 
 /**
@@ -257,7 +268,7 @@ void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr)
 {
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
-    config = (config & 0x63) << MAX30102_SPO2_SR;
+    config = (config & 0x63) | (sr << MAX30102_SPO2_SR);
     max30102_write(obj, MAX30102_SPO2_CONFIG, &config, 1);
 }
 
@@ -363,12 +374,14 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
  *
  * @param obj Pointer to max30102_t object instance.
  */
-void max30102_clear_fifo(max30102_t *obj)
+HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj)
 {
     uint8_t val = 0x00;
     max30102_write(obj, MAX30102_FIFO_WR_PTR, &val, 3);
     max30102_write(obj, MAX30102_FIFO_RD_PTR, &val, 3);
     max30102_write(obj, MAX30102_OVF_COUNTER, &val, 3);
+
+    return HAL_OK;
 }
 
 /**

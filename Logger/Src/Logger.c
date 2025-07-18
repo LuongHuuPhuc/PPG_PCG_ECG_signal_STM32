@@ -40,7 +40,7 @@ __weak void uart_printf(const char *fmt,...){
 }
 
 void Logger_task_block(void *pvParameter){
-	sensor_block_t ecg_block = {0}, ppg_block = {0}, block;
+	sensor_block_t ecg_block = {0}, ppg_block = {0}, pcg_block = {0}, block;
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,
 			.max_ready = false,
@@ -49,7 +49,7 @@ void Logger_task_block(void *pvParameter){
 
 	while(1){
 		memset(&block, 0, sizeof(sensor_block_t));
-		if(xQueueReceive(logger_queue, &block, portMAX_DELAY) == pdTRUE){
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(100)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_ECG:
 				memcpy(&ecg_block, &block, sizeof(sensor_block_t)); //Copy du lieu tu block sang ecg_block neu la type ECG
@@ -60,27 +60,50 @@ void Logger_task_block(void *pvParameter){
 				sensor_check.max_ready = true;
 				break;
 			case SENSOR_PCG:
+				memcpy(&pcg_block, &block, sizeof(sensor_block_t));
+				sensor_check.mic_ready = true;
 				break;
 			}
 
-			if(sensor_check.ecg_ready && sensor_check.max_ready){
-				if(ecg_block.sample_id == ppg_block.sample_id){ //Neu dong bo thi moi in
-					uint16_t min_count = MIN(ecg_block.count, ppg_block.count);
-//					uart_printf("[ID: %lu], Printing %d samples \n", ecg_block.sample_id, min_count); //why 24 samples (?)
-					for(uint16_t i = 0; i < min_count; i++){
-						uart_printf("%d,%lu,%lu\n",
+			// Do PCG - 8000Hz (32ms thu dc 256 samples), con MAX va ADC la 1000Hz (32ms thu duoc 32 sample)
+			// -> 1 sample cua PCG ung voi 8 samples cua PPG + ECG
+			// -> Log voi 1 sample ECG + 1 sample PPG + 1 sample PCG sau khi downsample tu 8kHz ve 1kHz (lay trung binh mau)
+
+			if(sensor_check.ecg_ready && sensor_check.max_ready && sensor_check.mic_ready){
+				if(ecg_block.sample_id == ppg_block.sample_id && ecg_block.sample_id == pcg_block.sample_id){
+
+					uint16_t min_count = MIN(MIN(ecg_block.count, ppg_block.count), pcg_block.count);
+//					uart_printf("[DEBUG] ECG count: %d, PPG count: %d, PCG count: %d, ID: %lu\r\n",
+//							ecg_block.count,
+//							ppg_block.count,
+//							pcg_block.count,
+//							ecg_block.sample_id);
+
+					for(uint16_t i = 0; i < min_count; i++){ //In theo so luong sample nho nhat trong 3 data
+						uart_printf("%d,%lu,%lu,%d\n",
 								ecg_block.ecg[i],
 								ppg_block.ppg.red[i],
-								ppg_block.ppg.ir[i]);
+								ppg_block.ppg.ir[i],
+								pcg_block.mic[i]);
 					}
+					//Reset flag
+					sensor_check.mic_ready = false;
+					sensor_check.ecg_ready = false;
+					sensor_check.max_ready = false;
 				}else{
-					uart_printf("[WARN] Sample_id mismatch ! ECG: %lu, PPG: %lu\r\n",
-							ecg_block.sample_id, ppg_block.sample_id);
+					uart_printf("[WARN] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
+							ecg_block.sample_id,
+							ppg_block.sample_id,
+							pcg_block.sample_id);
 				}
-				sensor_check.ecg_ready = sensor_check.max_ready = false;
 			}else{
-//				uart_printf("[WARN] Some data is not ready !\r\n");
+//				uart_printf("[WARN] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
+//						sensor_check.ecg_ready,
+//						sensor_check.max_ready,
+//						sensor_check.mic_ready);
 			}
+		}else{
+			uart_printf("[ERROR] Logger queue timeout !\r\n");
 		}
 	}
 }

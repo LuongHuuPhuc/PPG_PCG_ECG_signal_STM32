@@ -98,6 +98,8 @@ void Init_SemQueue(void){
 	sem_mic = xSemaphoreCreateBinary();
 	sem_max = xSemaphoreCreateBinary();
 
+	StackCheck();
+
 	if(sem_adc == NULL || sem_mic == NULL || sem_max == NULL){
 	  uart_printf("[ERROR] Failed to create semaphores !\r\n");
 	  Error_Handler();
@@ -160,7 +162,7 @@ int main(void)
   Init_SemQueue();
   uart_printf("Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
-  HAL_TIM_Base_Start_IT(&htim3); //Goi de TIM3 hoat dong (100Hz)
+  HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (100Hz)
 
   /* USER CODE END 2 */
 
@@ -192,11 +194,12 @@ int main(void)
   }
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
-  TASK_ERR_CHECK(Logger_task_block, "Logger block", 1024 * 2, NULL, osPriorityHigh, &logger_task);
-  TASK_ERR_CHECK(Max30102_task_timer, "MAX30102", 1024, NULL, osPriorityNormal, &max30102_task);
-  TASK_ERR_CHECK(Ad8232_dma_task, "AD8232", 1024, NULL, osPriorityNormal, &ad8232_task);
-//  TASK_ERR_CHECK(Inmp441_task, "INMP441", 1024 * 4, NULL, osPriorityAboveNormal, &inmp441_task);
+  TASK_ERR_CHECK(Inmp441_dma_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
+  TASK_ERR_CHECK(Ad8232_dma_task, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 4, &ad8232_task);
+  TASK_ERR_CHECK(Max30102_task_timer, "MAX30102", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &max30102_task);
+  TASK_ERR_CHECK(Logger_task_block, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 2, &logger_task);
 
+  StackCheck();
   HeapCheck(); //Check sau khi tao task
   uart_printf("Starting Tasks...! \r\n");
 
@@ -369,7 +372,7 @@ static void MX_I2S2_Init(void)
   hi2s2.Instance = SPI2;
   hi2s2.Init.Mode = I2S_MODE_MASTER_RX;
   hi2s2.Init.Standard = I2S_STANDARD_PHILIPS;
-  hi2s2.Init.DataFormat = I2S_DATAFORMAT_32B;
+  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B_EXTENDED;
   hi2s2.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
   hi2s2.Init.AudioFreq = I2S_AUDIOFREQ_8K;
   hi2s2.Init.CPOL = I2S_CPOL_LOW;
@@ -446,7 +449,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 230400;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -549,17 +552,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  static uint8_t counter_max = 0;
+  static uint8_t counter_sync = 0;
 
   if(htim->Instance == TIM3){
 //	  uart_printf("Give semaphore from ISR !\r\n"); //Debug xem co nhan duoc data khong
-	  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //INMP441
 
-	  if(++counter_max >= 32){ //Dem du 32 lan thi moi Give Semaphore (phai dung do chung TIMER 100Hz)
-		  counter_max = 0;
-		  global_sample_id++;
-//		  uart_printf("[TIMER] Trigger MAX30102 after 32 cycles !\r\n"); //Debug xem co dung 32ms khong
+	  if(++counter_sync >= 32){ //Dem du 32 lan (~32ms) thi moi Give Semaphore (phai dung do chung TIMER 1000Hz)
+		  counter_sync = 0;
+		  global_sample_id++; //Tang sau 32 sample (32ms)
+//		  uart_printf("[DEBUG] Trigger after 32 cycles ! Give Semaphore !\r\n"); //Debug xem co dung 32ms khong
+		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Nha semaphore de task INMP441 bat dau nhan du lieu DMA
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
+		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
 	  }
   }
 

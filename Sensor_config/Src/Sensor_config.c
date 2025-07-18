@@ -36,8 +36,8 @@ SemaphoreHandle_t sem_adc, sem_mic, sem_max;
 QueueHandle_t logger_queue;
 
 // INMP441
-int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
-int16_t buffer16[I2S_SAMPLE_COUNT] = {0};
+volatile int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
+volatile int16_t buffer16[I2S_SAMPLE_COUNT] = {0};
 
 // AD8232
 volatile int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
@@ -48,11 +48,9 @@ uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
 uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 
 // Kiem tra so luong bo nho stack con lai
-void __attribute__((unused))StackCheck(UART_HandleTypeDef *uart){
+void __attribute__((unused))StackCheck(void){
 	UBaseType_t stackleft = uxTaskGetStackHighWaterMark(NULL);
-	char msg_stack[64];
-	sprintf(msg_stack, "Stack left: %lu\n", (unsigned long)stackleft);
-	HAL_UART_Transmit(uart, (uint8_t*)msg_stack, strlen(msg_stack), HAL_MAX_DELAY);
+	uart_printf("[Stack] Stack left: %lu\r\n", (unsigned long)stackleft);
 }
 
 // Kiem tra dung luong bo nho heap con lai
@@ -71,7 +69,7 @@ void __attribute__((unused))HeapCheck(void){
 HAL_StatusTypeDef Max30102_init_int(I2C_HandleTypeDef *i2c){
 	max30102_init(&max30102_obj, i2c);
 	max30102_reset(&max30102_obj);
-	vTaskDelay(pdMS_TO_TICKS(10)); //Delay 1 luc sau reset
+	vTaskDelay(pdMS_TO_TICKS(100)); //Delay 1 luc sau reset
 
 	max30102_clear_fifo(&max30102_obj);
 
@@ -114,10 +112,16 @@ HAL_StatusTypeDef Max30102_init_int(I2C_HandleTypeDef *i2c){
 
 HAL_StatusTypeDef Max30102_init_no_int(I2C_HandleTypeDef *i2c){
 	max30102_init(&max30102_obj, i2c);
-	max30102_reset(&max30102_obj);
-	vTaskDelay(pdMS_TO_TICKS(10)); //Delay 1 luc sau reset
 
-	max30102_clear_fifo(&max30102_obj);
+	for(uint8_t retry = 0; retry < 3; retry++){
+		max30102_reset(&max30102_obj);
+		vTaskDelay(pdMS_TO_TICKS(200));
+		if(max30102_clear_fifo(&max30102_obj) == HAL_OK){
+			break;
+		}
+		uart_printf("[MAX30102] clear_fifo Failed!\r\n");
+		return HAL_ERROR;
+	}
 
 	/**
 	 * @note - Sample Average = n -> Tinh trung binh n mau sau do moi sinh interrupt + push vao fifo
@@ -142,7 +146,7 @@ HAL_StatusTypeDef Max30102_init_no_int(I2C_HandleTypeDef *i2c){
 	return HAL_OK;
 }
 
-uint8_t Max30102_interrupt_process(max30102_t *obj){
+uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj){
 	uint8_t reg[2] = {0x00};
 	uint8_t samples = 0;
 
@@ -179,8 +183,8 @@ void __attribute__((unused))Max30102_task_int(void *pvParameter){
 
 			if(num_samples > 0 && num_samples <= MAX_FIFO_SAMPLE){
 				memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
-				block.count = num_samples;
 				block.type = SENSOR_PPG;
+				block.count = num_samples;
 				block.sample_id = global_sample_id; //Danh dau thoi diem gui -> dong bo hoa
 
 				for(uint8_t i = 0; i < num_samples; i++){
@@ -208,13 +212,14 @@ void Max30102_task_timer(void *pvParameter){
 	vTaskDelay(pdMS_TO_TICKS(5));
 
 	while(1){
-		if(xSemaphoreTake(sem_max, portMAX_DELAY) == pdTRUE){ //Take semaphore tu Timer sau du 32 sample (32ms)
-			uint8_t num_samples = max30102_read_fifo_values(&max30102_obj, ir_buffer, red_buffer, MAX_FIFO_SAMPLE);
+		if(xSemaphoreTake(sem_max, portMAX_DELAY) == pdTRUE){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
-			if(num_samples > 0 && num_samples <= MAX_FIFO_SAMPLE){ //Du mau moi thuc thi ben duoi
+			uint8_t num_samples = max30102_read_fifo_values(&max30102_obj, ir_buffer, red_buffer, MAX_FIFO_SAMPLE); //Doc data tu FIFO
+
+			if(num_samples > 0 && num_samples <= MAX_FIFO_SAMPLE){
 				memset(&block, 0, sizeof(sensor_block_t));
-				block.count = num_samples;
 				block.type = SENSOR_PPG;
+				block.count = num_samples;
 				block.sample_id = global_sample_id; //Danh dau thoi diem -> dong bo
 //				uart_printf("[DEBUG] PPG sample_id = %lu\r\n", block.sample_id);
 
@@ -222,10 +227,12 @@ void Max30102_task_timer(void *pvParameter){
 					block.ppg.ir[i] = ir_buffer[i];
 					block.ppg.red[i] = red_buffer[i];
 				}
-				QUEUE_SEND_FROM_TASK(&block);
+				QUEUE_SEND_FROM_TASK(&block); //Day 32 sample vao queue
 			}else {
 				uart_printf("[MAX] Warining: FIFO is not enoungh 32 samples !\r\n");
 			}
+		}else{
+			uart_printf("[MAX] Can not take semaphore !\r\n");
 		}
 	}
 }
@@ -237,32 +244,52 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init(I2S_HandleTypeDef *i2s){
 	return (i2s == &hi2s2) ? HAL_OK : HAL_ERROR;
 }
 
-void Inmp441_task(void *pvParameter){
-	sensor_data_t sensor_data;
+void Inmp441_dma_task(void *pvParameter){
+	sensor_block_t block;
 	uart_printf("Inmp441 task started !\r\n");
 	vTaskDelay(pdMS_TO_TICKS(5));
 
+	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz)
+	if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){
+		uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+	}
+
 	while(1){
-		if(xSemaphoreTake(sem_mic, portMAX_DELAY) == pdTRUE){ //Duoc Trigger boi TIMER
+		if(xSemaphoreTake(sem_mic, portMAX_DELAY) == pdTRUE){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
+			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Block task cho den khi DMA hoan tat (bao ve tu RxCpltCallback)
+				int idx_out = 0;
+				int16_t sum;
+				memset(&block, 0, sizeof(sensor_block_t));
+				block.type = SENSOR_PCG;
+				block.count = DOWNSAMPLE_COUNT;//So luong mau sau khi da downsample (32 samples)
+				block.sample_id = global_sample_id; //Danh dau dong bo
+//				uart_printf("[DEBUG] PCG sample_id = %lu\r\n", block.sample_id);
 
-			if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
-				uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+				for(int i = 0; i < I2S_SAMPLE_COUNT; i += DOWNSAMPLE_FACTOR){ //Thuc hien downsample 256 samples raw
+					sum = 0; //Reset sum sau moi vong
+					for(int j = 0; j < DOWNSAMPLE_FACTOR; j++){ //Thuc hien xu ly voi 8 mau 1 lan
+						sum += (buffer16[i + j]); //Dich ve 24-bit co nghia
+					}
+					block.mic[idx_out++] = (sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
+				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
+
+				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
+				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){
+					uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+				}
+
+			}else {
+				uart_printf("[MIC] Timeout waiting for DMA done !\r\n");
 			}
-			ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //Block task cho den khi DMA hoan tat
-
-			for(int i = 0; i < I2S_SAMPLE_COUNT; ++i)
-				buffer16[i] = (int16_t)(buffer32[i] >> 8);
-
-			sensor_data.type = SENSOR_PCG;
-			memcpy(sensor_data.mic_frame, buffer16, sizeof(buffer16));
-			sensor_data.byte_read = I2S_SAMPLE_COUNT;
-			QUEUE_SEND_FROM_TASK(&sensor_data);
+		}else{
+			uart_printf("[MIC] Can not take semaphore !\r\n");
 		}
 	}
 }
 
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
-	if(hi2s->Instance == SPI2 && hi2s == &hi2s2){
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 samples) -> Ham nay se duoc goi
+	if(hi2s->Instance == SPI2){
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 		vTaskNotifyGiveFromISR(inmp441_task, &xHigherPriorityTaskWoken); //Gui thong bao cho task inmp441
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -278,25 +305,33 @@ HAL_StatusTypeDef __attribute__((unused))Ad8232_init(ADC_HandleTypeDef *adc){
 
 void Ad8232_dma_task(void *pvParameter){
 	sensor_block_t block;
-	uart_printf("Ad8232 dma task started !\n");
+	uart_printf("Ad8232 dma task started !\r\n");
 	vTaskDelay(pdMS_TO_TICKS(5));
 
 	//Ghi du lieu DMA vao ECG_DMA_BUFFER nay den khi du 32 mau, trigger moi mau 1ms (sample rate = 1000Hz) la 1 lan doc ADC
 	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ecg_buffer, ECG_DMA_BUFFER) != HAL_OK){
 		uart_printf("[ERROR] HAL_ADC_Start_DMA failed!\r\n");
 	}
-	while(1){
-		if(xSemaphoreTake(sem_adc, portMAX_DELAY) == pdTRUE){ //Trigger tu ham Callback de lay semaphore
-			memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
-			block.count = ECG_DMA_BUFFER;
-			block.type = SENSOR_ECG;
-			block.sample_id = global_sample_id; //Danh dau thoi diem -> dong bo hoa
-//			uart_printf("[DEBUG] ECG sample_id = %lu\r\n", block.sample_id);
 
-			for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++){
-				block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_data_t
+	while(1){
+		if(xSemaphoreTake(sem_adc, portMAX_DELAY) == pdTRUE){ //Sau 32ms thi TIMER nha semaphore
+
+			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY)== pdTRUE){ //Trigger tu ham ConvCpltCallback de lay semaphore
+				memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
+				block.type = SENSOR_ECG;
+				block.count = ECG_DMA_BUFFER;
+				block.sample_id = global_sample_id; //Danh dau thoi diem -> dong bo hoa
+//				uart_printf("[DEBUG] ECG sample_id = %lu\r\n", block.sample_id);
+
+				for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++){
+					block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_data_t
+				}
+				QUEUE_SEND_FROM_TASK(&block); //Moi lan du 32 mau se gui 1 lan len queue
+			}else{
+				uart_printf("[ADC] Timeout waiting for DMA done !\r\n");
 			}
-			QUEUE_SEND_FROM_TASK(&block); //Moi lan du 32 mau se gui 1 lan len queue
+		}else{
+			uart_printf("[ADC] Can not take semaphore !r\n");
 		}
 	}
 }
@@ -305,7 +340,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){ //Khi DMA hoan tat (du 32
 	if(adc == &hadc1){
 //		uart_printf("[ADC] DMA complete callback ! Time = %lu ms\n", HAL_GetTick()); //Debug thoi gian tung lan goi
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Nha semaphore tu ISR
+		vTaskNotifyGiveFromISR(ad8232_task, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }
