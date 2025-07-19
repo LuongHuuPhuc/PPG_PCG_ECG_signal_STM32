@@ -49,7 +49,7 @@ void Logger_task_block(void *pvParameter){
 
 	while(1){
 		memset(&block, 0, sizeof(sensor_block_t));
-		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(100)) == pdTRUE){
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(MAX_TIMEOUT)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_ECG:
 				memcpy(&ecg_block, &block, sizeof(sensor_block_t)); //Copy du lieu tu block sang ecg_block neu la type ECG

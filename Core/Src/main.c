@@ -194,10 +194,10 @@ int main(void)
   }
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
-  TASK_ERR_CHECK(Inmp441_dma_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
+  TASK_ERR_CHECK(Inmp441_dma_circular_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
   TASK_ERR_CHECK(Ad8232_dma_task, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 4, &ad8232_task);
-  TASK_ERR_CHECK(Max30102_task_timer, "MAX30102", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &max30102_task);
-  TASK_ERR_CHECK(Logger_task_block, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 2, &logger_task);
+  TASK_ERR_CHECK(Max30102_task_timer, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
+  TASK_ERR_CHECK(Logger_task_block, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 3, &logger_task);
 
   StackCheck();
   HeapCheck(); //Check sau khi tao task
@@ -239,12 +239,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 16;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 15;
   RCC_OscInitStruct.PLL.PLLN = 192;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 4;
@@ -262,7 +261,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -289,7 +288,7 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
@@ -372,7 +371,7 @@ static void MX_I2S2_Init(void)
   hi2s2.Instance = SPI2;
   hi2s2.Init.Mode = I2S_MODE_MASTER_RX;
   hi2s2.Init.Standard = I2S_STANDARD_PHILIPS;
-  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B_EXTENDED;
+  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s2.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
   hi2s2.Init.AudioFreq = I2S_AUDIOFREQ_8K;
   hi2s2.Init.CPOL = I2S_CPOL_LOW;
@@ -407,7 +406,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 47;
+  htim3.Init.Prescaler = 79;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -498,6 +497,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -534,7 +534,6 @@ void StartDefaultTask(void const * argument)
 	vTaskDelete(NULL);
 
 	for(;;){
-		uart_printf("StartDefaultTask alive !\r\n");
 		osDelay(1);
 	}
   /* USER CODE END 5 */
@@ -555,13 +554,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   static uint8_t counter_sync = 0;
 
   if(htim->Instance == TIM3){
-//	  uart_printf("Give semaphore from ISR !\r\n"); //Debug xem co nhan duoc data khong
 
-	  if(++counter_sync >= 32){ //Dem du 32 lan (~32ms) thi moi Give Semaphore (phai dung do chung TIMER 1000Hz)
+	  //Count du 32 lan (~32ms) thi moi Give Semaphore (Trigger Data theo block 32 samples)
+	  if(++counter_sync >= 32){
 		  counter_sync = 0;
 		  global_sample_id++; //Tang sau 32 sample (32ms)
 //		  uart_printf("[DEBUG] Trigger after 32 cycles ! Give Semaphore !\r\n"); //Debug xem co dung 32ms khong
-		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Nha semaphore de task INMP441 bat dau nhan du lieu DMA
+		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //GIve semaphore cho INMP441 sau moi 32ms
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
 		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
 	  }

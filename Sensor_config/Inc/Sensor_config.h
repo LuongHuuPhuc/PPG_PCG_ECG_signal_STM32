@@ -27,7 +27,6 @@ extern "C" {
 #include "max30102_for_stm32_hal.h"
 #include <semphr.h>
 #include <queue.h>
-
 //#include "Logger.h"
 
 #define LOGGER_QUEUE_LENGTH 50
@@ -106,8 +105,8 @@ extern SemaphoreHandle_t sem_adc, sem_mic, sem_max;
 // INMP441
 extern volatile int32_t buffer32[I2S_SAMPLE_COUNT];
 extern volatile int16_t buffer16[I2S_SAMPLE_COUNT];
-extern volatile uint8_t __attribute__((unused))mic_dma_ready;
-extern volatile int16_t __attribute__((unused))mic_value; //Chi in 1 gia tri (mat mau)
+extern volatile bool __attribute__((unused))mic_half_ready;
+extern volatile bool __attribute__((unused))mic_full_ready;
 
 // AD8232
 extern volatile int16_t __attribute__((unused))ecg_dma_value;
@@ -165,8 +164,11 @@ void Max30102_task_timer(void *pvParameter); //Task dung timer de trigger
 //==== INMP441 ====
 
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init(I2S_HandleTypeDef *i2s);
-void Inmp441_dma_task(void *pvParameter);
-extern void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
+void Inmp441_dma_normal_task(void *pvParameter); //Task xu ly voi DMA Normal
+void Inmp441_dma_circular_task(void *pvParameter); //Task xu ly voi DMA Circular
+void Inmp441_process_full_buffer(void);
+extern void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s); //Ham callback khi DMA da xong (complete)
+extern void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s); //Ham callback khi DMA da xong 1 nua
 
 //==== AD8232 ====
 
@@ -181,11 +183,6 @@ extern void uart_printf(const char *fmt,...); //Muon dung ham nay cua Logger.h t
 void __attribute__((unused))StackCheck(void);
 void __attribute__((unused))HeapCheck(void);
 
-// ==== TIM3 Trigger handler ====
-
-// Trigger sau moi 10ms (100Hz)
-extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-void __attribute__((unused))Test_task(void *pvParameter);
 
 #ifdef __cpluplus
 }

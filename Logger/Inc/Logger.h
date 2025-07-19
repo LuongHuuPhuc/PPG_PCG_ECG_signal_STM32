@@ -41,7 +41,7 @@ extern QueueHandle_t logger_queue;
 
 void i2c_scanner(I2C_HandleTypeDef *hi2c);
 
-void Logger_task_block(void *pvParameter);
+void Logger_task_block(void *pvParameter); //Ham nhan data tu queue theo block 32 samples/lan
 
 void __attribute__((unused))Logger_task_data(void *pvParameter);
 
