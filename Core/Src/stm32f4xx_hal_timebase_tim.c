@@ -45,6 +45,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 
   uint32_t              uwPrescalerValue = 0U;
   uint32_t              pFLatency;
+
   HAL_StatusTypeDef     status;
 
   /* Enable TIM5 clock */
@@ -72,12 +73,11 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   htim5.Instance = TIM5;
 
   /* Initialize TIMx peripheral as follow:
-
-  + Period = [(TIM5CLK/1000) - 1]. to have a (1/1000) s time base.
-  + Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
-  + ClockDivision = 0
-  + Counter direction = Up
-  */
+   * Period = [(TIM5CLK/1000) - 1]. to have a (1/1000) s time base.
+   * Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
+   * ClockDivision = 0
+   * Counter direction = Up
+   */
   htim5.Init.Period = (1000000U / 1000U) - 1U;
   htim5.Init.Prescaler = uwPrescalerValue;
   htim5.Init.ClockDivision = 0;

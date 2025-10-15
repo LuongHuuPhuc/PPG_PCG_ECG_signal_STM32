@@ -5,9 +5,12 @@
  *      Author: ADMIN
  */
 
-
 #ifndef MAX30102_FOR_STM32_HAL_H
 #define MAX30102_FOR_STM32_HAL_H
+
+#ifdef __cpluslplus
+extern "C"{
+#endif
 
 #include "main.h"
 #include <stdint.h>
@@ -18,14 +21,17 @@
 #define MAX30102_I2C_ADDR 0x57
 #define MAX30102_I2C_TIMEOUT 1000
 
-#define MAX30102_BYTES_PER_SAMPLE 6
+#define MAX30102_BYTES_PER_LED 3 //Moi LED chiem 3 bytes
 #define MAX30102_SAMPLE_LEN_MAX 32
+#define MAX30102_STORAGE_SIZE 4 //Do dai moi sample lay tu Register: 32-bit (4 bytes)
+
 
 #define MAX30102_INTERRUPT_STATUS_1 0x00
 #define MAX30102_INTERRUPT_STATUS_2 0x01
 #define MAX30102_INTERRUPT_ENABLE_1 0x02
 #define MAX30102_INTERRUPT_ENABLE_2 0x03
 #define MAX30102_INTERRUPT_A_FULL 7
+#define MAX30102_INTERRUPT_A_FULL_MASK 0x80
 #define MAX30102_INTERRUPT_PPG_RDY 6
 #define MAX30102_INTERRUPT_ALC_OVF 5
 #define MAX30102_INTERRUPT_DIE_TEMP_RDY 1
@@ -122,10 +128,19 @@ typedef enum max30102_multi_led_ctrl_t
 typedef struct max30102_t
 {
     I2C_HandleTypeDef *_ui2c;
-    uint32_t _ir_samples[32]; //Fifo cua moi tin hieu toi da 32
+    uint32_t _ir_samples[32]; //Fifo toi da 32 samples
     uint32_t _red_samples[32];
     uint8_t _interrupt_flag;
 } max30102_t;
+
+typedef struct max30102_record {
+	uint8_t activeLeds;
+	uint8_t head; //Head of samples
+	uint8_t tail; //Tail of samples
+	uint32_t red_sample[MAX30102_STORAGE_SIZE];
+	uint32_t ir_sample[MAX30102_STORAGE_SIZE]; //Do dai 1 samples data doc tu Register
+	uint32_t green_sample[MAX30102_STORAGE_SIZE];
+} max30102_record;
 
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 void max30102_plot(uint32_t ir_sample, uint32_t red_sample);
@@ -148,7 +163,7 @@ void max30102_interrupt_handler(max30102_t *obj);
 
 void max30102_shutdown(max30102_t *obj, uint8_t shdn);
 
-void max30102_set_mode(max30102_t *obj, max30102_mode_t mode);
+void max30102_set_led_mode(max30102_t *obj, max30102_record *record, max30102_mode_t mode);
 void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr);
 
 void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw);
@@ -161,9 +176,16 @@ void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t 
 
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full);
 HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
-void max30102_read_fifo(max30102_t *obj); //In ra data luon, khong tra ve gi ca
-uint8_t max30102_read_fifo_values(max30102_t *obj, uint32_t *ir_buf, uint32_t *red_buf, uint8_t max_samples);
 
+void max30102_read_fifo_ver1(max30102_t *obj); //In ra data luon, khong tra ve gi ca
+uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
+int16_t max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples);
+int max30102_sample_available(max30102_record *record);
+void max30102_next_sample(max30102_record *record);
 void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif

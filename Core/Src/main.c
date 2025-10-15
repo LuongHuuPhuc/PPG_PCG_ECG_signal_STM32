@@ -30,7 +30,7 @@
 #include "max30102_for_stm32_hal.h"
 #include "Sensor_config.h"
 #include "Logger.h"
-
+#include "FIR_Filter.h"
 
 /* USER CODE END Includes */
 
@@ -64,6 +64,8 @@ UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
+
+FIRFilter fir;
 
 /* USER CODE END PV */
 
@@ -100,7 +102,7 @@ void Init_SemQueue(void){
 
 	StackCheck();
 
-	if(sem_adc == NULL || sem_mic == NULL || sem_max == NULL){
+	if(sem_mic == NULL || sem_max == NULL || sem_adc == NULL){
 	  uart_printf("[ERROR] Failed to create semaphores !\r\n");
 	  Error_Handler();
 	}
@@ -128,6 +130,7 @@ void Init_SemQueue(void){
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -160,9 +163,10 @@ int main(void)
 
   Init_Sensor();
   Init_SemQueue();
+  fir_init(&fir);
   uart_printf("Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
-  HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (100Hz)
+  HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
   /* USER CODE END 2 */
 
@@ -194,10 +198,10 @@ int main(void)
   }
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
-  TASK_ERR_CHECK(Inmp441_dma_circular_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
-  TASK_ERR_CHECK(Ad8232_dma_task, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 4, &ad8232_task);
-  TASK_ERR_CHECK(Max30102_task_timer, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
-  TASK_ERR_CHECK(Logger_task_block, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 3, &logger_task);
+//  TASK_ERR_CHECK(Inmp441_dma_pingpong_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
+//  TASK_ERR_CHECK(Ad8232_dma_sema_task, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
+  TASK_ERR_CHECK(Max30102_task_no_int, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
+  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &logger_task);
 
   StackCheck();
   HeapCheck(); //Check sau khi tao task
@@ -210,6 +214,7 @@ int main(void)
   osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -371,7 +376,7 @@ static void MX_I2S2_Init(void)
   hi2s2.Instance = SPI2;
   hi2s2.Init.Mode = I2S_MODE_MASTER_RX;
   hi2s2.Init.Standard = I2S_STANDARD_PHILIPS;
-  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B;
+  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B_EXTENDED;
   hi2s2.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
   hi2s2.Init.AudioFreq = I2S_AUDIOFREQ_8K;
   hi2s2.Init.CPOL = I2S_CPOL_LOW;
@@ -493,8 +498,8 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -511,8 +516,8 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -558,16 +563,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  //Count du 32 lan (~32ms) thi moi Give Semaphore (Trigger Data theo block 32 samples)
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
-		  global_sample_id++; //Tang sau 32 sample (32ms)
+		  global_timestamp = xTaskGetTickCountFromISR();
+		  global_sample_id++; //Tang sau 32 sample (32ms) - chi sau khi da ban semaphore
+
 //		  uart_printf("[DEBUG] Trigger after 32 cycles ! Give Semaphore !\r\n"); //Debug xem co dung 32ms khong
-		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //GIve semaphore cho INMP441 sau moi 32ms
+
+		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
 		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
+
 	  }
   }
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM5) {
+  if (htim->Instance == TIM5)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
@@ -589,8 +599,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

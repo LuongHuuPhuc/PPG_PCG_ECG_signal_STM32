@@ -17,6 +17,7 @@ extern "C" {
 
 char uart_buf[1024];
 
+
 void i2c_scanner(I2C_HandleTypeDef *hi2c){
 	uart_printf("Starting I2C Scanner...\r\n");
 
@@ -31,6 +32,7 @@ void i2c_scanner(I2C_HandleTypeDef *hi2c){
 	uart_printf("I2C Scanner complete !\r\n");
 }
 
+
 __weak void uart_printf(const char *fmt,...){
 	va_list args;
 	va_start(args, fmt);
@@ -39,7 +41,35 @@ __weak void uart_printf(const char *fmt,...){
 	HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, strlen(uart_buf), HAL_MAX_DELAY);
 }
 
+
+static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_block, sensor_block_t *pcg_block){
+	TickType_t now = xTaskGetTickCount(); //Lay tick de so sanh do tre voi cac task khac
+
+	uart_printf("[SYNC] ECG_tick: %lu, PPG_tick: %lu, PCG_tick: %lu, Logger: %lu | delECG: %ld, delPPG: %ld, delPCG: %ld\r\n",
+			ecg_block->timestamp,
+			ppg_block->timestamp,
+			pcg_block->timestamp,
+			now,
+			(int32_t)(now - ecg_block->timestamp),
+			(int32_t)(now - ppg_block->timestamp),
+			(int32_t)(now - pcg_block->timestamp));
+
+}
+
+
+//Reset trang thai flag ready cua sensor
+static inline void ResetSensor_flag(sensor_check_t *check){
+	check->ecg_ready = false;
+	check->mic_ready = false;
+	check->max_ready = false;
+}
+
+
 void Logger_task_block(void *pvParameter){
+	// Do PCG - 8000Hz (32ms thu dc 256 samples), con MAX va ADC la 1000Hz (32ms thu duoc 32 sample)
+	// -> 1 sample cua PCG ung voi 8 samples cua PPG + ECG
+	// -> Log voi 1 sample ECG + 1 sample PPG + 1 sample PCG sau khi downsample tu 8kHz ve 1kHz (lay trung binh mau)
+
 	sensor_block_t ecg_block = {0}, ppg_block = {0}, pcg_block = {0}, block;
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,
@@ -49,58 +79,63 @@ void Logger_task_block(void *pvParameter){
 
 	while(1){
 		memset(&block, 0, sizeof(sensor_block_t));
-		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(MAX_TIMEOUT)) == pdTRUE){
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_ECG:
-				memcpy(&ecg_block, &block, sizeof(sensor_block_t)); //Copy du lieu tu block sang ecg_block neu la type ECG
+				ecg_block = block; //Copy du lieu tu block sang ecg_block neu la type ECG
 				sensor_check.ecg_ready = true;
 				break;
 			case SENSOR_PPG:
-				memcpy(&ppg_block, &block, sizeof(sensor_block_t)); //Copy du lieu tu block sang ppg_block neu la type PPG
+				ppg_block = block; //Copy du lieu tu block sang ppg_block neu la type PPG
 				sensor_check.max_ready = true;
 				break;
 			case SENSOR_PCG:
-				memcpy(&pcg_block, &block, sizeof(sensor_block_t));
+				pcg_block = block;
 				sensor_check.mic_ready = true;
 				break;
 			}
 
-			// Do PCG - 8000Hz (32ms thu dc 256 samples), con MAX va ADC la 1000Hz (32ms thu duoc 32 sample)
-			// -> 1 sample cua PCG ung voi 8 samples cua PPG + ECG
-			// -> Log voi 1 sample ECG + 1 sample PPG + 1 sample PCG sau khi downsample tu 8kHz ve 1kHz (lay trung binh mau)
-
 			if(sensor_check.ecg_ready && sensor_check.max_ready && sensor_check.mic_ready){
-				if(ecg_block.sample_id == ppg_block.sample_id && ecg_block.sample_id == pcg_block.sample_id){
+				if(ecg_block.timestamp == ppg_block.timestamp && ecg_block.timestamp == pcg_block.timestamp){
 
-					uint16_t min_count = MIN(MIN(ecg_block.count, ppg_block.count), pcg_block.count);
-//					uart_printf("[DEBUG] ECG count: %d, PPG count: %d, PCG count: %d, ID: %lu\r\n",
-//							ecg_block.count,
-//							ppg_block.count,
-//							pcg_block.count,
-//							ecg_block.sample_id);
+					debugSYNC(&ecg_block, &ppg_block, &pcg_block);
 
-					for(uint16_t i = 0; i < min_count; i++){ //In theo so luong sample nho nhat trong 3 data
-						uart_printf("%d,%lu,%lu,%d\n",
-								ecg_block.ecg[i],
-								ppg_block.ppg.red[i],
-								ppg_block.ppg.ir[i],
-								pcg_block.mic[i]);
+					if(ecg_block.sample_id == ppg_block.sample_id && ecg_block.sample_id == pcg_block.sample_id){
+
+						uint16_t min_count = MIN(MIN(ecg_block.count, ppg_block.count), pcg_block.count);
+//						uart_printf("[DEBUG] ECG count: %d, PPG count: %d, PCG count: %d, ID: %lu\r\n",
+//								ecg_block.count,
+//								ppg_block.count,
+//								pcg_block.count,
+//								ecg_block.sample_id);
+
+						for(uint16_t i = 0; i < min_count; i++){ //In theo so luong sample nho nhat trong 3 data
+							uart_printf("%d,%lu,%lu,%d\n",
+									ecg_block.ecg[i],
+									ppg_block.ppg.red[i],
+									ppg_block.ppg.ir[i],
+									pcg_block.mic[i]);
+						}
+						//Reset flag
+						ResetSensor_flag(&sensor_check);
+
+					}else{
+						uart_printf("[WARN] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
+								ecg_block.sample_id, ppg_block.sample_id, pcg_block.sample_id);
+
+						//Reset de sync lai vong sau
+						ResetSensor_flag(&sensor_check);
 					}
-					//Reset flag
-					sensor_check.mic_ready = false;
-					sensor_check.ecg_ready = false;
-					sensor_check.max_ready = false;
 				}else{
-					uart_printf("[WARN] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
-							ecg_block.sample_id,
-							ppg_block.sample_id,
-							pcg_block.sample_id);
+					uart_printf("[WARN] Timestamp mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
+							ecg_block.timestamp, ppg_block.timestamp, pcg_block.timestamp);
+
+					ResetSensor_flag(&sensor_check);
 				}
+
 			}else{
 //				uart_printf("[WARN] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready,
-//						sensor_check.max_ready,
-//						sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
 			}
 		}else{
 			uart_printf("[ERROR] Logger queue timeout !\r\n");
@@ -108,60 +143,53 @@ void Logger_task_block(void *pvParameter){
 	}
 }
 
-void __attribute__((unused))Logger_task_data(void *pvParameter){
-	sensor_data_t __attribute__((unused))sensor_data;
-	sensor_check_t sensor_check = {
+
+
+void Logger_one_task(void *pvParameter){
+	sensor_block_t block, ppg_block = {0}, pcg_block = {0}, ecg_block = {0};
+	sensor_check_t check = {
 			.ecg_ready = false,
 			.max_ready = false,
 			.mic_ready = false
 	};
 
-	//Bien luu gia tri duoc day vao queue tu cac cam bien
-	static int16_t mic_value[I2S_SAMPLE_COUNT] = {0};
-	static int16_t __attribute__((unused))ecg_value = 0;
-	static uint32_t ir_value = 0, red_value = 0;
-
-	uart_printf("Logger task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
 	while(1){
-		if(xQueueReceive(logger_queue, &sensor_data, portMAX_DELAY) != pdTRUE){
-			uart_printf("[QUEUE] Logger queue full ! \r\n");
-		}else{
-			switch(sensor_data.type){
-			case SENSOR_ECG:
-				ecg_value = sensor_data.ecg;
-				sensor_check.ecg_ready = true;
+		memset(&block, 0, sizeof(sensor_block_t));
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(MAX_TIMEOUT)) == pdTRUE){
+			switch(block.type){
+			case SENSOR_PCG:
+				pcg_block = block;
+				check.mic_ready = true;
 				break;
 			case SENSOR_PPG:
-				ir_value = sensor_data.ir;
-				red_value = sensor_data.red;
-				sensor_check.max_ready = true;
+				ppg_block = block;
+				check.max_ready = true;
 				break;
-			case SENSOR_PCG:
-				if(sensor_data.byte_read <= I2S_SAMPLE_COUNT){ //Tranh tran bo dem
-					memcpy(mic_value, sensor_data.mic_frame, sensor_data.byte_read * sizeof(int16_t));
-					sensor_check.mic_ready = true;
-				}
+			case SENSOR_ECG:
+				ecg_block = block;
+				check.ecg_ready = true;
 				break;
 			}
 
-			if(sensor_check.ecg_ready && sensor_check.max_ready){
-				uart_printf("%d,%lu,%lu\n", ecg_value, ir_value, red_value);
-				sensor_check.ecg_ready = false;
-				sensor_check.max_ready = false;
+			if(check.ecg_ready || check.max_ready || check.mic_ready){
+				TickType_t now = xTaskGetTickCount();
+				uart_printf("COUNT: %u | TIME: %lu\r\n", ppg_block.count, now);
+
+				for(uint16_t i = 0; i < MAX_COUNT; i++){
+					uart_printf("%lu,%lu\r\n", ppg_block.ppg.ir[i], ppg_block.ppg.red[i]);
+				}
+
+				ResetSensor_flag(&check);
 			}
-			// Khi du ca 3 du lieu -> In ra 1 dong
-//			if(sensor_check.max_ready && sensor_check.ecg_ready && sensor_check.mic_ready){
-//				for(int16_t i = 0; i < I2S_SAMPLE_COUNT; i++)
-//					uart_printf("%ld,%lu,%lu,%d\r\n", ecg_value, ir_value, red_value, mic_buffer[i]);
-//				sensor_check.ecg_ready = sensor_check.max_ready = sensor_check.mic_ready = false;
-//			}
+		}else{
+//			uart_printf("Logger queue timeout ! \r\n");
 		}
+
 	}
+
 }
+
 
 #ifdef __cplusplus
 }
 #endif
-
-

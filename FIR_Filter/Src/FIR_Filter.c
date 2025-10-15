@@ -7,7 +7,7 @@
  * \note - Dung theo nguyen tac Nyquist-Shannon sampling theorem: Truoc khi downsample tan so lay mau,
  * can loc thong thap tin hieu de loai bo tan so lon hon tan so Nyquist
  * \note - Khi downsample tu 8000Hz -> 1000Hz (giam 8 lan), dai tan giu lai nen nho hon 500Hz (1 nua cua 1000Hz)
- * va can loc bot tin hieu cao honw 500Hz truoc khi decimate de tranh Aliasing (Theo dinh ly Nyquist)
+ * va can loc bot tin hieu cao hon 500Hz truoc khi decimate de tranh Aliasing (Theo dinh ly Nyquist)
  */
 
 #ifdef __cplusplus
@@ -17,33 +17,40 @@ extern "C" {
 #include "FIR_Filter.h"
 
 const float fir_coeff[FIR_TAP_NUM] = {
-		-0.000802, -0.000840, -0.000811, -0.000678, -0.000391, 0.000096, 0.000801, 0.001692, 0.002670,
-		0.003569, 0.004166, 0.004211, 0.003476, 0.001807, -0.000821, -0.004262, -0.008174, -0.012027,
-		-0.015139, -0.016750, -0.016113, -0.012601, -0.005813, 0.004338, 0.017573, 0.033233, 0.050321,
-		0.067587, 0.083650, 0.097148, 0.106890, 0.111995, 0.111995, 0.106890, 0.097148, 0.083650, 0.067587,
-		0.050321, 0.033233, 0.017573, 0.004338, -0.005813, -0.012601, -0.016113, -0.016750, -0.015139,
-		-0.012027, -0.008174, -0.004262, -0.000821, 0.001807, 0.003476, 0.004211, 0.004166, 0.003569,
-		0.002670, 0.001692, 0.000801, 0.000096, -0.000391, -0.000678, -0.000811, -0.000840, -0.000802 };
+		-0.001186, -0.001801, -0.002764, -0.003963,
+		-0.004929, -0.004855, -0.002734, 0.002416,
+		0.011283, 0.024016, 0.040068, 0.058172, 0.076482,
+		0.092844, 0.105165, 0.111784, 0.111784, 0.105165,
+		0.092844, 0.076482, 0.058172, 0.040068, 0.024016,
+		0.011283, 0.002416, -0.002734, -0.004855, -0.004929,
+		-0.003963, -0.002764, -0.001801, -0.001186 };
 
 
-static float fir_buffer[FIR_TAP_NUM] = {0};
-static uint16_t fir_idx = 0;
+void fir_init(FIRFilter *filter){
+	for(uint16_t i = 0; i < FIR_TAP_NUM; i++){
+		filter->buffer[i] = 0.0f;
+	}
+	filter->index = 0;
+}
 
-float FIR_Filter(float input){
-	fir_buffer[fir_idx++] = input; //Ghi vao buffer truoc, xu ly index sau
-	if(fir_idx >= FIR_TAP_NUM){
-		fir_idx = 0;
+
+float FIR_Filter(FIRFilter *filter, float input){
+	filter->buffer[filter->index] = input; //Ghi vao buffer truoc, xu ly index sau
+	float output = 0.0f;
+	int32_t buf_idx = filter->index;
+
+	if(++filter->index >= FIR_TAP_NUM){ //Moi lan goi ham, filter->index se tang them 1 dvi
+		filter->index = 0; //Reset index buffer ve 0
 	}
 
-	float output = 0.0f;
-	uint16_t buf_idx = fir_idx;
 
+	//Can toi thieu 32 samples　input thi moi tao ra 1 output FIR chinh xac => Chap nhan mot vai mau dau bi sai
 	for(uint16_t i = 0; i < FIR_TAP_NUM; i++){
-		if(buf_idx == 0){
-			buf_idx = FIR_TAP_NUM;
+		if(buf_idx-- == 0){
+			buf_idx = FIR_TAP_NUM - 1;
 		}
-		buf_idx--;
-		output += fir_buffer[buf_idx] * fir_coeff[i];
+		//Mau moi nhat se nhan voi he so h[0], mau cu nhat nhan voi he so cuoi cung h[N-1]
+		output += filter->buffer[buf_idx] * fir_coeff[i];
 	}
 	return output;
 }

@@ -20,11 +20,14 @@ extern "C" {
 #include "Sensor_config.h"
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX_COUNT 32
 
 typedef struct {
 	sensor_type_t type;
 	uint16_t count; //So luong mau trong mang
 	uint32_t sample_id; //Dung de dong bo du lieu
+	TickType_t timestamp;
+
 	union {
 		volatile int16_t ecg[ECG_DMA_BUFFER];
 		struct {
@@ -40,12 +43,11 @@ extern UART_HandleTypeDef huart2; //Duoc dinh nghia cho khac, chi muon dung o da
 extern QueueHandle_t logger_queue;
 
 void i2c_scanner(I2C_HandleTypeDef *hi2c);
-
 void Logger_task_block(void *pvParameter); //Ham nhan data tu queue theo block 32 samples/lan
-
-void __attribute__((unused))Logger_task_data(void *pvParameter);
-
+void Logger_one_task(void *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
+void isQueueFree(QueueHandle_t *queue);
 __weak void uart_printf(const char *fmt,...);
+
 
 #ifdef __cplusplus
 }
