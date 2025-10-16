@@ -65,10 +65,6 @@ void Error_Handler(void);
 extern volatile uint32_t global_sample_id; //Nen de volatile vi co the bi thay doi tu ISR va tu cac task khac
 extern volatile uint32_t global_timestamp; //Dong bo tuyet doi
 
-void Init_Sensor(void); //Ham chua cac ham khoi tao sensor
-
-void Init_SemQueue(void); //Khoi tao semaphare cho cam bien va queue cho Logger
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

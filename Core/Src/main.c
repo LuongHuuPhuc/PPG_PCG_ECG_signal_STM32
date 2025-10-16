@@ -65,8 +65,6 @@ UART_HandleTypeDef huart2;
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 
-FIRFilter fir;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,41 +79,6 @@ static void MX_TIM3_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
-
-void Init_Sensor(void){
-	SERROR_CHECK(Ad8232_init(&hadc1));
-	uart_printf(">> AD8232 init OK !\r\n");
-
-	SERROR_CHECK(Inmp441_init(&hi2s2));
-	uart_printf(">> INMP441 init OK !\r\n");
-
-	i2c_scanner(&hi2c1);
-
-	SERROR_CHECK(Max30102_init_no_int(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
-	uart_printf(">> MAX30102 init OK !\r\n");
-}
-
-void Init_SemQueue(void){
-	sem_adc = xSemaphoreCreateBinary();
-	sem_mic = xSemaphoreCreateBinary();
-	sem_max = xSemaphoreCreateBinary();
-
-	StackCheck();
-
-	if(sem_mic == NULL || sem_max == NULL || sem_adc == NULL){
-	  uart_printf("[ERROR] Failed to create semaphores !\r\n");
-	  Error_Handler();
-	}
-
-	//Tao hang doi Logger
-	logger_queue = xQueueCreate(LOGGER_QUEUE_LENGTH, sizeof(sensor_block_t));
-	if(logger_queue == NULL){
-	  uart_printf("[ERROR] Failed to create logger_queue !\r\n");
-	  Error_Handler(); //Thay vi dung while(1) -> Dung quy chuan
-	}
-
-	HeapCheck(); //Check sau khi tao semaphore va queue
-}
 
 /* USER CODE END PFP */
 
@@ -161,8 +124,7 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  Init_Sensor();
-  Init_SemQueue();
+  SensorConfig_Init();
   fir_init(&fir);
   uart_printf("Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
@@ -199,8 +161,8 @@ int main(void)
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 //  TASK_ERR_CHECK(Inmp441_dma_pingpong_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
-//  TASK_ERR_CHECK(Ad8232_dma_sema_task, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
-  TASK_ERR_CHECK(Max30102_task_no_int, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
+//  TASK_ERR_CHECK(Ad8232_dma_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
+  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
   TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &logger_task);
 
   StackCheck();

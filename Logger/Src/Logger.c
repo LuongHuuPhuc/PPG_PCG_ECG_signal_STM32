@@ -16,7 +16,8 @@ extern "C" {
 #include "Logger.h"
 
 char uart_buf[1024];
-
+TaskHandle_t logger_task = NULL;
+QueueHandle_t logger_queue = NULL;
 
 void i2c_scanner(I2C_HandleTypeDef *hi2c){
 	uart_printf("Starting I2C Scanner...\r\n");
@@ -146,7 +147,13 @@ void Logger_task_block(void *pvParameter){
 
 
 void Logger_one_task(void *pvParameter){
-	sensor_block_t block, ppg_block = {0}, pcg_block = {0}, ecg_block = {0};
+	UNUSED(pvParameter);
+
+	sensor_block_t block;
+	sensor_block_t __attribute__((unused))ppg_block = {0};
+	sensor_block_t __attribute__((unused))pcg_block = {0};
+	sensor_block_t __attribute__((unused))ecg_block = {0};
+
 	sensor_check_t check = {
 			.ecg_ready = false,
 			.max_ready = false,
