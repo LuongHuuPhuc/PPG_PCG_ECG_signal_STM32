@@ -20,9 +20,7 @@ extern "C" {
 #endif
 
 #include "stdio.h"
-#include "FreeRTOS.h"
-#include "semphr.h"
-#include "queue.h"
+#include "cmsis_os.h"
 #include "ad8232_config.h"
 #include "max30102_config.h"
 #include "inmp441_config.h"

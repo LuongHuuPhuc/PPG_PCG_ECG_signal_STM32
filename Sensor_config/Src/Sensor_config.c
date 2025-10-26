@@ -12,10 +12,7 @@ extern "C" {
 #include "main.h"
 #include <stdio.h>
 #include <stdarg.h>
-#include "FreeRTOS.h"
-#include "Task.h"
-#include "semphr.h"
-#include "queue.h"
+#include "cmsis_os.h"
 #include "Sensor_config.h"
 #include "Logger.h"
 
