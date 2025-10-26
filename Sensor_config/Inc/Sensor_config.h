@@ -95,7 +95,7 @@ typedef struct {
 	uint32_t sample_id; //Dung de dong bo du lieu
 	TickType_t timestamp;
 
-	union {
+	union { // Cac bien nay chia se chung bo nho
 		volatile int16_t ecg[ECG_DMA_BUFFER];
 		struct {
 			volatile uint32_t ir[MAX_FIFO_SAMPLE];
@@ -108,6 +108,10 @@ typedef struct {
 // Extern protocol variables
 extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim3;
+
+// Other externs
+extern volatile uint32_t global_sample_id;
+extern volatile TickType_t global_timestamp;
 
 // ==== FUNCTION PROTOTYPE ====
 

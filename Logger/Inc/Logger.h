@@ -37,22 +37,22 @@ extern TaskHandle_t logger_task;
 // ==== FUNCTION PROTOTYPE ====
 
 /**
- *
+ * @brief Ham scan cac bus I2C de xem co dang ton tai dia chi nao khong
  */
 void i2c_scanner(I2C_HandleTypeDef *hi2c);
 
 /**
- *
+ * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
  */
 void Logger_task_block(void *pvParameter); //Ham nhan data tu queue theo block 32 samples/lan
 
 /**
- *
+ * @brief Ham in ra 1 kenh du lieu
  */
 void Logger_one_task(void *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
 
 /**
- *
+ * @brief Ham kiem tra xem hang doi con free khong
  */
 void isQueueFree(QueueHandle_t *queue);
 

@@ -10,9 +10,7 @@ extern "C" {
 #endif //__cplusplus
 
 #include "stdio.h"
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
+#include "cmsis_os.h"
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
@@ -23,6 +21,7 @@ extern "C" {
 volatile int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
 TaskHandle_t ad8232_task = NULL;
 SemaphoreHandle_t sem_adc = NULL;
+osThreadId ad8232_taskId = NULL;
 
 // ====== FUCNTION DEFINITION ======
 

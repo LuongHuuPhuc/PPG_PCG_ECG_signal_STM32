@@ -43,6 +43,10 @@ __weak void uart_printf(const char *fmt,...){
 }
 
 
+void isQueueFree(QueueHandle_t *queue){
+
+}
+
 static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_block, sensor_block_t *pcg_block){
 	TickType_t now = xTaskGetTickCount(); //Lay tick de so sanh do tre voi cac task khac
 
@@ -71,6 +75,7 @@ void Logger_task_block(void *pvParameter){
 	// -> 1 sample cua PCG ung voi 8 samples cua PPG + ECG
 	// -> Log voi 1 sample ECG + 1 sample PPG + 1 sample PCG sau khi downsample tu 8kHz ve 1kHz (lay trung binh mau)
 
+	(void)(pvParameter);
 	sensor_block_t ecg_block = {0}, ppg_block = {0}, pcg_block = {0}, block;
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,

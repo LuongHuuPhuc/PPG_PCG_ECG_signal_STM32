@@ -25,9 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <semphr.h>
-#include <queue.h>
-#include "max30102_for_stm32_hal.h"
 #include "Sensor_config.h"
 #include "Logger.h"
 #include "FIR_Filter.h"
@@ -160,10 +157,11 @@ int main(void)
   }
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
+
 //  TASK_ERR_CHECK(Inmp441_dma_pingpong_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
 //  TASK_ERR_CHECK(Ad8232_dma_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
   TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
-  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &logger_task);
+  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 5, &logger_task);
 
   StackCheck();
   HeapCheck(); //Check sau khi tao task

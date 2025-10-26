@@ -29,7 +29,10 @@ typedef struct {
 extern volatile uint32_t global_sample_id;
 extern TickType_t global_timstamp;
 
-// SNAPSHOT for SYNC
+/**
+ * @brief Ham de luu gia tri 2 bien toan cuc `global_sample_id` va `global_timestamp`
+ * @note Tranh xung dot hay bi ghi de
+ */
 static inline void take_snapshotSYNC(snapshot_sync_t *snap){
 	taskENTER_CRITICAL(); //Chan ISR tam thoi de tranh bi TIM ISR chen
 	snap->sample_id = global_sample_id;

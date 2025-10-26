@@ -11,9 +11,7 @@ extern "C" {
 
 #include "stdio.h"
 #include "stdlib.h"
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
+#include "cmsis_os.h"
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
@@ -23,6 +21,7 @@ extern "C" {
 
 TaskHandle_t inmp441_task = NULL;
 SemaphoreHandle_t sem_mic = NULL;
+osThreadId inmp441_taskId = NULL;
 FIRFilter fir = {0};
 
 // INMP441
@@ -46,7 +45,7 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2
 
 
 //Covert tu buffer DMA 16-bit -> PCM 24-bit (sign-extended 32-bit)
-static inline int32_t Inmp441_rebuild_sample(uint16_t low, uint16_t high){
+static inline int32_t __attribute__((unused))Inmp441_rebuild_sample(uint16_t low, uint16_t high){
 	int32_t sample = ((int32_t)high << 16) | low; //Ghep thanh 32-bit
 	sample >>= 8; //Bo 8-bit padding, con 24-bit data
 	return sample;
@@ -56,6 +55,8 @@ static inline int32_t Inmp441_rebuild_sample(uint16_t low, uint16_t high){
 //==== VERSION 1: NORMAL BUFFER ====
 
 void __attribute__((unused))Inmp441_task_ver1(void *pvParameter){
+	UNUSED(pvParameter);
+
 	sensor_block_t block;
 	int idx_out;
 	int32_t sum;
@@ -117,6 +118,8 @@ void __attribute__((unused))Inmp441_task_ver1(void *pvParameter){
 // ==== VERSION 2: CIRCULAR BUFFER ====
 
 void Inmp441_task_ver2(void *pvParameter){
+	UNUSED(pvParameter);
+
 	uart_printf("Inmp441 circular task started !\r\n");
 	vTaskDelay(pdMS_TO_TICKS(5));
 
@@ -188,6 +191,8 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 sa
 // === VERSION 3: DOUBLE BUFFER PING-PONG ===
 
 void Inmp441_task_ver3(void *pvParameter){
+	UNUSED(pvParameter);
+
 	sensor_block_t block;
 	snapshot_sync_t snap;
 	int idx_out;
@@ -251,9 +256,6 @@ void Inmp441_task_ver3(void *pvParameter){
 		}
 	}
 }
-
-
-// ===== DMA Callback cho Double-buffer ping-pong
 
 //Callback khi DMA buffer ping full
 static void Inmp441_DMA_M0CpltCallback(DMA_HandleTypeDef *hdma){

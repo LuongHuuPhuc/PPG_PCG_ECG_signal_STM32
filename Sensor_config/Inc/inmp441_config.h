@@ -17,9 +17,7 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include <stdbool.h>
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
+#include "cmsis_os.h"
 #include "FIR_Filter.h"
 
 // ==== MACROS　====
@@ -46,6 +44,7 @@ extern FIRFilter fir;
 // Task & RTOS
 extern TaskHandle_t inmp441_task;
 extern SemaphoreHandle_t sem_mic;
+extern osThreadId inmp441_taskId;
 
 // INMP441
 extern volatile int16_t __attribute__((unused))buffer16[I2S_SAMPLE_COUNT];
@@ -76,39 +75,41 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2
  * @param hi2s Con tro tro den struct cau hinh protocol I2S
  * @param ping Con tro tro den mang chua data buffer ping (buffer 1)
  * @param pong Con tro tro den mang chua data buffer pong (buffer 2)
- * @param Size
+ * @param Size Kich thuoc so mau cua moi buffer
  */
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver2(I2S_HandleTypeDef *hi2s, uint16_t *ping, uint16_t *pong, uint16_t Size);
 
 /**
+ * @brief Ham thuc thi va xu ly `ver1`
  *
+ * @note Task nay xu ly du lieu su dung DMA (Mode: Normal)
  */
-void __attribute__((unused))Inmp441_task_ver1(void *pvParameter); //Task xu ly voi DMA Normal
+void __attribute__((unused))Inmp441_task_ver1(void *pvParameter);
 
 /**
+ * @brief Ham thuc thi va xu ly `ver2`
  *
+ * @note Task nay xu ly du lieu su dung DMA (Mode: Circular)
+ * \note - Thu thap data vao DMA buffer
+ * \note - Gan flags`ready -> false` moi lan buffer day
+ * \note - Callback se lat flags `ready -> true` de tiep tuc vong lap
  */
-void __attribute__((unused))Inmp441_task_ver2(void *pvParameter); //Task xu ly voi DMA Circular
+void __attribute__((unused))Inmp441_task_ver2(void *pvParameter);
 
 /**
+ * @brief Ham xu ly du lieu khi full buffer
  *
+ * @note Ham con cua `Inmp441_task_ver2`
+ * \note - Sau khi DMA ghi du `I2S_SAMPLE_COUNT = 256` mau thi downsample ve 32 mau + FIR Filter
  */
 void __attribute__((unused))Inmp441_process_full_buffer(void);
 
 /**
+ * @brief Ham thuc thi va xu ly `ver3`
  *
+ * @note Do toc do lay mau nhanh va de tranh bi overwritten du lieu cu khi chua xu ly xong -> Su dung Double Buffer Ping-Pong
  */
 void __attribute__((unused))Inmp441_task_ver3(void *pvParameter); //Task xu ly DMA double buffer
-
-/**
- *
- */
-extern void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s); //Ham callback khi DMA da xong (complete)
-
-/**
- *
- */
-extern void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s); //Ham callback khi DMA da xong 1 nua
 
 
 #ifdef __cplusplus

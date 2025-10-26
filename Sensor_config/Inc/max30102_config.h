@@ -17,10 +17,9 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
-#include "max30102_for_stm32_hal.h"
+#include "cmsis_os.h"
+#include "max30102_low_level.h"
+#include "max30102_lib.h"
 
 // ==== MACROS　====
 #define MAX_FIFO_SAMPLE  MAX30102_SAMPLE_LEN_MAX
@@ -38,6 +37,7 @@ extern I2C_HandleTypeDef hi2c1;
 // Task & RTOS
 extern TaskHandle_t max30102_task;
 extern SemaphoreHandle_t sem_max;
+extern osThreadId max30102_taskId;
 
 // ==== FUCNTION PROTOTYPE ====
 

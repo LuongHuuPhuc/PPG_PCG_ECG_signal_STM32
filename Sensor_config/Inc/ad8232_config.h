@@ -18,9 +18,7 @@ extern "C" {
 #include "stdio.h"
 #include "string.h"
 #include <stdbool.h>
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
+#include "cmsis_os.h"
 
 // ==== MACROS　====
 #define ECG_DMA_BUFFER	32
@@ -34,6 +32,7 @@ extern volatile bool __attribute__((unused))adc_full_ready;
 extern ADC_HandleTypeDef hadc1;
 
 // Task RTOS
+extern osThreadId ad8232_taskId;
 extern TaskHandle_t ad8232_task;
 extern SemaphoreHandle_t sem_adc;
 

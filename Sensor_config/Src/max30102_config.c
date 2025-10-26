@@ -10,9 +10,7 @@ extern "C" {
 #endif // __cplusplus
 
 #include "stdio.h"
-#include "FreeRTOS.h"
-#include <semphr.h>
-#include <queue.h>
+#include "cmsis_os.h"
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
@@ -22,6 +20,8 @@ extern "C" {
 
 TaskHandle_t max30102_task = NULL;
 SemaphoreHandle_t sem_max = NULL;
+osThreadId max30102_taskId = NULL;
+
 max30102_t max30102_obj;
 max30102_record record;
 uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
@@ -178,16 +178,6 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 	max30102_read(&max30102_obj, 0x00, &dummy_reg, 1); //Khong can kiem tra loi
 	uart_printf("[MAX30102] initializing...!");
 	return HAL_OK;
-}
-
-//VER 3
-static inline __attribute__((unused)) uint32_t Max30102_getFIFORed(max30102_record *record){
-	return (record->red_sample[record->tail]);
-}
-
-//VER 3
-static inline __attribute__((unused)) uint32_t Max30102_getFIFOIR(max30102_record *record){
-	return (record->ir_sample[record->tail]);
 }
 
 
