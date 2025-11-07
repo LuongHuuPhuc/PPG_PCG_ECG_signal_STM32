@@ -27,12 +27,22 @@ osThreadId ad8232_taskId = NULL;
 
 HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc){
 	uart_printf("[AD8232] initializing...");
-	return (adc == &hadc1) ? HAL_OK : HAL_ERROR;
+	HAL_StatusTypeDef ret = HAL_OK;
+	ret |= ((adc == &hadc1) ? HAL_OK : HAL_ERROR);
+
+	sem_adc = xSemaphoreCreateBinary();
+	if(sem_adc == NULL){
+		uart_printf("[AD8232] Failed to create Semaphores !\r\n");
+		ret |= HAL_ERROR;
+	}
+	return ret;
 }
 
 // === VERSION 3 ===
 
-void Ad8232_task_ver3(void *pvParameter){
+void Ad8232_task_ver3(void const *pvParameter){
+	(void)(pvParameter);
+
 	sensor_block_t block;
 	snapshot_sync_t snap;
 	uart_printf("Ad8232 dma task started !\r\n");
@@ -84,7 +94,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){ //Khi DMA hoan tat (du 32
 
 // === VERSION 2 ===
 
-void __attribute__((unused))Ad8232_task_ver2(void *pvParameter){
+void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter){
+	(void)(pvParameter);
+
 	sensor_block_t block;
 	uart_printf("Ad8232 dma task started !\r\n");
 	vTaskDelay(pdMS_TO_TICKS(5));
@@ -126,7 +138,9 @@ void __attribute__((unused))Ad8232_task_ver2(void *pvParameter){
 
 // ===== VERSION 1 =====
 
-void __attribute__((unused))Ad8232_task_ver1(void *pvParameter){
+void __attribute__((unused))Ad8232_task_ver1(void const *pvParameter){
+	(void)(pvParameter);
+
 	sensor_data_t sensor_data;
 	uart_printf("Ad8232 task started !\r\n");
 	while(1){

@@ -69,7 +69,7 @@ uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj);
  *
  * @note Task dung interrupt de trigger moi khi co data moi
  */
-void __attribute__((unused))Max30102_task_ver1(void *pvParameter);
+void __attribute__((unused))Max30102_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham khoi tao & cau hinh cam bien `ver2`
@@ -85,7 +85,7 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
  *
  * @note Task khong dung interrupt ma dung timer de trigger
  */
-void Max30102_task_ver2(void *pvParameter);
+void Max30102_task_ver2(void const *pvParameter);
 
 
 #ifdef __cplusplus

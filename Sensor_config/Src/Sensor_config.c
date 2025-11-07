@@ -29,28 +29,13 @@ void SensorConfig_Init(void){
 	SERROR_CHECK(Inmp441_init_ver1(&hi2s2));
 	uart_printf(">> INMP441 init OK !\r\n");
 
-	i2c_scanner(&hi2c1);
-
 	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> MAX30102 init OK !\r\n");
 
-	sem_adc = xSemaphoreCreateBinary();
-	sem_mic = xSemaphoreCreateBinary();
-	sem_max = xSemaphoreCreateBinary();
-
 	StackCheck();
 
-	if(sem_mic == NULL || sem_max == NULL || sem_adc == NULL){
-	  uart_printf("[ERROR] Failed to create semaphores !\r\n");
-	  Error_Handler();
-	}
-
-	//Tao hang doi Logger
-	logger_queue = xQueueCreate(LOGGER_QUEUE_LENGTH, sizeof(sensor_block_t));
-	if(logger_queue == NULL){
-	  uart_printf("[ERROR] Failed to create logger_queue !\r\n");
-	  Error_Handler(); //Thay vi dung while(1) -> Dung quy chuan
-	}
+	SERROR_CHECK(Logger_queue_init());
+	uart_printf(">> LOGGER init OK !\r\n");
 
 	HeapCheck(); //Check sau khi tao semaphore va queue
 }

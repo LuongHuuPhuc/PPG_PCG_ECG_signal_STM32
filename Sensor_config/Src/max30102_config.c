@@ -32,11 +32,30 @@ uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 // === VERSION 1 ===
 
 HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i2c){
-	max30102_init(&max30102_obj, i2c);
-	max30102_reset(&max30102_obj);
-	vTaskDelay(pdMS_TO_TICKS(100)); //Delay 1 luc sau reset
+	uart_printf("[MAX30102] initializing...!");
+	HAL_StatusTypeDef ret = HAL_OK;
 
-	max30102_clear_fifo(&max30102_obj);
+	sem_max = xSemaphoreCreateBinary();
+	if(sem_max == NULL){
+		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
+		ret |= HAL_ERROR;
+	}
+
+	// Khoi tao cam bien voi cac thong so co ban
+	max30102_init(&max30102_obj, i2c);
+
+	// Scan dia chi I2C co tren bus
+	i2c_scanner(&hi2c1);
+	for(uint8_t retry = 0; retry < 3; retry++){
+		max30102_reset(&max30102_obj);
+		vTaskDelay(pdMS_TO_TICKS(200));
+		if(max30102_clear_fifo(&max30102_obj) == HAL_OK){
+			uart_printf("[MAX30102] clear_fifo OK !\r\n");
+			break;
+		}
+		uart_printf("[MAX30102] clear_fifo Failed!\r\n");
+		ret |= HAL_ERROR;
+	}
 
 	/**
 	 * @note - Sample Average = n -> Tinh trung binh n mau sau do moi day vao fifo
@@ -69,10 +88,9 @@ HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i
 	uint8_t en_reg[2] = {0};
 	if(max30102_read(&max30102_obj, 0x00, en_reg, 1) != HAL_OK){ //Clear flag
 		uart_printf("[MAX30102] init Failed !\r\n");
-		return HAL_ERROR;
+		ret |= HAL_ERROR;
 	}
-	uart_printf("[MAX30102] initializing...!");
-	return HAL_OK;
+	return ret;
 }
 
 
@@ -98,7 +116,7 @@ uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj){
 }
 
 
-void __attribute__((unused))Max30102_task_ver1(void *pvParameter){
+void __attribute__((unused))Max30102_task_ver1(void const *pvParameter){
 	sensor_data_t __attribute__((unused))sensor_data;
 	sensor_block_t block;
 	uint8_t num_samples = 0;
@@ -142,25 +160,39 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 // === VERSION 2 ===
 
 HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
+	uart_printf("[MAX30102] initializing...!");
+	HAL_StatusTypeDef ret = HAL_OK;
+
+	sem_max = xSemaphoreCreateBinary();
+	if(sem_max == NULL){
+		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
+		ret |= HAL_ERROR;
+	}
+
+	// Khoi tao cam bien voi cac thong so co ban
 	max30102_init(&max30102_obj, i2c);
 
+	// Scan dia chi I2C co tren bus
+	i2c_scanner(&hi2c1);
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
 		vTaskDelay(pdMS_TO_TICKS(200));
 		if(max30102_clear_fifo(&max30102_obj) == HAL_OK){
+			uart_printf("[MAX30102] clear_fifo OK !\r\n");
 			break;
 		}
 		uart_printf("[MAX30102] clear_fifo Failed!\r\n");
-		return HAL_ERROR;
+		ret |= HAL_ERROR;
 	}
 
 	/**
 	 * @note - Sample Average = n -> Tinh trung binh n mau sau do moi sinh interrupt + push vao fifo
 	 * \note - fifo_a_full = n -> So mau con lai trong FIFO truoc khi sinh ngat -> Khi du (32 - n) -> Sinh ra interrupt
 	 * \note - roll_over_en = 1 -> Cho phep ghi de neu fifo day
+	 *
+	 * Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
+	 *
 	 */
-
-	//Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
 	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 1);
 
 	//Sensor settings
@@ -176,12 +208,11 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 
 	uint8_t dummy_reg ;
 	max30102_read(&max30102_obj, 0x00, &dummy_reg, 1); //Khong can kiem tra loi
-	uart_printf("[MAX30102] initializing...!");
-	return HAL_OK;
+	return ret;
 }
 
 
-void Max30102_task_ver2(void *pvParameter){
+void Max30102_task_ver2(void const *pvParameter){
 	sensor_block_t block;
 	snapshot_sync_t snap;
 	uart_printf("Max30102 task started !\r\n");

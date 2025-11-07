@@ -123,7 +123,7 @@ int main(void)
 
   SensorConfig_Init();
   fir_init(&fir);
-  uart_printf("Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
+  uart_printf("[DEBUG] Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
   HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
@@ -151,17 +151,29 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  if(defaultTaskHandle == NULL){
-	  uart_printf("[ERROR] Failed to create default task! \r\n");
-	  Error_Handler();
-  }
+
+  // CMSIS-OS API
+
+//  osThreadDef(ad8232Task, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+//  ad8232_taskId = osThreadCreate(osThread(ad8232Task), NULL);
+//
+//  osThreadDef(inmp441Task, Inmp441_task_ver2, osPriorityNormal, 0, 1024 * 2);
+//  inmp441_taskId = osThreadCreate(osThread(inmp441Task), NULL);
+
+  osThreadDef(max30102Task, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+  max30102_taskId = osThreadCreate(osThread(max30102Task), NULL);
+
+  osThreadDef(loggerTask, Logger_one_task, osPriorityNormal, 0, 1024 * 2);
+  logger_taskId = osThreadCreate(osThread(loggerTask), NULL);
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 
-//  TASK_ERR_CHECK(Inmp441_dma_pingpong_task, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
-//  TASK_ERR_CHECK(Ad8232_dma_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
-  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
-  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 5, &logger_task);
+  // FreeRTOS API
+
+//  TASK_ERR_CHECK(Inmp441_task_ver2, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
+//  TASK_ERR_CHECK(Ad8232_task_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
+//  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
+//  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 5, &logger_task);
 
   StackCheck();
   HeapCheck(); //Check sau khi tao task
@@ -230,6 +242,10 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
+  /** Enables the Clock Security System
+  */
+  HAL_RCC_EnableCSS();
 }
 
 /**

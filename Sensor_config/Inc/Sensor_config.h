@@ -48,7 +48,7 @@ extern "C" {
 } while(0) // Dung khi muon send quueu trong cac ham HAL_callback
 
 #define TASK_ERR_CHECK(func, name, stack, param, prio, handle) do { \
-	if(xTaskCreate(func, name, stack, param, prio, handle) != pdPASS){ \
+	if(xTaskCreate((void*)func, name, stack, param, prio, handle) != pdPASS){ \
 		uart_printf("[ERROR] Failed to create task: %s\r\n", name); \
 		Error_Handler(); \
 	}\
@@ -76,15 +76,7 @@ typedef struct {
 	int16_t mic; //Real-time, in 1 gia tri tai 1 thoi diem nhung mat mau (khong nen dung)
 	uint16_t byte_read; //So mau thuc te
 	int16_t ecg;
-} sensor_data_t;
-
-
-//Kiem tra trang thai du lieu da san sang hay chua
-typedef struct {
-	bool ecg_ready;
-	bool max_ready;
-	bool mic_ready;
-} __attribute__((unused))sensor_check_t;
+} __attribute__((unused))sensor_data_t;
 
 
 typedef struct {
@@ -101,11 +93,14 @@ typedef struct {
 		} ppg;
 		volatile int16_t mic[DOWNSAMPLE_COUNT]; //PCG
 	};
-}sensor_block_t;
+} sensor_block_t;
 
 // Extern protocol variables
 extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim3;
+extern I2C_HandleTypeDef hi2c1;
+extern ADC_HandleTypeDef hadc1;
+extern I2S_HandleTypeDef hi2s2;
 
 // Other externs
 extern volatile uint32_t global_sample_id;

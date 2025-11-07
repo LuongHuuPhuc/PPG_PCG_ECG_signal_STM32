@@ -33,12 +33,6 @@ void max30102_reset(max30102_t *obj)
 {
     uint8_t val = 0x40;
     max30102_write(obj, MAX30102_MODE_CONFIG, &val, 1);
-
-    //Kiem tra reset da xong chua
-    do {
-    	max30102_read(obj, MAX30102_MODE_CONFIG, &val, 1);
-    	vTaskDelay(pdMS_TO_TICKS(1));
-    } while(val & 0x40);
 }
 
 void max30102_set_a_full(max30102_t *obj, uint8_t enable)
@@ -263,8 +257,8 @@ void max30102_read_fifo_ver1(max30102_t *obj)
 
 uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
 	uint8_t wr_ptr = 0, rd_ptr = 0;
-	max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);
-	max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1);
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
 
 	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
 
@@ -281,7 +275,7 @@ uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint3
 			uint8_t data_temp[bytesToRead];
 
 			//Doc 1 lan toan bo du lieu trong FIFO thay vi doc tung lan
-			max30102_read(obj, MAX30102_FIFO_DATA, data_temp, bytesToRead);
+			MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, data_temp, bytesToRead));
 
 			//Chuyen tung mau raw data thanh mau IR va RED
 			for(int8_t i = 0; i < num_samples; i++){

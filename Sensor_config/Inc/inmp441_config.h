@@ -84,7 +84,7 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver2(I2S_HandleTypeDef *hi
  *
  * @note Task nay xu ly du lieu su dung DMA (Mode: Normal)
  */
-void __attribute__((unused))Inmp441_task_ver1(void *pvParameter);
+void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham thuc thi va xu ly `ver2`
@@ -94,7 +94,7 @@ void __attribute__((unused))Inmp441_task_ver1(void *pvParameter);
  * \note - Gan flags`ready -> false` moi lan buffer day
  * \note - Callback se lat flags `ready -> true` de tiep tuc vong lap
  */
-void __attribute__((unused))Inmp441_task_ver2(void *pvParameter);
+void __attribute__((unused))Inmp441_task_ver2(void const *pvParameter);
 
 /**
  * @brief Ham xu ly du lieu khi full buffer
@@ -109,7 +109,7 @@ void __attribute__((unused))Inmp441_process_full_buffer(void);
  *
  * @note Do toc do lay mau nhanh va de tranh bi overwritten du lieu cu khi chua xu ly xong -> Su dung Double Buffer Ping-Pong
  */
-void __attribute__((unused))Inmp441_task_ver3(void *pvParameter); //Task xu ly DMA double buffer
+void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter); //Task xu ly DMA double buffer
 
 
 #ifdef __cplusplus

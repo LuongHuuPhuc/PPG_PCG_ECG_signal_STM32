@@ -16,7 +16,7 @@ extern "C" {
 #include "stdio.h"
 #include "main.h"
 
-#define MAX30102_I2C_ADDR 					0x57
+#define MAX30102_I2C_ADDR 					0x57 // Dia chi I2C 8-bit
 #define MAX30102_I2C_TIMEOUT 				1000
 
 #define MAX30102_BYTES_PER_LED 				3 //Moi LED chiem 3 bytes

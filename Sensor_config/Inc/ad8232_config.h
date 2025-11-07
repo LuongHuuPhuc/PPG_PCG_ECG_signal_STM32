@@ -50,21 +50,21 @@ HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc
  *
  * @note Task khong su dung DMA
  */
-void __attribute__((unused))Ad8232_task_ver1(void *pvParameter);
+void __attribute__((unused))Ad8232_task_ver1(void const *pvParameter);
 
 /**
  * @brief Task doc gia tri ADC `ver3`
  *
  * @note Task nay su dung DMA + Conversion callback + Semaphore quan ly tai nguyen (co tre phan me (?))
  */
-void Ad8232_task_ver3(void *pvParameter);
+void Ad8232_task_ver3(void const *pvParameter);
 
 /**
  * @brief Task doc gia tri ADC `ver2`
  *
  * @note Task su dung DMA + conversion callback (trigger timer truc tiep) - Khong dung semaphore
  */
-void __attribute__((unused))Ad8232_task_ver2(void *pvParameter);
+void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter);
 
 /**
  * @brief Ham conversion callback

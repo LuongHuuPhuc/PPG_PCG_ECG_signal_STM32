@@ -20,6 +20,14 @@ extern "C"{
 #include <string.h>
 #include "max30102_low_level.h"
 
+// Macro de debug write va read low level
+#define MAXLOWLEVELCHECKFUNC(__x__) do { \
+	if((__x__) != HAL_OK) { \
+		uart_printf("Function %s HAL error, stop !", #__x__); \
+		configASSERT(0);\
+	}\
+} while(0)
+
 typedef enum max30102_mode_t
 {
     max30102_heart_rate = 0x02,

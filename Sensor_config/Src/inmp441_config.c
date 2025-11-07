@@ -40,7 +40,15 @@ volatile int16_t __attribute__((unused))mic_pong[I2S_SAMPLE_COUNT] = {0};
 
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2s){
 	uart_printf("[INMP441] initializing....");
-	return (i2s == &hi2s2) ? HAL_OK : HAL_ERROR;
+	HAL_StatusTypeDef ret = HAL_OK;
+	ret |= ((i2s == &hi2s2) ? HAL_OK : HAL_ERROR);
+
+	sem_mic = xSemaphoreCreateBinary();
+	if(sem_mic == NULL){
+		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
+		ret |= HAL_ERROR;
+	}
+	return ret;
 }
 
 
@@ -54,7 +62,7 @@ static inline int32_t __attribute__((unused))Inmp441_rebuild_sample(uint16_t low
 
 //==== VERSION 1: NORMAL BUFFER ====
 
-void __attribute__((unused))Inmp441_task_ver1(void *pvParameter){
+void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
@@ -117,7 +125,7 @@ void __attribute__((unused))Inmp441_task_ver1(void *pvParameter){
 
 // ==== VERSION 2: CIRCULAR BUFFER ====
 
-void Inmp441_task_ver2(void *pvParameter){
+void Inmp441_task_ver2(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	uart_printf("Inmp441 circular task started !\r\n");
@@ -190,7 +198,7 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 sa
 
 // === VERSION 3: DOUBLE BUFFER PING-PONG ===
 
-void Inmp441_task_ver3(void *pvParameter){
+void Inmp441_task_ver3(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;

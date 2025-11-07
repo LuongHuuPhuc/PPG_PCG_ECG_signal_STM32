@@ -32,7 +32,7 @@ HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uin
 
 HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
 {
-    uint8_t reg_addr = reg; // Truyen vao 0x00
+    uint8_t reg_addr = reg;
     HAL_StatusTypeDef status;
 
     status = HAL_I2C_Master_Transmit(obj->_ui2c, MAX30102_I2C_ADDR << 1, &reg_addr, 1, MAX30102_I2C_TIMEOUT);
@@ -40,6 +40,7 @@ HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint
     	uart_printf("[ERROR] max30102_read failed at Transmit at reg 0x%02x, HAL error: 0x%lx!\r\n", reg, obj->_ui2c->ErrorCode);
     	return HAL_ERROR;
     }
+
     status = HAL_I2C_Master_Receive(obj->_ui2c, MAX30102_I2C_ADDR << 1, buf, buflen, MAX30102_I2C_TIMEOUT);
     if(status != HAL_OK){
     	uart_printf("[ERROR] max30102_read failed at Receive at reg 0x%02x, HAL error: 0x%lx!\r\n", reg, obj->_ui2c->ErrorCode);
