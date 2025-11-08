@@ -24,6 +24,7 @@ SemaphoreHandle_t sem_adc = NULL;
 osThreadId ad8232_taskId = NULL;
 
 // ====== FUCNTION DEFINITION ======
+/*-----------------------------------------------------------*/
 
 HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc){
 	uart_printf("[AD8232] initializing...");
@@ -37,6 +38,7 @@ HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc
 	}
 	return ret;
 }
+/*-----------------------------------------------------------*/
 
 // === VERSION 3 ===
 
@@ -63,7 +65,7 @@ void Ad8232_task_ver3(void const *pvParameter){
 				block.type = SENSOR_ECG;
 				block.timestamp = snap.timestamp;
 				block.sample_id = snap.sample_id; //Danh dau thoi diem -> dong bo hoa
-//				block.timestamp = xTaskGetTickCount(); //Lay tick moi task duoc goi
+				block.count = ECG_DMA_BUFFER;
 
 //				uart_printf("[DEBUG] ECG sample_id = %lu\r\n", block.sample_id);
 
@@ -71,8 +73,9 @@ void Ad8232_task_ver3(void const *pvParameter){
 					block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_block_t
 				}
 
-				block.count = ECG_DMA_BUFFER;
+				taskENTER_CRITICAL();
 				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+				taskEXIT_CRITICAL();
 
 			}else{
 				uart_printf("[ADC] Timeout waiting for DMA done !\r\n");
@@ -82,15 +85,17 @@ void Ad8232_task_ver3(void const *pvParameter){
 		}
 	}
 }
+/*-----------------------------------------------------------*/
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){ //Khi DMA hoan tat (du 32 sample ~ 32ms) ham nay se duoc goi
+//Khi DMA day (du 32 sample ~ 32ms) ham nay se duoc goi
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){
 	if(adc == &hadc1){
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 		vTaskNotifyGiveFromISR(ad8232_task, &xHigherPriorityTaskWoken); //gui thong bao cho task la DMA hoan tat
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }
-
+/*-----------------------------------------------------------*/
 
 // === VERSION 2 ===
 
@@ -126,7 +131,7 @@ void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter){
 		}
 	}
 }
-
+/*-----------------------------------------------------------*/
 
 //void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
 //	if(hadc->Instance == ADC1){
@@ -135,6 +140,7 @@ void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter){
 //		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 //	}
 //}
+/*-----------------------------------------------------------*/
 
 // ===== VERSION 1 =====
 
@@ -156,7 +162,7 @@ void __attribute__((unused))Ad8232_task_ver1(void const *pvParameter){
 		}
 	}
 }
-
+/*-----------------------------------------------------------*/
 
 #ifdef __cplusplus
 }

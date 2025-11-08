@@ -152,24 +152,19 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 
-  // CMSIS-OS API
-
-//  osThreadDef(ad8232Task, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-//  ad8232_taskId = osThreadCreate(osThread(ad8232Task), NULL);
-//
+  /* ----CMSIS-OS API---- */
+  osThreadDef(ad8232Task, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+  ad8232_taskId = osThreadCreate(osThread(ad8232Task), NULL);
 //  osThreadDef(inmp441Task, Inmp441_task_ver2, osPriorityNormal, 0, 1024 * 2);
 //  inmp441_taskId = osThreadCreate(osThread(inmp441Task), NULL);
-
   osThreadDef(max30102Task, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
   max30102_taskId = osThreadCreate(osThread(max30102Task), NULL);
-
   osThreadDef(loggerTask, Logger_one_task, osPriorityNormal, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(loggerTask), NULL);
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 
-  // FreeRTOS API
-
+  /* ----FreeRTOS API----*/
 //  TASK_ERR_CHECK(Inmp441_task_ver2, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
 //  TASK_ERR_CHECK(Ad8232_task_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
 //  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
@@ -536,7 +531,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
   if(htim->Instance == TIM3){
 
-	  //Count du 32 lan (~32ms) thi moi Give Semaphore (Trigger Data theo block 32 samples)
+	  // TIMER trigger moi 1ms -> Period count du 32 lan (~32ms) thi Give Semaphore (Trigger Data theo block 32 samples)
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
 		  global_timestamp = xTaskGetTickCountFromISR();
@@ -547,7 +542,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
 		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
-
 	  }
   }
 

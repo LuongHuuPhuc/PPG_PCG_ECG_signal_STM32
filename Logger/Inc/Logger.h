@@ -70,7 +70,7 @@ void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co
 /**
  * @brief Ham kiem tra xem hang doi con free khong
  */
-void isQueueFree(const QueueHandle_t queue, const char *name);
+void __attribute__((unused))isQueueFree(const QueueHandle_t queue, const char *name);
 
 /**
  * @brief Ham thay the cho printf su dung UART

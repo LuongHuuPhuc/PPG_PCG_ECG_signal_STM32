@@ -79,7 +79,7 @@ typedef struct {
 } __attribute__((unused))sensor_data_t;
 
 
-typedef struct {
+typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forward declaration
 	sensor_type_t type;
 	uint16_t count; //So luong mau trong mang
 	uint32_t sample_id; //Dung de dong bo du lieu

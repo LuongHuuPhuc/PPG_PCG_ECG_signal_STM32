@@ -153,7 +153,12 @@ void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr)
 {
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
-    config = (config & 0x63) | (sr << MAX30102_SPO2_SR);
+
+    // Clear [4:2] bits
+    config &= ~(0x7 << MAX30102_SPO2_SR);
+
+    // Ghi gia tri moi
+    config |= (sr << MAX30102_SPO2_SR);
     max30102_write(obj, MAX30102_SPO2_CONFIG, &config, 1);
 }
 
@@ -162,7 +167,12 @@ void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw)
 {
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
-    config = (config & 0x7c) | (pw << MAX30102_SPO2_LEW_PW);
+
+    // Clear bit [1:0]
+    config &= ~(0x3 << MAX30102_SPO2_LEW_PW);
+
+    // Ghi lai gia tri moi
+    config |= (pw << MAX30102_SPO2_LEW_PW);
     max30102_write(obj, MAX30102_SPO2_CONFIG, &config, 1);
 }
 
@@ -171,22 +181,33 @@ void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc)
 {
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
-    config = (config & 0x1f) | (adc << MAX30102_SPO2_ADC_RGE);
+
+    // Clear bit [6:5]
+    config &= ~(0x3 << MAX30102_SPO2_ADC_RGE);
+
+    // Ghi gia tri moi vao thanh ghi
+    config |= (adc << MAX30102_SPO2_ADC_RGE);
     max30102_write(obj, MAX30102_SPO2_CONFIG, &config, 1);
 }
 
 
-void max30102_set_led_current_1(max30102_t *obj, float ma)
+void max30102_set_led_current_ir(max30102_t *obj, float ma)
 {
-    uint8_t pa = ma / 0.2;
+	if(ma < 0) ma = 0;
+	if(ma > 51.0f) ma = 51.0f;
+
+    uint8_t pa = (uint8_t)(ma / 0.2f); // Chuyen sang gia tri thanh ghi (0 - 255)
     max30102_write(obj, MAX30102_LED_IR_PA1, &pa, 1);
 }
 
 
-void max30102_set_led_current_2(max30102_t *obj, float ma)
+void max30102_set_led_current_red(max30102_t *obj, float ma)
 {
-    uint8_t pa = ma / 0.2;
-    max30102_write(obj, MAX30102_LED_RED_PA2, &pa, 1);
+	if(ma < 0) ma = 0;
+	if(ma > 51.0f) ma = 51.0f;
+
+	uint8_t pa = (uint8_t)(ma / 0.2f); // Chuyen sang gia tri thanh ghi (0 - 255)
+	max30102_write(obj, MAX30102_LED_RED_PA2, &pa, 1);
 }
 
 
@@ -205,14 +226,26 @@ void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t 
     max30102_write(obj, MAX30102_MULTI_LED_CTRL_2, &val, 1);
 }
 
+void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac)
+{
+    max30102_read(obj, MAX30102_DIE_TINT, (uint8_t *)temp_int, 1);
+    max30102_read(obj, MAX30102_DIE_TFRAC, temp_frac, 1);
+}
 
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full)
 {
     uint8_t config = 0x00;
-    config |= smp_ave << MAX30102_FIFO_CONFIG_SMP_AVE;
+
+    // Ghi gia tri moi vao
+    config |= (smp_ave & 0x07) << MAX30102_FIFO_CONFIG_SMP_AVE;
     config |= ((roll_over_en & 0x01) << MAX30102_FIFO_CONFIG_ROLL_OVER_EN);
     config |= ((fifo_a_full & 0x0f) << MAX30102_FIFO_CONFIG_FIFO_A_FULL);
+
+    uart_printf("[SET FIFO CONFIG] FIFO before write: 0x%02X\r\n", config);
     max30102_write(obj, MAX30102_FIFO_CONFIG, &config, 1);
+
+    max30102_read(obj, MAX30102_FIFO_CONFIG, &config, 1);
+    uart_printf("[SET FIFO CONFIG] FIFO after write: 0x%02X\r\n", config);
 }
 
 
@@ -234,9 +267,8 @@ void max30102_read_fifo_ver1(max30102_t *obj)
     max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);
     max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1);
 
-    int8_t num_samples;
+    int8_t num_samples = (wr_ptr - rd_ptr) & 0x1F; // Bit mask
 
-    num_samples = (int8_t)wr_ptr - (int8_t)rd_ptr;
     if (num_samples < 1)
     {
         num_samples += 32;
@@ -255,12 +287,63 @@ void max30102_read_fifo_ver1(max30102_t *obj)
 }
 
 
-uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
+uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
+	uint8_t wr_ptr = 0; // Vi tri ghi tiep theo - khi tang den 31 roi ghi tiep, no se vong ve 0
+	uint8_t rd_ptr = 0; // Vi tri doc tiep theo -> Khong tang thi khong doc duoc data
+
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
+
+	// Neu wr_ptr == rd_ptr thi num_sample = 0
+	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
+
+	// Tinh so mau trong FIFO - Doc 32 sample tu FIFO can 5-bits (2^5 = 32 samples)
+	uint8_t num_samples;
+	if(wr_ptr >= rd_ptr){
+		num_samples = (uint8_t)(wr_ptr - rd_ptr);
+	}else{
+		num_samples = 32 + wr_ptr - rd_ptr;
+	}
+
+	if(num_samples > max_samples) num_samples = max_samples;
+	if(num_samples == 0) return 0;
+
+	const uint8_t bytesPerSample = record->activeLeds * MAX30102_BYTES_PER_LED;
+
+	// Tong so byte can doc cho 2 kenh IR va RED (FIFO co the chua toi 192 bytes cho 32 sample, moi sample 6 bytes)
+//	uint16_t TotalBytesToRead = (uint16_t)(bytesPerSample * num_samples);
+
+	uint8_t dataRead[bytesPerSample]; // Array luu gia tri 1 sample (6 bytes)
+	for(uint8_t i = 0; i < num_samples; i++){
+
+		// Doc 6 byte 1 lan
+		MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, dataRead, bytesPerSample));
+
+		// Tach tung byte raw data sample thanh mau 3 byte cho IR va 3 byte cho RED
+		if(record->activeLeds > 0){ // RED (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
+			red_buf[i] = ((uint32_t)(dataRead[0] << 16) |   // Byte 1
+						 (uint32_t)(dataRead[1] << 8) | 	// Byte 2
+						 (uint32_t)(dataRead[2]))       	// Byte 3
+						 & 0x3FFFF; // bit mask 18-bit
+		}
+
+		if(record->activeLeds > 1){ // IR (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
+			ir_buf[i] = ((uint32_t)(dataRead[3] << 16) | // Byte 1
+						(uint32_t)(dataRead[4] << 8) |   // Byte 2
+						(uint32_t)(dataRead[5])) 		 // Byte 3
+						& 0x3FFFF; // bit mask 18-bit
+		}
+	}
+
+	return num_samples; //Tra ve so mau da doc
+}
+
+uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
 	uint8_t wr_ptr = 0, rd_ptr = 0;
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
 
-	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
+//	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
 
 	//Tinh so mau trong FIFO
 	int16_t num_samples = (int16_t)(wr_ptr - rd_ptr) & 0x1F; //FIFO depth = 32
@@ -299,9 +382,19 @@ uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint3
 	return num_samples; //Tra ve so mau da doc
 }
 
+void max30102_config_register_status_verbose(void){
+	uint8_t mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg;
+	max30102_read(&max30102_obj, MAX30102_MODE_CONFIG, &mode_reg, 1); //Khong can kiem tra loi
+	max30102_read(&max30102_obj, MAX30102_SPO2_CONFIG, &spo2_reg, 1);
+	max30102_read(&max30102_obj, MAX30102_LED_IR_PA1, &irled_reg, 1);
+	max30102_read(&max30102_obj, MAX30102_LED_RED_PA2, &redled_reg, 1);
+	max30102_read(&max30102_obj, MAX30102_FIFO_CONFIG, &fifo_reg, 1);
 
-//VER 3 này bo di bytes cuoi de phu hop voi kich thuoc buffer 32 bytes tren Arduino
-int16_t max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples){
+	uart_printf("[DEBUG] MODE=0x%02X SPO2=0x%02X IRLED=0x%02X REDLED=0x%02X FIFO=0x%02X\r\n",
+							mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg);
+}
+
+int16_t __attribute__((unused))max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples){
 	uint8_t wr_ptr = 0, rd_ptr = 0;
 	max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);
 	max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1);
@@ -390,7 +483,7 @@ int16_t max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16
 	return num_samples;
 }
 
-int max30102_sample_available(max30102_record *record){
+int __attribute__((unused))max30102_ver3_sample_available(max30102_record *record){
 	int numberOfSamples = record->head - record->tail;
 	if(numberOfSamples < 0){
 		numberOfSamples += MAX30102_STORAGE_SIZE;
@@ -399,25 +492,19 @@ int max30102_sample_available(max30102_record *record){
 }
 
 
-void max30102_next_sample(max30102_record *record){
-	if(max30102_sample_available(record)){
+void __attribute__((unused))max30102_ver3_next_sample(max30102_record *record){
+	if(max30102_ver3_sample_available(record)){
 		record->tail++;
 		record->tail %= MAX30102_STORAGE_SIZE;
 	}
 }
 
-uint32_t Max30102_getFIFORed(max30102_record *record){
+uint32_t __attribute__((unused))max30102_ver3_getFIFORed(max30102_record *record){
 	return (record->red_sample[record->tail]);
 }
 
-uint32_t Max30102_getFIFOIR(max30102_record *record){
+uint32_t __attribute__((unused))Max30102_ver3_getFIFOIR(max30102_record *record){
 	return (record->ir_sample[record->tail]);
-}
-
-void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac)
-{
-    max30102_read(obj, MAX30102_DIE_TINT, (uint8_t *)temp_int, 1);
-    max30102_read(obj, MAX30102_DIE_TFRAC, temp_frac, 1);
 }
 
 #ifdef __cplusplus

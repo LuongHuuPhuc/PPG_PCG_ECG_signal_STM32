@@ -20,7 +20,7 @@ extern "C" {
 #include "Sensor_config.h"
 
 //Snapshot cho dong bo
-typedef struct {
+typedef struct SNAPSHOT_SYNC_t {
 	TickType_t timestamp;
 	uint32_t sample_id;
 } snapshot_sync_t;

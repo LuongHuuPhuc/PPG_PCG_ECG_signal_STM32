@@ -199,6 +199,9 @@ void max30102_set_led_mode(max30102_t *obj, max30102_record *record, max30102_mo
  *
  * @param obj Pointer to max30102_t object instance.
  * @param sr Sampling rate enum (max30102_spo2_st_t).
+ *
+ * @note Sample Rate va Pulse Width co lien quan voi nhau o cho SR dat mot gioi han tren cho PW
+ * \note Neu user chon SR qua cao so voi PW da chon thi SR se bi gioi han boi thanh ghi
  */
 void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr);
 
@@ -219,20 +222,20 @@ void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw);
 void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc);
 
 /**
- * @brief Set LED current.
+ * @brief Set IR LED current.
  *
  * @param obj Pointer to max30102_t object instance.
  * @param ma LED current float (0 < ma < 51.0).
  */
-void max30102_set_led_current_1(max30102_t *obj, float ma);
+void max30102_set_led_current_ir(max30102_t *obj, float ma);
 
 /**
- * @brief Set LED current.
+ * @brief Set RED LED current.
  *
  * @param obj Pointer to max30102_t object instance.
  * @param ma LED current float (0 < ma < 51.0).
  */
-void max30102_set_led_current_2(max30102_t *obj, float ma);
+void max30102_set_led_current_red(max30102_t *obj, float ma);
 
 /**
  * @brief Set slot mode when in multi-LED mode.
@@ -253,12 +256,24 @@ void max30102_set_multi_led_slot_1_2(max30102_t *obj, max30102_multi_led_ctrl_t 
 void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t slot3, max30102_multi_led_ctrl_t slot4);
 
 /**
- * @brief
+ * @brief Read die temperature.
  *
  * @param obj Pointer to max30102_t object instance.
- * @param smp_ave
- * @param roll_over_en Roll over enabled(1) or disabled(0).
- * @param fifo_a_full Number of empty samples when A_FULL interrupt issued (0 < fifo_a_full < 15).
+ * @param temp_int Pointer to store the integer part of temperature. Stored in 2's complement format.
+ * @param temp_frac Pointer to store the fractional part of temperature. Increments of 0.0625 deg C.
+ */
+void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
+
+/**
+ * @brief Ham cau hinh thanh ghi FIFO
+ *
+ * @param obj Con tro toi doi tuong cua struct max30102_t
+ * @param smp_ave So mau trung binh sau do moi sinh interrupt de push vao FIFO
+ * @param roll_over_en Cho phep ghi de FIFO neu FIFO day (0 - enable, 1 - disable)
+ * @param fifo_a_full So sample empty trong FIFO truoc khi interrupt sinh ra de doc du lieu
+ *
+ * Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
+ *
  */
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full);
 
@@ -273,55 +288,84 @@ HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
  * @brief Read FIFO content and store to buffer in max30102_t object instance.
  *
  * @param obj Pointer to max30102_t object instance.
+ * @retval In ra data luon, khong tra ve gi ca
  */
-void max30102_read_fifo_ver1(max30102_t *obj); //In ra data luon, khong tra ve gi ca
+void max30102_read_fifo_ver1(max30102_t *obj);
 
 /**
- * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc
+ * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.2)
  * @retval `num_samples` - So mau doc duoc
+ *
+ * @warning Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read)
+ * Roi moi vao vong for
  *
  * @param obj - Con tro tro toi doi tuong max30102_t
  * @param ir_buf - Buffer chua du lieu cua IR lay tu fifo
  * @param red_buf - Buffer chua du lieu cua RED lay tu fifo
- * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO)
+ * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
+ *
+ * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
+ * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
+ * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
  */
-uint16_t max30102_read_fifo_ver2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
+uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf,
+									uint32_t *red_buf, uint16_t max_samples);
 
 /**
- * @brief
+ * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.1)
+ * @retval `num_samples` - So mau doc duoc
+ *
+ * @warning Khong on dinh (van mat mau)
+ * Doc 1 sample (6 bytes) moi vong for
+ *
+ * @param obj - Con tro tro toi doi tuong max30102_t
+ * @param ir_buf - Buffer chua du lieu cua IR lay tu fifo
+ * @param red_buf - Buffer chua du lieu cua RED lay tu fifo
+ * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
+ *
+ * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
+ * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
+ * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
  */
-int16_t max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples);
+uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record,
+														  uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
 
 /**
- * @brief
+ * @brief Ham kiem tra trang thai thanh ghi (DEBUG)
+ *
+ * @note In ra gia tri Hex cua cac thanh ghi:
+ * MODE_CONFIG (0x09) - SPO2_CONFIG (0x0A) - LED1 (0x0C) - LED2 (0x0D) - FIFO_CONFIG(0x08)
+ * Giup xac dinh cau hinh hien tai
  */
-uint32_t __attribute__((unused))Max30102_getFIFORed(max30102_record *record);
+void max30102_config_register_status_verbose(void);
 
 /**
- * @brief
+ * @brief Ham doc gia tri FIFO troi tra ve so mau da doc
+ * @note Code toi uu byte cho dong vi dieu khien co thanh ghi han che nhu Arduino
  */
-uint32_t __attribute__((unused))Max30102_getFIFOIR(max30102_record *record);
+int16_t __attribute__((unused))max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples);
+
+/**
+ * @brief Ham doc data RED tu FIFO
+ */
+uint32_t __attribute__((unused))max30102_ver3_getFIFORed(max30102_record *record);
+
+/**
+ * @brief Ham doc data IR tu FIFO
+ */
+uint32_t __attribute__((unused))max30102_ver3_getFIFOIR(max30102_record *record);
 
 /**
  * @brief Ham kiem tra xem co bao nhieu sample dang ton tai
-
+ *
  */
-int max30102_sample_available(max30102_record *record);
+int __attribute__((unused))max30102_ver3_sample_available(max30102_record *record);
 
 /**
  * @brief Ham doc tiep samples tu tail cua FIFO
  *
  */
-void max30102_next_sample(max30102_record *record);
-
-/**
- * @brief Read die temperature.
- *
- * @param obj Pointer to max30102_t object instance.
- * @param temp_int Pointer to store the integer part of temperature. Stored in 2's complement format.
- * @param temp_frac Pointer to store the fractional part of temperature. Increments of 0.0625 deg C.
- */
-void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
+void __attribute__((unused))max30102_ver3_next_sample(max30102_record *record);
 
 #endif
 

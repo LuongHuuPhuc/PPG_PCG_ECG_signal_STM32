@@ -60,6 +60,11 @@ extern volatile bool __attribute__((unused))mic_pong_ready;
 extern volatile int16_t __attribute__((unused))mic_ping[I2S_SAMPLE_COUNT];
 extern volatile int16_t __attribute__((unused))mic_pong[I2S_SAMPLE_COUNT];
 
+// Forward Declaration (Khai bao tam thoi de compiler biet kieu du lieu nay se duoc dinh nghia o noi khac sau nay)
+// Tranh include cheo nhau (A can B, B can A)
+typedef struct SENSOR_BLOCK_t sensor_block_t; // From Sensor_config.h
+typedef struct SNAPSHOT_SYNC_t snapshot_sync_t; // From
+
 //==== FUNCTION PROTOTYPE ====
 
 /**
@@ -102,7 +107,7 @@ void __attribute__((unused))Inmp441_task_ver2(void const *pvParameter);
  * @note Ham con cua `Inmp441_task_ver2`
  * \note - Sau khi DMA ghi du `I2S_SAMPLE_COUNT = 256` mau thi downsample ve 32 mau + FIR Filter
  */
-void __attribute__((unused))Inmp441_process_full_buffer(void);
+void Inmp441_process_full_buffer(sensor_block_t *block, snapshot_sync_t *snap);
 
 /**
  * @brief Ham thuc thi va xu ly `ver3`

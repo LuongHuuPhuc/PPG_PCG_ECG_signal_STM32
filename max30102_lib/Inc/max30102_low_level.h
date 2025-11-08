@@ -33,16 +33,16 @@ extern "C" {
 #define MAX30102_INTERRUPT_ALC_OVF 			5
 #define MAX30102_INTERRUPT_DIE_TEMP_RDY 	1
 
-#define MAX30102_FIFO_WR_PTR 				0x04
+#define MAX30102_FIFO_WR_PTR 				0x04 // 5-bits [4:0] trong FIFO Write Pointer
 #define MAX30102_OVF_COUNTER 				0x05
-#define MAX30102_FIFO_RD_PTR 				0x06
+#define MAX30102_FIFO_RD_PTR 				0x06 // 5-bits [4:0] trong FIFO Read Pointer
 
 #define MAX30102_FIFO_DATA 					0x07
 
 #define MAX30102_FIFO_CONFIG 				0x08
-#define MAX30102_FIFO_CONFIG_SMP_AVE		5
-#define MAX30102_FIFO_CONFIG_ROLL_OVER_EN 	4
-#define MAX30102_FIFO_CONFIG_FIFO_A_FULL 	0
+#define MAX30102_FIFO_CONFIG_SMP_AVE		5 // 3-bits bat dau tu bit5 [7:5]
+#define MAX30102_FIFO_CONFIG_ROLL_OVER_EN 	4 // 1-bit: bit4
+#define MAX30102_FIFO_CONFIG_FIFO_A_FULL 	0 // 4-bits bat dau tu bit0 [3:0]
 
 #define MAX30102_MODE_CONFIG 				0x09
 #define MAX30102_MODE_SHDN 					7
@@ -50,12 +50,12 @@ extern "C" {
 #define MAX30102_MODE_MODE 					0
 
 #define MAX30102_SPO2_CONFIG 				0x0a
-#define MAX30102_SPO2_ADC_RGE 				5
-#define MAX30102_SPO2_SR 					2
-#define MAX30102_SPO2_LEW_PW 				0
+#define MAX30102_SPO2_ADC_RGE 				5 // Bat dau bang bit5 -> bit7 [7:5]
+#define MAX30102_SPO2_SR 					2 // Bat dau bang bit2 -> bit4 [4:2]
+#define MAX30102_SPO2_LEW_PW 				0 // Bat dau bang bit0 -> bit1 [1:0]
 
-#define MAX30102_LED_IR_PA1 				0x0c
-#define MAX30102_LED_RED_PA2 				0x0d
+#define MAX30102_LED_IR_PA1 				0x0c // [7:0]
+#define MAX30102_LED_RED_PA2 				0x0d // [7:0]
 
 #define MAX30102_MULTI_LED_CTRL_1 			0x11
 #define MAX30102_MULTI_LED_CTRL_SLOT2 		4

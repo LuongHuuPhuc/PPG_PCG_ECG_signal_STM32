@@ -21,6 +21,8 @@ TaskHandle_t logger_task = NULL;
 QueueHandle_t logger_queue = NULL;
 osThreadId logger_taskId = NULL;
 
+/*-----------------------------------------------------------*/
+
 void i2c_scanner(I2C_HandleTypeDef *hi2c){
 	uart_printf("Starting I2C Scanner...\r\n");
 
@@ -34,7 +36,7 @@ void i2c_scanner(I2C_HandleTypeDef *hi2c){
 	}
 	uart_printf("I2C Scanner complete !\r\n");
 }
-
+/*-----------------------------------------------------------*/
 
 __attribute__((weak)) void uart_printf(const char *fmt,...){
 	va_list args;
@@ -43,9 +45,9 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 	va_end(args);
 	HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, strlen(uart_buf), HAL_MAX_DELAY);
 }
+/*-----------------------------------------------------------*/
 
-
-void isQueueFree(const QueueHandle_t queue, const char *name){
+void __attribute__((unused))isQueueFree(const QueueHandle_t queue, const char *name){
 	UBaseType_t used = uxQueueMessagesWaiting(queue);
 	UBaseType_t free = uxQueueSpacesAvailable(queue);
 
@@ -56,6 +58,7 @@ void isQueueFree(const QueueHandle_t queue, const char *name){
 	}
 
 }
+/*-----------------------------------------------------------*/
 
 HAL_StatusTypeDef Logger_queue_init(void){
 	logger_queue = xQueueCreate(LOGGER_QUEUE_LENGTH, sizeof(sensor_block_t));
@@ -66,6 +69,7 @@ HAL_StatusTypeDef Logger_queue_init(void){
 	}
 	return HAL_OK;
 }
+/*-----------------------------------------------------------*/
 
 static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_block, sensor_block_t *pcg_block){
 	TickType_t now = xTaskGetTickCount(); //Lay tick de so sanh do tre voi cac task khac
@@ -80,7 +84,7 @@ static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_bloc
 			(int32_t)(now - pcg_block->timestamp));
 
 }
-
+/*-----------------------------------------------------------*/
 
 //Reset trang thai flag ready cua sensor
 static inline void ResetSensor_flag(sensor_check_t *check){
@@ -88,7 +92,7 @@ static inline void ResetSensor_flag(sensor_check_t *check){
 	check->mic_ready = false;
 	check->max_ready = false;
 }
-
+/*-----------------------------------------------------------*/
 
 void Logger_task_block(void const *pvParameter){
 	// Do PCG - 8000Hz (32ms thu dc 256 samples), con MAX va ADC la 1000Hz (32ms thu duoc 32 sample)
@@ -178,8 +182,7 @@ void Logger_task_block(void const *pvParameter){
 		}
 	}
 }
-
-
+/*-----------------------------------------------------------*/
 
 void Logger_one_task(void const *pvParameter){
 	UNUSED(pvParameter);
@@ -231,7 +234,7 @@ void Logger_one_task(void const *pvParameter){
 	}
 
 }
-
+/*-----------------------------------------------------------*/
 
 #ifdef __cplusplus
 }

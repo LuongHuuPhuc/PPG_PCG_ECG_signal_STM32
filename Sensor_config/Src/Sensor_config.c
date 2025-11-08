@@ -21,6 +21,7 @@ volatile uint32_t global_sample_id = 0;
 volatile TickType_t global_timestamp = 0;
 
 // ==== FUNCTION DEFINITIONS ====
+/*-----------------------------------------------------------*/
 
 void SensorConfig_Init(void){
 	SERROR_CHECK(Ad8232_init_ver1(&hadc1));
@@ -39,13 +40,14 @@ void SensorConfig_Init(void){
 
 	HeapCheck(); //Check sau khi tao semaphore va queue
 }
+/*-----------------------------------------------------------*/
 
 // Kiem tra so luong bo nho stack con lai
 void __attribute__((unused))StackCheck(void){
 	UBaseType_t stackleft = uxTaskGetStackHighWaterMark(NULL);
 	uart_printf("[Stack] Stack left: %lu\r\n", (unsigned long)stackleft);
 }
-
+/*-----------------------------------------------------------*/
 
 // Kiem tra dung luong bo nho heap con lai
 void __attribute__((unused))HeapCheck(void){
@@ -56,6 +58,7 @@ void __attribute__((unused))HeapCheck(void){
 				(unsigned int)heap_free,
 				(unsigned int)heap_min_ever);
 }
+/*-----------------------------------------------------------*/
 
 #ifdef __cplusplus
 }
