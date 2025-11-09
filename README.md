@@ -33,7 +33,7 @@
 - **DMA (Direct Memory Access)** & **Interrupts (Ngắt)**: Cơ chế xử lý và truy cập dữ liệu 
 - **Semaphore**, **Mutex**: Quản lý tài nguyên và động bộ thread trong RTOS
 - **Queue**: Hàng đợi - dùng để kiểm soát data đọc được để tránh bị xung đột hay data overrwritten trong RTOS 
-
+- **Timer**: Bộ định thời - dùng để trigger báo hiệu cho các task thực hiện nhiệm vụ (cấu hình period 1000Hz)
 ## Software
 - **Application**: STM32CubeMX, STM32CubeProgrammer, CoolTerm64 (hiện tại)
 - **Framework**: CMSIS-OS, STM32Cube HAL/LL, FreeRTOS
