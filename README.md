@@ -25,7 +25,7 @@
     - Module giao tiếp UART để xuất dữ liệu từ MCU ra monitor
     - Tốc độ Baud: 230400 baud
    
-- Debugger: **ST-LINK V2**
+- **Debugger**: **ST-LINK V2**
 
 - **Power Supply**: Module Regulator Linear Voltage ASM1117
 
