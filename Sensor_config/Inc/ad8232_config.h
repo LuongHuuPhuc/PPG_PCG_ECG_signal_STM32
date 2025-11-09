@@ -42,27 +42,33 @@ extern SemaphoreHandle_t sem_adc;
  * @brief Ham khoi tao cam bien AD8232
  *
  * @param adc Con tro den struct inh nghia cau hinh ADC
+ *
+ * @note Su dung co che Semaphore Binary de quan ly tai nguyen chung giua cac cam bien
+ * \note Dong bo giua cac task khac nhau khi co nhieu thread truy cap chung tai nguyen (vd Memory)
+ * \note Semaphore khac voi Mutex o co che Lock/Unlock va Priority
  */
 HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc);
 
 /**
  * @brief Task doc gia tri ADC `ver1`
  *
- * @note Task khong su dung DMA
+ * @note Task khong su dung DMA. Che do Polling for Conversion ADC
  */
 void __attribute__((unused))Ad8232_task_ver1(void const *pvParameter);
 
 /**
- * @brief Task doc gia tri ADC `ver3`
+ * @brief Task doc gia tri ADC `ver3` (Cirular Mode)
  *
- * @note Task nay su dung DMA + Conversion callback + Semaphore quan ly tai nguyen (co tre phan me (?))
+ * @note - Task nay su dung DMA + Conversion callback
+ * \note - Su dung Semaphore quan ly tai nguyen (co tre phan me (?))
  */
 void Ad8232_task_ver3(void const *pvParameter);
 
 /**
  * @brief Task doc gia tri ADC `ver2`
  *
- * @note Task su dung DMA + conversion callback (trigger timer truc tiep) - Khong dung semaphore
+ * @note - Task su dung DMA + conversion callback (trigger timer truc tiep)
+ * \note - Khong dung Semaphore
  */
 void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter);
 

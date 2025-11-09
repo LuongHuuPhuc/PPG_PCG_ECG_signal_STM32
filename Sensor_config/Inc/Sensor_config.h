@@ -110,6 +110,8 @@ extern volatile TickType_t global_timestamp;
 
 /**
  * @brief Ham khoi tao cam bien (Semaphore, Queue,...)
+ *
+ * @note Khoi tao MAX30102 - AD8232 - INMP441 - Logger UART
  */
 void SensorConfig_Init(void);
 

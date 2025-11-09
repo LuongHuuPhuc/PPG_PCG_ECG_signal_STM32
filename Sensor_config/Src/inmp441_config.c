@@ -61,7 +61,6 @@ static inline int32_t __attribute__((unused))Inmp441_rebuild_sample(uint16_t low
 }
 /*-----------------------------------------------------------*/
 
-
 //==== VERSION 1: NORMAL BUFFER ====
 
 void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
@@ -75,7 +74,7 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 
 	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz)
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
-		uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+		uart_printf("[INMP441] HAL_I2S_Receive_DMA begin failed !\r\n");
 	}
 
 	while(1){
@@ -103,14 +102,14 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 
 				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
 				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
-					uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+					uart_printf("[INMP441] HAL_I2S_Receive_DMA end failed !\r\n");
 				}
 
 			}else {
-				uart_printf("[MIC] Timeout waiting for DMA done !\r\n");
+				uart_printf("[INMP441] Timeout waiting for DMA done !\r\n");
 			}
 		}else{
-			uart_printf("[MIC] Can not take semaphore !\r\n");
+			uart_printf("[INMP441] Can not take semaphore !\r\n");
 		}
 	}
 }
@@ -142,7 +141,7 @@ void Inmp441_task_ver2(void const *pvParameter){
 	//Dung buffer 32-bit, cast ve 16-bit theo HAL -> Buffer 32-bit = 2 lan doc 16-bit (frame low + frame high)
 
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){
-		uart_printf("[ERROR] HAL_I2S_Receive_DMA failed !\r\n");
+		uart_printf("[INMP441] HAL_I2S_Receive_DMA failed !\r\n");
 	}
 
 	while(1){
@@ -151,10 +150,10 @@ void Inmp441_task_ver2(void const *pvParameter){
 				mic_full_ready = false;
 				Inmp441_process_full_buffer(&block, &snap);
 			}else{
-				uart_printf("[MIC] DMA is not ready !\r\n");
+				uart_printf("[INMP441] DMA is not ready !\r\n");
 			}
 		}else{
-			uart_printf("[MIC] Can not take semaphore !\r\n");
+			uart_printf("[INMP441] Can not take semaphore !\r\n");
 		}
 	}
 }
@@ -193,7 +192,7 @@ void Inmp441_process_full_buffer(sensor_block_t *block, snapshot_sync_t *snap){
 void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 samples) -> Ham nay se duoc goi (Circular)
 	if(hi2s->Instance == SPI2){
 		if(mic_full_ready){ //Neu data cu chua xu ly xong ma DMA da hoan tat (neu task xu ly cham)
-			uart_printf("[WARN] mic_full_ready OVERWRITTEN ! Previous data not processed!\r\n");
+			uart_printf("[INMP441] mic_full_ready OVERWRITTEN ! Previous data not processed!\r\n");
 		}
 		mic_full_ready = true; //Danh dau buffer DMA da san sang -> Mo flag cho task xu ly DMA
 	}
@@ -214,7 +213,7 @@ void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
 
 	//Chuc nang double buffer + DMA (giong HAL_I2S_Receive_DMA)
 	if(Inmp441_init_ver2(&hi2s2, (uint16_t*)mic_ping, (uint16_t*)mic_pong, I2S_SAMPLE_COUNT) != HAL_OK){
-		uart_printf("[ERROR] Inmp441_init_dma_doubleBuffer failed ! \r\n");
+		uart_printf("[INMP441] Inmp441_init_dma_doubleBuffer failed ! \r\n");
 	}
 
 	while(1){
@@ -239,7 +238,7 @@ void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
 				mic_pong_ready = false;
 				src = mic_pong;
 			}else{
-				uart_printf("[MIC] Ping-Pong buffer not ready ! \r\n");
+				uart_printf("[INMP441] Ping-Pong buffer not ready ! \r\n");
 				continue;
 			}
 
@@ -263,7 +262,7 @@ void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
 			QUEUE_SEND_FROM_TASK(&block);
 
 		}else{
-			uart_printf("[MIC] Can not take Semaphore !\r\n");
+			uart_printf("[INMP441] Can not take Semaphore !\r\n");
 			continue;
 		}
 	}
@@ -273,7 +272,7 @@ void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
 //Callback khi DMA buffer ping full
 static void __attribute__((unused))Inmp441_DMA_M0CpltCallback(DMA_HandleTypeDef *hdma){
 	if(mic_ping_ready){
-		uart_printf("[WARN] mic_ping_ready OVERWRITTEN ! \r\n");
+		uart_printf("[INMP441] mic_ping_ready OVERWRITTEN ! \r\n");
 	}
 	mic_ping_ready = true;
 }
@@ -282,7 +281,7 @@ static void __attribute__((unused))Inmp441_DMA_M0CpltCallback(DMA_HandleTypeDef 
 //Callback khi DMA buffer pong full
 static void __attribute__((unused))Inmp441_DMA_M1CpltCallback(DMA_HandleTypeDef *hdma){
 	if(mic_pong_ready){
-		uart_printf("[WARN] mic_pong_ready OVERWRITTEN ! \r\n");
+		uart_printf("[INMP441] mic_pong_ready OVERWRITTEN ! \r\n");
 	}
 	mic_pong_ready = true;
 }
@@ -290,7 +289,7 @@ static void __attribute__((unused))Inmp441_DMA_M1CpltCallback(DMA_HandleTypeDef 
 
 //Callback khi co loi DMA
 static void __attribute__((unused))Inmp441_DMA_ErrorCallback(DMA_HandleTypeDef *hdma){
-	uart_printf("[MIC] DMA callback error !\r\n");
+	uart_printf("[INMP441] DMA callback error !\r\n");
 }
 /*-----------------------------------------------------------*/
 

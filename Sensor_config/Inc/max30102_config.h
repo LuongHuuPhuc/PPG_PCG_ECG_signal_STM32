@@ -76,7 +76,10 @@ void __attribute__((unused))Max30102_task_ver1(void const *pvParameter);
  *
  * @param i2c Con tro den struct dinh nghia cau hinh I2C
  *
- * @note Ham khoi tao khong su dung ngat (interrupt)
+ * @note Ham khoi tao khong su dung ngat ngoai (No external interrupt)
+ * @note Su dung co che Semaphore Binary de quan ly tai nguyen chung giua cac cam bien
+ * \note Dong bo giua cac task khac nhau khi co nhieu thread truy cap chung tai nguyen (vd Memory)
+ * \note Semaphore khac voi Mutex o co che Lock/Unlock va Priority
  */
 HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
 

@@ -58,6 +58,7 @@ DMA_HandleTypeDef hdma_spi2_rx;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
@@ -153,13 +154,19 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 
   /* ----CMSIS-OS API---- */
+
+  // Trigger ADC truc tiep tu TIMER nen priority khong can cao qua
   osThreadDef(ad8232Task, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
   ad8232_taskId = osThreadCreate(osThread(ad8232Task), NULL);
+
 //  osThreadDef(inmp441Task, Inmp441_task_ver2, osPriorityNormal, 0, 1024 * 2);
 //  inmp441_taskId = osThreadCreate(osThread(inmp441Task), NULL);
+
   osThreadDef(max30102Task, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
   max30102_taskId = osThreadCreate(osThread(max30102Task), NULL);
-  osThreadDef(loggerTask, Logger_one_task, osPriorityNormal, 0, 1024 * 2);
+
+  // Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
+  osThreadDef(loggerTask, Logger_two_task, osPriorityAboveNormal, 0, 1024 * 3);
   logger_taskId = osThreadCreate(osThread(loggerTask), NULL);
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
@@ -455,6 +462,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);

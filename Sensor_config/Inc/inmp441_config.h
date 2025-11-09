@@ -71,8 +71,19 @@ typedef struct SNAPSHOT_SYNC_t snapshot_sync_t; // From
  * @brief Ham khoi tao giao thuc I2S cho INMP441
  *
  * @param i2s Con tro de tro den struct cau hinh protocol I2S
+ *
+ * @note Su dung co che Semaphore Binary de quan ly tai nguyen chung giua cac cam bien
+ * \note Dong bo giua cac task khac nhau khi co nhieu thread truy cap chung tai nguyen (vd Memory)
+ * \note Semaphore khac voi Mutex o co che Lock/Unlock va Priority
  */
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2s);
+
+/**
+ * @brief Ham thuc thi va xu ly `ver1`
+ *
+ * @note Task nay xu ly du lieu su dung DMA (Mode: Normal)
+ */
+void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham khoi tao giao thuc I2S voi double DMA buffer ping-pong
@@ -83,13 +94,6 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2
  * @param Size Kich thuoc so mau cua moi buffer
  */
 HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver2(I2S_HandleTypeDef *hi2s, uint16_t *ping, uint16_t *pong, uint16_t Size);
-
-/**
- * @brief Ham thuc thi va xu ly `ver1`
- *
- * @note Task nay xu ly du lieu su dung DMA (Mode: Normal)
- */
-void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham thuc thi va xu ly `ver2`

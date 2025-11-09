@@ -1,4 +1,4 @@
-/*
+	/*
  * max30102_config.c
  *
  *  Created on: Oct 15, 2025
@@ -29,8 +29,8 @@ uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 
 //====== FUCNTION DEFINITION ======
 
-// === VERSION 1 ===
 /*-----------------------------------------------------------*/
+// === VERSION 1 ===
 
 HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i2c){
 	uart_printf("[MAX30102] initializing...!");
@@ -46,7 +46,8 @@ HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i
 	max30102_init(&max30102_obj, i2c);
 
 	// Scan dia chi I2C co tren bus
-	i2c_scanner(&hi2c1);
+	Logger_i2c_scanner(&hi2c1);
+
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
 		vTaskDelay(pdMS_TO_TICKS(200));
@@ -113,6 +114,8 @@ uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj){
 /*-----------------------------------------------------------*/
 
 void __attribute__((unused))Max30102_task_ver1(void const *pvParameter){
+	(void)(pvParameter);
+
 	sensor_data_t __attribute__((unused))sensor_data;
 	sensor_block_t block;
 	uint8_t num_samples = 0;
@@ -169,7 +172,8 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 	max30102_init(&max30102_obj, i2c);
 
 	// Scan dia chi I2C co tren bus
-	i2c_scanner(&hi2c1);
+	Logger_i2c_scanner(&hi2c1);
+
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
 		vTaskDelay(pdMS_TO_TICKS(200));
@@ -202,6 +206,8 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 /*-----------------------------------------------------------*/
 
 void Max30102_task_ver2(void const *pvParameter){
+	(void)(pvParameter);
+
 	sensor_block_t block;
 	snapshot_sync_t snap;
 	uart_printf("Max30102 task started !\r\n");
@@ -232,10 +238,10 @@ void Max30102_task_ver2(void const *pvParameter){
 				taskEXIT_CRITICAL();
 
 			}else{ // Neu khong du 32 samples 1 lan
-				uart_printf("[MAX] Warining: FIFO is not enoungh 32 samples !\r\n");
+				uart_printf("[MAX30102] Warining: FIFO is not enoungh 32 samples !\r\n");
 			}
 		}else{
-			uart_printf("[MAX] Can not take semaphore !\r\n");
+			uart_printf("[MAX30102] Can not take semaphore !\r\n");
 		}
 	}
 }

@@ -33,12 +33,12 @@ void SensorConfig_Init(void){
 	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> MAX30102 init OK !\r\n");
 
-	StackCheck();
-
 	SERROR_CHECK(Logger_queue_init());
 	uart_printf(">> LOGGER init OK !\r\n");
 
-	HeapCheck(); //Check sau khi tao semaphore va queue
+	//Check sau khi tao semaphore va queue
+	HeapCheck();
+	StackCheck();
 }
 /*-----------------------------------------------------------*/
 
@@ -47,6 +47,13 @@ void __attribute__((unused))StackCheck(void){
 	UBaseType_t stackleft = uxTaskGetStackHighWaterMark(NULL);
 	uart_printf("[Stack] Stack left: %lu\r\n", (unsigned long)stackleft);
 }
+
+// Them ham callback kiem tra StackOverFlow (ham weak nen co the overwritten)
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName){
+	uart_printf("Stack overflow in %s!\r\n", pcTaskName);
+	Error_Handler();
+}
+
 /*-----------------------------------------------------------*/
 
 // Kiem tra dung luong bo nho heap con lai
