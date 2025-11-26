@@ -1,5 +1,5 @@
 # More about INMP441 sensor and how to use it
-- Datasheet: ![https://www.alldatasheet.com/view.jsp?Searchword=Inmp441%20datasheet&gad_source=1&gad_campaignid=1437346752&gclid=Cj0KCQiA5uDIBhDAARIsAOxj0CFfq9F_HSslDNU-THqFUq_C06z7uZzPhY20R8oG9GdGnRkCX6TjEKwaAhi8EALw_wcB](INMP441 datasheet)
+- Datasheet: ![INMP441 datasheet](https://www.alldatasheet.com/view.jsp?Searchword=Inmp441%20datasheet&gad_source=1&gad_campaignid=1437346752&gclid=Cj0KCQiA5uDIBhDAARIsAOxj0CFfq9F_HSslDNU-THqFUq_C06z7uZzPhY20R8oG9GdGnRkCX6TjEKwaAhi8EALw_wcB)
 
 ## Features
 - Là cảm biến MEMS (Micro-Electro-Mechanical Systems - Hệ thống vi cơ điện tử) microphone hiệu năng cao, năng lượng thấp, đầu ra số
@@ -9,13 +9,13 @@
 - Flat Frequency Response (đáp ứng tần số phẳng) từ 60Hz -> 15kHz (khả năng tái tạo âm thanh môi trường lại một cách trung thực mà không làm thay đổi âm sắc gốc). Đây là giới hạn vật lý của màng micro + cấu trúc MEMS mà mic có thể thu tốt một cách tự nhiên mà không bị méo hay biến dạng quá nhiều
 	> - Frequency Response (đáp ứng tần số) là phép đo định lượng của phổ tần số đầu ra của một hệ thống hoặc thiết bị khi phản ứng với một kích thích tần số từ môi trường. Có thể hiểu đơn giản là việc thiết bị hoặc hệ thống phản ứng thế nào khi ta đưa vào các tín hiệu có tần số khác nhau (có bị méo, mạnh yếu ra sao)
 
-![../Images/FreqResp.png](Alt text)
+![Alt text](../Images/FreqResp.png)
 
 - Dòng tiêu thụ thấp (tối đa 1.4mA với chế độ *Normal Operation*)
 - Áp lực âm thanh có thể chịu đựng: 160 dB
 - PSR (Power Supply Rejection - Loại bỏ nhiễu nguồn) lên đến -75 dBFS
 
-![../Images/PSR.png](Alt text)
+![Alt text](../Images/PSR.png)
 
 - Hỗ trợ bộ lọc số (Digital Signal Processor) phần cứng bên trong cảm biến. Cụ thể:
 	- Group Delay (Độ trễ nhóm): 17.2 / fs (s) - Đây là đỗ trễ của tín hiệu khi đi qua bộ lọc số tích hợp bên trong mic (DSP filter). Đây là độ trễ nội bộ của mic, không phải của MCU hay DMA. Nó rất quan trọng khi muốn đồng bộ các cảm biến với nhau. Ví dụ với 2 tần số lấy mẫu:
@@ -46,7 +46,7 @@
 		- VOH ≥ 0.9 x Vdd -> Khoảng 2.97V
 	- Tức là chân SD sẽ xuất chuẩn mức CMOS
 	
-![../Images/I2S_io_char.png]()
+![Alt text](../Images/I2S_io_char.png)
 
 ## SERIAL DATA PORT TIMING SPECIFICATIONS
 - Là thông số thời gian giao tiếp I2S. Thể hiện thời gian giữ mức cao - thấp của xung clock được cấp cho mic. Cụ thể
@@ -56,7 +56,7 @@
 	- Chu kỳ clock SCK (thời gian hoàn thành 1 chu kỳ xung) t_SCP ~ 312ns. Đây là tần số bit clock mà mic có thể xử lý
 	- Tần số cấp cho chân SCK hoạt động nằm trong phạm vị 0.5MHz -> 3.2MHz (MCU làm master clock để tạo xung trong dải này cho cảm biến)
 	- t_Wss - WS setup: thời gian chân WS phải ổn định **trước** cạnh đầu của SCK
-![../Images/I2S_timing.png]()
+![Alt text](../Images/I2S_timing.png)
 
 
 
