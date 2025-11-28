@@ -4,9 +4,9 @@
 ## FEATURES
 - Là cảm biến MEMS (Micro-Electro-Mechanical Systems - Hệ thống vi cơ điện tử) microphone hiệu năng cao, năng lượng thấp, đầu ra số
 - Chuẩn giao thức I2S với độ chính xác dữ liệu 24-bit. I2S cho phép INMP441 kết nối trực tiếp với bộ xử lý số như DSPs hoặc MCU mà không cần đi qua bộ **Codec**
-- SNR (Signal-to-Noise) cao (62 dBA
+- SNR (Signal-to-Noise) cao (62 dBA)
 - Độ nhạy môi trường -26 dBFS
-- Flat Frequency Response (đáp ứng tần số phẳng) từ 60Hz -> 15kHz (khả năng tái tạo âm thanh môi trường lại một cách trung thực mà không làm thay đổi âm sắc gốc). Đây là giới hạn vật lý của màng micro + cấu trúc MEMS mà mic có thể thu tốt một cách tự nhiên mà không bị méo hay biến dạng quá nhiều
+- **Flat Frequency Response (đáp ứng tần số phẳng)** từ 60Hz -> 15kHz (khả năng tái tạo âm thanh môi trường lại một cách trung thực mà không làm thay đổi âm sắc gốc). Đây là giới hạn vật lý của màng micro + cấu trúc MEMS mà mic có thể thu tốt một cách tự nhiên mà không bị méo hay biến dạng quá nhiều
 	> - Frequency Response (đáp ứng tần số) là phép đo định lượng của phổ tần số đầu ra của một hệ thống hoặc thiết bị khi phản ứng với một kích thích tần số từ môi trường. Có thể hiểu đơn giản là việc thiết bị hoặc hệ thống phản ứng thế nào khi ta đưa vào các tín hiệu có tần số khác nhau (có bị méo, mạnh yếu ra sao)
 
 ![Alt text](../Images/FreqResp.png)
@@ -18,12 +18,12 @@
 ![Alt text](../Images/PSR.png)
 
 - Hỗ trợ bộ lọc số (Digital Signal Processor) phần cứng bên trong cảm biến. Cụ thể:
-	- Group Delay (Độ trễ nhóm): 17.2 / fs (s) - Đây là đỗ trễ của tín hiệu khi đi qua bộ lọc số tích hợp bên trong mic (DSP filter). Đây là độ trễ nội bộ của mic, không phải của MCU hay DMA. Nó rất quan trọng khi muốn đồng bộ các cảm biến với nhau. Ví dụ với 2 tần số lấy mẫu:
+	- **Group Delay (Độ trễ nhóm)**: *17.2 / fs (s)* - Đây là đỗ trễ của tín hiệu khi đi qua bộ lọc số tích hợp bên trong mic (DSP filter). Đây là độ trễ nội bộ của mic, không phải của MCU hay DMA. Nó rất quan trọng khi muốn đồng bộ các cảm biến với nhau. Ví dụ với 2 tần số lấy mẫu:
 		- fs = 48 kHz -> Group delay ~ 0.36ms (36us)
 		- fs = 16 kHz -> Group delay = 1.078ms (1078us)
-	- Pass band Ripple (Độ gợn trong dải thông): ±0.04 dB. Bộ lọc bên trong mic cho tín hiệu trong dải tần số sử dụng méo rất nhỏ, gần như không đáng kể. Tín hiệu được giữ nguyên biên độ gần như hoàn toàn
-	- Stop band Attenuation (Độ suy giảm dải dừng): 60 dB. Bộ lọc sẽ giảm ít nhất 60 dB ở các tần số cao hơn dải thông (noise, nhiễu aliasing - nhiễu răng cưa). Tức là tần số nằm ngoài dải mic sẽ bị giảm 1000 lần về biên độ, giúp tín hiệu thu được sau mic sạch hơn và giảm aliasing khi ghi âm
-	- Pass band (Dải thông): fs x 0.423. Dải thông này là phạm vi lọc của DSP bên trong mic, tín hiệu đi qua sẽ không bị méo. Nếu vượt qua ngưỡng của Pass band thì nó sẽ bị suy giảm bởi Stop band Attenuation ở trên. Thông dải lọc phụ thuộc vào tần số lấy mẫu. Ví dụ:
+	- **Pass band Ripple (Độ gợn trong dải thông)**: ±0.04 dB. Bộ lọc bên trong mic cho tín hiệu trong dải tần số sử dụng méo rất nhỏ, gần như không đáng kể. Tín hiệu được giữ nguyên biên độ gần như hoàn toàn
+	- **Stop band Attenuation (Độ suy giảm dải dừng)**: 60 dB. Bộ lọc sẽ giảm ít nhất 60 dB ở các tần số cao hơn dải thông (noise, nhiễu aliasing - nhiễu răng cưa). Tức là tần số nằm ngoài dải mic sẽ bị giảm 1000 lần về biên độ, giúp tín hiệu thu được sau mic sạch hơn và giảm aliasing khi ghi âm
+	- **Pass band (Dải thông)**: *fs x 0.423*. Dải thông này là phạm vi lọc của DSP bên trong mic, tín hiệu đi qua sẽ không bị méo. Nếu vượt qua ngưỡng của Pass band thì nó sẽ bị suy giảm bởi Stop band Attenuation ở trên. Thông dải lọc phụ thuộc vào tần số lấy mẫu. Ví dụ:
 		- fs = 48 kHz -> Pass band = 20.3 kHz (Mic cho tín hiệu tốt đến ~20 kHz) -> Thu âm full audio
 		- fs = 16 kHz -> Pass band = 6.77 kHz (Mic cho tín hiệu tốt đến ~6.77 kHz) -> Phù hợp cho giọng nói
 
