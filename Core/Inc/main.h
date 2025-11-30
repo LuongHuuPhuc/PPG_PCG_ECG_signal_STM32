@@ -59,7 +59,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define INT_Pin GPIO_PIN_9
 #define INT_GPIO_Port GPIOA
-#define INT_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 extern volatile uint32_t global_sample_id; //Nen de volatile vi co the bi thay doi tu ISR va tu cac task khac

@@ -26,7 +26,7 @@ osThreadId ad8232_taskId = NULL;
 // ====== FUCNTION DEFINITION ======
 /*-----------------------------------------------------------*/
 
-HAL_StatusTypeDef __attribute__((unused))Ad8232_init_ver1(ADC_HandleTypeDef *adc){
+HAL_StatusTypeDef Ad8232_init_ver1(ADC_HandleTypeDef *adc){
 	uart_printf("[AD8232] initializing...");
 	HAL_StatusTypeDef ret = HAL_OK;
 	ret |= ((adc == &hadc1) ? HAL_OK : HAL_ERROR);
@@ -47,10 +47,12 @@ void Ad8232_task_ver3(void const *pvParameter){
 
 	sensor_block_t block;
 	snapshot_sync_t snap;
-	uart_printf("Ad8232 dma task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
 
-	//Ghi du lieu DMA vao ECG_DMA_BUFFER nay den khi du 32 mau
+	taskENTER_CRITICAL();
+	uart_printf("AD8232 task started !\r\n");
+	taskEXIT_CRITICAL();
+
+	// Ghi du lieu tu DMA vao buffer den khi du 32 mau
 	// Trigger tu TIMER (sample rate = 1000Hz) moi mau 1ms la 1 lan doc ADC
 	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ecg_buffer, ECG_DMA_BUFFER) != HAL_OK){
 		uart_printf("[AD8232] HAL_ADC_Start_DMA failed!\r\n");
@@ -60,7 +62,8 @@ void Ad8232_task_ver3(void const *pvParameter){
 		if(xSemaphoreTake(sem_adc, portMAX_DELAY) == pdTRUE){ //Sau 32ms thi TIMER nha semaphore
 			take_snapshotSYNC(&snap);
 
-			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Doi notify DMA hoan tat tu ham ConvCpltCallback
+			// Take notify khi DMA ghi data vao buffer hoan tat tu ham ConvCpltCallback
+			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){
 
 				memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
 				block.type = SENSOR_ECG;
@@ -92,7 +95,8 @@ void Ad8232_task_ver3(void const *pvParameter){
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){
 	if(adc == &hadc1){
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		vTaskNotifyGiveFromISR(ad8232_taskId, &xHigherPriorityTaskWoken); //gui thong bao cho task la DMA hoan tat
+		// Gui thong bao cho task khi DMA ghi vao buffer hoan tat
+		vTaskNotifyGiveFromISR(ad8232_taskId, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }
@@ -100,12 +104,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){
 
 // === VERSION 2 ===
 
-void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter){
+__attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
 	(void)(pvParameter);
-
 	sensor_block_t block;
-	uart_printf("Ad8232 dma task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+
+	taskENTER_CRITICAL();
+	uart_printf("AD8232 task started !\r\n");
+	taskEXIT_CRITICAL();
 
 	//Ghi du lieu DMA vao ECG_DMA_BUFFER nay den khi du 32 mau, trigger moi mau 1ms (sample rate = 1000Hz) la 1 lan doc ADC
 	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ecg_buffer, ECG_DMA_BUFFER) != HAL_OK){
@@ -145,11 +150,14 @@ void __attribute__((unused))Ad8232_task_ver2(void const *pvParameter){
 
 // ===== VERSION 1 =====
 
-void __attribute__((unused))Ad8232_task_ver1(void const *pvParameter){
+__attribute__((unused)) void Ad8232_task_ver1(void const *pvParameter){
 	(void)(pvParameter);
-
 	sensor_data_t sensor_data;
-	uart_printf("Ad8232 task started !\r\n");
+
+	taskENTER_CRITICAL();
+	uart_printf("AD8232 task started !\r\n");
+	taskEXIT_CRITICAL();
+
 	while(1){
 		if(xSemaphoreTake(sem_adc, portMAX_DELAY) == pdTRUE){ //Trigger tu ham Callback de lay semaphore
 			uart_printf("[ADC8232] got Semaphore !\r\n");

@@ -4,8 +4,7 @@
  *
  * @note Thu vien dung de loc FIR lowpass cho PCG truoc khi downsample
  * \note - Chong Aliasing (rang cua)
- * \note - Dung theo nguyen tac Nyquist-Shannon sampling theorem: Truoc khi giam toc do lay mau,
- * can loc thong thap tin hieu
+ * \note - Dung theo nguyen tac Nyquist-Shannon sampling theorem: Truoc khi giam toc do lay mau, can loc thong thap tin hieu
  * \note - Bo loc FIR la linear phase neu he so doi xung. Khi do, toan bo tin hieu duoc dich tre di dung bang (N - 1)/2 sample
  * \note - Bo loc FIR, de tinh 1 output, can N samples qua khu, nen voi sample dau tien, khong co du lieu qua khu nen
  * khong the tinh duoc dau ra ngay lap tuc, the nen sinh ra do tre pha tuyen tinh (linear phase FIR)
@@ -33,9 +32,21 @@ typedef struct {
 	int index;
 } FIRFilter;
 
+// Cac he so cua bo loc
 extern const float fir_coeff[FIR_TAP_NUM];
 
+/**
+ * @brief Ham khoi tao bo loc so FIR
+ * @param filter Con tro tro den cau truc bo loc
+ */
 EXPORT void fir_init(FIRFilter *filter);
+
+/**
+ * @brief Ham trien khai bo loc so
+ *
+ * @param filter Con tro tro den cau truc bo loc
+ * @param input Gia tri tin hieu dau vao
+ */
 EXPORT float FIR_Filter(FIRFilter *filter, float input);
 
 #endif /* INC_FIR_FILTER_H_ */

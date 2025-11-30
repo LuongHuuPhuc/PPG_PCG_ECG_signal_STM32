@@ -32,8 +32,8 @@ uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 /*-----------------------------------------------------------*/
 // === VERSION 1 ===
 
-HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i2c){
-	uart_printf("[MAX30102] initializing...!");
+__attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c){
+	uart_printf("[MAX30102] initializing...!\r\n");
 	HAL_StatusTypeDef ret = HAL_OK;
 
 	sem_max = xSemaphoreCreateBinary();
@@ -59,12 +59,10 @@ HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i
 		ret |= HAL_ERROR;
 	}
 
-	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 0); //0 mau con lai tuc la du 32 sample -> interrupt
-
 	//Sensor settings
-	max30102_set_led_pulse_width(&max30102_obj, max30102_pw_18_bit);
-	max30102_set_adc_resolution(&max30102_obj, max30102_adc_8192);
-	max30102_set_sampling_rate(&max30102_obj, max30102_sr_100); //10ms/sample
+	max30102_set_led_pulse_width(&max30102_obj, max30102_pw_215_us);
+	max30102_set_adc_resolution(&max30102_obj, max30102_adc_17_bit);
+	max30102_set_sampling_rate(&max30102_obj, max30102_sr_1000); //10ms/sample
 	max30102_set_led_current_ir(&max30102_obj, 6.2);
 	max30102_set_led_current_red(&max30102_obj, 6.2);
 	max30102_set_led_mode(&max30102_obj, &record, max30102_spo2);
@@ -76,6 +74,9 @@ HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i
 	//Initialize 1 temperature measurement
 	max30102_set_die_temp_en(&max30102_obj, 1);
 	max30102_set_die_temp_rdy(&max30102_obj, 1);
+
+	// FIFO config
+	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 0); //0 mau con lai tuc la du 32 sample -> interrupt
 
 	/**
 	 * Doc thanh ghi ngat (interrupt register) 0x00 & 0x01 thi interrupt flag se tu dong xoa (trong datasheet)
@@ -91,7 +92,7 @@ HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i
 }
 /*-----------------------------------------------------------*/
 
-uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj){
+__attribute__((unused)) uint8_t Max30102_interrupt_process(max30102_t *obj){
 	uint8_t reg[2] = {0x00};
 	uint8_t samples = 0;
 
@@ -113,15 +114,16 @@ uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj){
 }
 /*-----------------------------------------------------------*/
 
-void __attribute__((unused))Max30102_task_ver1(void const *pvParameter){
+__attribute__((unused)) void Max30102_task_ver1(void const *pvParameter){
 	(void)(pvParameter);
 
 	sensor_data_t __attribute__((unused))sensor_data;
 	sensor_block_t block;
 	uint8_t num_samples = 0;
 
+	taskENTER_CRITICAL();
 	uart_printf("MAX30102 task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+	taskEXIT_CRITICAL();
 
 	while(1){
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //Cho callback ngat INT thuc su tu sensor
@@ -159,7 +161,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 // === VERSION 2 ===
 
 HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
-	uart_printf("[MAX30102] initializing...!");
+	uart_printf("[MAX30102] initializing...!\r\n");
 	HAL_StatusTypeDef ret = HAL_OK;
 
 	sem_max = xSemaphoreCreateBinary();
@@ -186,9 +188,9 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 	}
 
 	//Sensor settings
-	max30102_set_led_pulse_width(&max30102_obj, max30102_pw_16_bit); // Set 18-bit thi sr chi gioi han 400Hz
-	max30102_set_adc_resolution(&max30102_obj, max30102_adc_8192);
-	max30102_set_sampling_rate(&max30102_obj, max30102_sr_1000); // 1ms/sample
+	max30102_set_led_pulse_width(&max30102_obj, max30102_pw_118_us);
+	max30102_set_adc_resolution(&max30102_obj, max30102_adc_18_bit);
+	max30102_set_sampling_rate(&max30102_obj, max30102_sr_1000); // 1ms/sample => Fixed sample rate
 	max30102_set_led_current_ir(&max30102_obj, 12.6f);
 	max30102_set_led_current_red(&max30102_obj, 8.0f);
 	max30102_set_led_mode(&max30102_obj, &record, max30102_spo2);
@@ -210,8 +212,10 @@ void Max30102_task_ver2(void const *pvParameter){
 
 	sensor_block_t block;
 	snapshot_sync_t snap;
-	uart_printf("Max30102 task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+
+	taskENTER_CRITICAL();
+	uart_printf("MAX30102 task started !\r\n");
+	taskEXIT_CRITICAL();
 
 	memset(&block, 0, sizeof(sensor_block_t));
 	while(1){

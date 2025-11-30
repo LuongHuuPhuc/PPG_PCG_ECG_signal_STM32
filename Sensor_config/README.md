@@ -28,12 +28,13 @@
 		- fs = 16 kHz -> Pass band = 6.77 kHz (Mic cho tín hiệu tốt đến ~6.77 kHz) -> Phù hợp cho giọng nói
 
 - Ngoài ra, nhà sản xuất cũng khuyến cáo thiết bị nhạy cảm với tĩnh điện (ESD - Electrostatic Discharge). Tuy bên trong cũng được tích hợp mạch bảo vệ độc quyền nhưng thiết bị vẫn có thể bị ảnh hưởng bởi ESD năng lượng cao
-
+- Theo datasheet, để đạt hiệu suất tốt nhất và tránh các hiện tượng ký sinh tiềm ẩn (Parastic Artifacts), rất khuyến nghị đặt 1 tụ điện gốm loại 0.1uF hoặc tốt hơn ở giữa chân Vcc và chân Gnd. Càng gần càng tốt
 ## CHUẨN I2S TRONG INMP441 HOẠT ĐỘNG THẾ NÀO ? 
 - Cổng nối tiếp kiểu slave là I2S, 24-bits, sử dụng định dạng bù hai (**two complement**). Phải có 64 chu kỳ xung nhịp SCK trong mỗi khung WS stereo hoặc 32 chu kỳ SCK trong nửa khung WS mon cho mỗi từ dữ liệu.
 - Chân điều khiển **L/R** xác định liệu INMP441 có xuất dữ liệu ở kênh trái (Left) hay kênh trái (Right)
 - Độ dài dữ liệu (data word length): Độ dài từ dữ liệu xuất là 24-bit trên mỗi kênh. INMP441 luôn có 64 chu kỳ xung nhịp cho mỗi từ dữ liệu (**f_sck = 64 x f_ws**)
-- Định dạng Từ dữ liệu (Data-word Format): Định dạng dữ liệu mặc định là I2S (bù hai), MSB là bit đầu tiên (từ trái sang phải). Trong định dạng này, MSB của mỗi từ bị trì hoãn 1 chu kỳ SCK kể từ lúc bắt đầu mỗi nửa khung (trước khi bắt đầu chu kỳ SCK cho MSB thì sẽ bị trễ 1 khung đầu)
+- Định dạng Từ dữ liệu (Data-word Format): Định dạng dữ liệu mặc định là I2S (bù hai), MSB là bit đầu tiên (từ trái sang phải). 
+	- Trong định dạng này, MSB của mỗi từ bị trì hoãn 1 chu kỳ SCK kể từ lúc bắt đầu mỗi nửa khung (trước khi bắt đầu chu kỳ SCK cho MSB thì sẽ bị trễ 1 khung đầu)
 
 ![Alt_text](../Images/Format.png)
 

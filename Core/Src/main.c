@@ -58,7 +58,6 @@ DMA_HandleTypeDef hdma_spi2_rx;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
-DMA_HandleTypeDef hdma_usart2_tx;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
@@ -123,7 +122,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   SensorConfig_Init();
-  fir_init(&fir);
   uart_printf("[DEBUG] Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
   HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (1000Hz)
@@ -177,9 +175,13 @@ int main(void)
 //  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
 //  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 5, &logger_task);
 
+  //Check sau khi tao task
   StackCheck();
-  HeapCheck(); //Check sau khi tao task
+  HeapCheck();
   uart_printf("Starting Tasks...! \r\n");
+
+  // Set gia tri dem ban dau cua TIMER ve 0
+  __HAL_TIM_SET_COUNTER(&htim3, 0);
 
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -196,7 +198,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  vTaskDelay(pdMS_TO_TICKS(100));
   }
   /* USER CODE END 3 */
 }
@@ -433,7 +434,7 @@ static void MX_USART2_UART_Init(void)
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 230400;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.StopBits = UART_STOPBITS_2;
   huart2.Init.Parity = UART_PARITY_NONE;
   huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
@@ -462,9 +463,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
-  /* DMA1_Stream6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
@@ -493,10 +491,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(INT_GPIO_Port, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
   /* USER CODE BEGIN MX_GPIO_Init_2 */
   /* USER CODE END MX_GPIO_Init_2 */
 }
@@ -515,13 +509,8 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	uart_printf("Deleting StartDefaultTask...\r\n");
-	vTaskDelay(pdMS_TO_TICKS(100));
-	vTaskDelete(NULL);
-
-	for(;;){
-		osDelay(1);
-	}
+	(void)(argument);
+	vTaskDelete(defaultTaskHandle);
   /* USER CODE END 5 */
 }
 
@@ -536,6 +525,9 @@ void StartDefaultTask(void const * argument)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
+
+  /* TIMER co chuc lam diem xuat phat cho cac cam bien dong bo + gop du lieu vao cung 1 khung thoi gian */
+
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   static uint8_t counter_sync = 0;
 

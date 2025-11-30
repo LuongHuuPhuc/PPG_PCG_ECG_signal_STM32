@@ -55,21 +55,21 @@ extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
  *
  * @note Ham khoi tao su dung ngat (interrupt)
  */
-HAL_StatusTypeDef __attribute__((unused))Max30102_init_ver1(I2C_HandleTypeDef *i2c);
+__attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c);
 
 /**
  * @brief Ham doc du lieu va xu ly ngat
  *
  * @note Ham phuc vu cho version 1 (static function)
  */
-uint8_t __attribute__((unused))Max30102_interrupt_process(max30102_t *obj);
+__attribute__((unused)) uint8_t Max30102_interrupt_process(max30102_t *obj);
 
 /**
  * @brief Ham thuc thi luong xu ly `ver1`
  *
  * @note Task dung interrupt de trigger moi khi co data moi
  */
-void __attribute__((unused))Max30102_task_ver1(void const *pvParameter);
+__attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham khoi tao & cau hinh cam bien `ver2`

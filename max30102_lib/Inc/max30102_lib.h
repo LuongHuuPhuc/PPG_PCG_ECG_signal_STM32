@@ -59,18 +59,18 @@ typedef enum max30102_sr_t
 
 typedef enum max30102_led_pw_t
 {
-    max30102_pw_15_bit,
-    max30102_pw_16_bit,
-    max30102_pw_17_bit,
-    max30102_pw_18_bit
+    max30102_pw_69_us,
+    max30102_pw_118_us,
+    max30102_pw_215_us,
+    max30102_pw_411_us
 } max30102_led_pw_t;
 
 typedef enum max30102_adc_t
 {
-    max30102_adc_2048,
-    max30102_adc_4096,
-    max30102_adc_8192,
-    max30102_adc_16384
+    max30102_adc_15_bit, // (0 - 2047) tuong ung voi pw 69us
+    max30102_adc_16_bit, // (0 - 4095) tuong ung voi pw 118us
+    max30102_adc_17_bit, // (0 - 8191) tuong ung voi pw 215us
+    max30102_adc_18_bit  // (0 - 16383) tuong ung voi pw 411us
 } max30102_adc_t;
 
 typedef enum max30102_multi_led_ctrl_t
@@ -210,6 +210,25 @@ void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr);
  *
  * @param obj Pointer to max30102_t object instance.
  * @param pw Pulse width enum (max30102_led_pw_t).
+ *
+ * @warning Pulse Width va Sample Rate co anh huong den nhau.
+ * \warning Neu voi pw 215us va sr 1000Hz ma set:
+ * \warning - ADC res 18-bit thi sr se chi gioi han 400Hz (0x6E)
+ * \warning - ADC res 17-bit/16-bit thi sr se chi gioi han 800Hz (0x52 voi 17-bit va 0x32 voi 16-bit)
+ * \warning - The nen khong the co dinh sr 1000Hz voi pw 215us -> Giam pw (1) hoac giu nguyen pw roi giam ADC res (2)
+ *
+ * @if (1) Neu muon cai thien ADC_res: giam Pulse Width (Recommend)
+ * - Pulse Width 118us (Vua du)
+ * - ADC res 18-bit (Bu lai co the set toi da gia tri ADC)
+ * - Khi do thanh ghi SPO2_CONFIG se co gia tri mong muon => `0x75`
+ *
+ * @if (2) Neu muon cai thien PW, chap nhan ADC res thap: Giu nguyen Pulse Width 215us roi giam ADC res
+ * - Pulse Width 215us (giam nhieu tot hon)
+ * - ADC res 15-bit (Gia tri be nhat co the)
+ * - Khi do thanh ghi SPO2_CONFIG se co gia tri mong muon => `0x13`
+ * => Thuc te voi Pulse Width 215us thi cach tren van khong ra duoc ket qua mong muon (thuc te 0x12)
+ *
+ * @example De co dinh duoc Sample Rate 1000Hz tot nhat: Cach (1)
  */
 void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw);
 
@@ -218,6 +237,26 @@ void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw);
  *
  * @param obj Pointer to max30102_t object instance.
  * @param adc ADC resolution enum (max30102_adc_t).
+ *
+ * @warning Pulse Width va Sample Rate co anh huong den nhau.
+ * \warning Neu voi pw 215us va sr 1000Hz ma set:
+ * \warning - ADC res 18-bit thi sr se chi gioi han 400Hz (0x6E)
+ * \warning - ADC res 17-bit/16-bit thi sr se chi gioi han 800Hz (0x52 voi 17-bit va 0x32 voi 16-bit)
+ * \warning - The nen khong the co dinh sr 1000Hz voi pw 215us -> Giam pw (1) hoac giu nguyen pw roi giam ADC res (2)
+ *
+ * @if (1) Neu muon cai thien ADC_res: giam Pulse Width (Recommend)
+ * - Pulse Width 118us (Vua du)
+ * - ADC res 18-bit (Bu lai co the set toi da gia tri ADC)
+ * - Khi do thanh ghi SPO2_CONFIG se co gia tri mong muon => `0x75`
+ *
+ * @if (2) Neu muon cai thien PW, chap nhan ADC res thap: Giu nguyen Pulse Width 215us roi giam ADC res
+ * - Pulse Width 215us (giam nhieu tot hon)
+ * - ADC res 15-bit (Gia tri be nhat co the)
+ * - Khi do thanh ghi SPO2_CONFIG se co gia tri mong muon => `0x13`
+ * => Thuc te voi Pulse Width 215us thi cach tren van khong ra duoc ket qua mong muon (thuc te 0x12)
+ *
+ * @example De co dinh duoc Sample Rate 1000Hz tot nhat: Cach (1)
+ *
  */
 void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc);
 

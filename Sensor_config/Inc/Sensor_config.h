@@ -29,7 +29,7 @@ extern "C" {
 #define SERROR_CHECK(expr) do {\
 	/* expr la bieu thuc ban muon truyen vao */ \
 	if((expr) != HAL_OK){ \
-		uart_printf("Fail HAL at line %d:\r\n", __LINE__, #expr);\
+		uart_printf("Fail HAL at line %d: %s\r\n", __LINE__, #expr);\
 		HAL_Delay(100);\
 		while(1); \
 	}\
@@ -91,7 +91,7 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 			volatile uint32_t ir[MAX_FIFO_SAMPLE];
 			volatile uint32_t red[MAX_FIFO_SAMPLE];
 		} ppg;
-		volatile int16_t mic[DOWNSAMPLE_COUNT]; //PCG
+		volatile int16_t mic[DOWNSAMPLE_SAMPLE_COUNT]; //PCG
 	};
 } sensor_block_t;
 

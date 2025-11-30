@@ -33,8 +33,13 @@ void SensorConfig_Init(void){
 	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> MAX30102 init OK !\r\n");
 
-	SERROR_CHECK(Logger_queue_init());
+#if USING_UART_DMAPHORE
+	SERROR_CHECK(Logger_init_ver2());
 	uart_printf(">> LOGGER init OK !\r\n");
+#else
+	SERROR_CHECK(Logger_init_ver1());
+	uart_printf(">> LOGGER init OK !\r\n");
+#endif
 
 	//Check sau khi tao semaphore va queue
 	HeapCheck();

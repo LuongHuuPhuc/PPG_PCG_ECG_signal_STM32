@@ -39,10 +39,13 @@ volatile int16_t __attribute__((unused))mic_pong[I2S_SAMPLE_COUNT] = {0};
 // ====== FUCNTION DEFINITION ======
 /*-----------------------------------------------------------*/
 
-HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2s){
+HAL_StatusTypeDef Inmp441_init_ver1(I2S_HandleTypeDef *i2s){
 	uart_printf("[INMP441] initializing....");
 	HAL_StatusTypeDef ret = HAL_OK;
 	ret |= ((i2s == &hi2s2) ? HAL_OK : HAL_ERROR);
+
+	// Khoi tao bo loc FIR
+	fir_init(&fir);
 
 	sem_mic = xSemaphoreCreateBinary();
 	if(sem_mic == NULL){
@@ -51,26 +54,20 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver1(I2S_HandleTypeDef *i2
 	}
 	return ret;
 }
-/*-----------------------------------------------------------*/
 
-//Covert tu buffer DMA 16-bit -> PCM 24-bit (sign-extended 32-bit)
-static inline int32_t __attribute__((unused))Inmp441_rebuild_sample(uint16_t low, uint16_t high){
-	int32_t sample = ((int32_t)high << 16) | low; //Ghep thanh 32-bit
-	sample >>= 8; //Bo 8-bit padding, con 24-bit data
-	return sample;
-}
 /*-----------------------------------------------------------*/
-
 //==== VERSION 1: NORMAL BUFFER ====
 
 void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
-	int idx_out;
+	static int idx_out = 0;
 	int32_t sum;
-	uart_printf("Inmp441 normal task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+
+	taskENTER_CRITICAL();
+	uart_printf("INMP441 task started !\r\n");
+	taskEXIT_CRITICAL();
 
 	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz)
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
@@ -83,13 +80,11 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 
 				memset(&block, 0, sizeof(sensor_block_t));
 				block.type = SENSOR_PCG;
-				block.count = DOWNSAMPLE_COUNT;//So luong mau sau khi da downsample (32 samples)
 				block.sample_id = global_sample_id; //Danh dau dong bo
 				block.timestamp = xTaskGetTickCount();
 
 //				uart_printf("[DEBUG] PCG sample_id = %lu\r\n", block.sample_id);
 
-				idx_out = 0;
 				for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i += DOWNSAMPLE_FACTOR){ //Thuc hien downsample 256 samples raw
 					sum = 0; //Reset sum sau moi vong
 					for(uint8_t j = 0; j < DOWNSAMPLE_FACTOR; j++){ //Thuc hien xu ly voi 8 mau 1 lan
@@ -98,7 +93,13 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 					block.mic[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
 				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
 
+				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
+
+				taskENTER_CRITICAL();
 				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
+				taskEXIT_CRITICAL();
+
+				idx_out = 0;
 
 				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
 				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
@@ -115,7 +116,6 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 }
 /*-----------------------------------------------------------*/
 
-
 //void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 samples) -> Ham nay se duoc goi (Normal)
 //	if(hi2s->Instance == SPI2){
 //		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -123,20 +123,71 @@ void __attribute__((unused))Inmp441_task_ver1(void const *pvParameter){
 //		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 //	}
 //}
+
+/*-----------------------------------------------------------*/
+// ==== VERSION 2: CIRCULAR BUFFER ====
+
+/**
+ * @brief Ham xu ly du lieu khi full buffer
+ *
+ * @note Ham con cua `Inmp441_task_ver2`.
+ * Sau khi DMA ghi du `I2S_SAMPLE_COUNT = 256` mau thi downsample ve 32 mau + FIR Filter
+ */
+static inline void Inmp441_process_full_buffer(sensor_block_t *block, snapshot_sync_t *snap){
+	static int idx_out = 0; // Duy tri gia tri cho bien
+	take_snapshotSYNC(snap);
+
+	block->type = SENSOR_PCG;
+	block->timestamp = snap->timestamp;
+	block->sample_id = snap->sample_id; //Danh dau dong bo
+//	block.timestamp = xTaskGetTickCount(); //Lay tick moi task duoc goi
+
+//	uart_printf("[DEBUG] PCG sample_id = %lu\r\n", block.sample_id);
+
+	//Downsample bang cach loc lowwpass FIR + decimation
+	for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i++){
+		float filtered = FIR_Filter(&fir, (float)buffer16[i]); //Data 32-bit nen dich lay 24-bit co nghia
+		if(i >= (FIR_TAP_NUM - 1)){
+			if((i - (FIR_TAP_NUM - 1)) % DOWNSAMPLE_FACTOR == 0){ //Cu moi 8 mau thi chi luu 1 mau (decimation)
+				block->mic[idx_out++] = (int16_t)filtered; //32 samples sau khi downsample
+			}
+		}
+	}
+
+	block->count = idx_out; //Ky vong 32 sample sau khi downsample tu 256
+
+	taskENTER_CRITICAL();
+	QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
+	taskEXIT_CRITICAL();
+
+	idx_out = 0; // Reset ve 0
+}
 /*-----------------------------------------------------------*/
 
-// ==== VERSION 2: CIRCULAR BUFFER ====
+/**
+ * @brief Ham dam nhiem viec downsample tu 8000Hz -> 1000Hz cho du lieu
+ *
+ * @note Su dung
+ */
+static inline int32_t __attribute__((unused))Inmp441_Decimation_Downsample(int32_t *raw, int32_t *out){
+
+}
+
+/*-----------------------------------------------------------*/
 
 void Inmp441_task_ver2(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
 	snapshot_sync_t snap;
-	uart_printf("Inmp441 circular task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+
+	taskENTER_CRITICAL();
+	uart_printf("INMP441 task started !\r\n");
+	taskEXIT_CRITICAL();
+
 	memset(&block, 0, sizeof(block));
 
-	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz) - Do Circular nen chi can goi 1 lan
+	//Bat dau ghi data vao DMA voi 256 sample raw (do inmp441 set 8000Hz) - Do Circular nen chi can goi 1 lan
 	//Data register I2S chi toi da 16-bit (gioi han phan cung), nen chi dung duoc half-word
 	//Dung buffer 32-bit, cast ve 16-bit theo HAL -> Buffer 32-bit = 2 lan doc 16-bit (frame low + frame high)
 
@@ -159,46 +210,17 @@ void Inmp441_task_ver2(void const *pvParameter){
 }
 /*-----------------------------------------------------------*/
 
-void Inmp441_process_full_buffer(sensor_block_t *block, snapshot_sync_t *snap){
-	static int idx_out = 0; // Duy tri gia tri cho bien
-	take_snapshotSYNC(snap);
-
-	block->type = SENSOR_PCG;
-	block->timestamp = snap->timestamp;
-	block->sample_id = snap->sample_id; //Danh dau dong bo
-//	block.timestamp = xTaskGetTickCount(); //Lay tick moi task duoc goi
-
-//	uart_printf("[DEBUG] PCG sample_id = %lu\r\n", block.sample_id);
-
-	//Downsample bang cach loc lowwpass FIR + decimation
-	for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i++){
-		float filtered = FIR_Filter(&fir, (float)buffer16[i]); //Data 32-bit nen dich lay 24-bit co nghia
-		if(i >= (FIR_TAP_NUM - 1)){
-			if((i - (FIR_TAP_NUM - 1)) % DOWNSAMPLE_FACTOR == 0){ //Cu moi 8 mau thi chi luu 1 mau (decimation)
-				block->mic[idx_out++] = (int16_t)filtered; //32 samples sau khi downsample
-			}
-		}
-	}
-
-	block->count = idx_out; //Ky vong 32 sample sau khi downsample tu 256
-	idx_out = 0; // Reset ve 0
-
-	taskENTER_CRITICAL();
-	QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
-	taskEXIT_CRITICAL();
-}
-/*-----------------------------------------------------------*/
-
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){ //Khi DMA hoan tat (256 samples) -> Ham nay se duoc goi (Circular)
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 	if(hi2s->Instance == SPI2){
+		//Khi ghi DMA hoan tat (256 samples) -> Ham nay se duoc goi (Circular)
 		if(mic_full_ready){ //Neu data cu chua xu ly xong ma DMA da hoan tat (neu task xu ly cham)
 			uart_printf("[INMP441] mic_full_ready OVERWRITTEN ! Previous data not processed!\r\n");
 		}
 		mic_full_ready = true; //Danh dau buffer DMA da san sang -> Mo flag cho task xu ly DMA
 	}
 }
-/*-----------------------------------------------------------*/
 
+/*-----------------------------------------------------------*/
 // === VERSION 3: DOUBLE BUFFER PING-PONG ===
 
 void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
@@ -208,11 +230,12 @@ void __attribute__((unused))Inmp441_task_ver3(void const *pvParameter){
 	snapshot_sync_t snap;
 	int idx_out;
 
-	uart_printf("Inmp441 ping_pong task started !\r\n");
-	vTaskDelay(pdMS_TO_TICKS(5));
+	taskENTER_CRITICAL();
+	uart_printf("INMP441 task started !\r\n");
+	taskEXIT_CRITICAL();
 
 	//Chuc nang double buffer + DMA (giong HAL_I2S_Receive_DMA)
-	if(Inmp441_init_ver2(&hi2s2, (uint16_t*)mic_ping, (uint16_t*)mic_pong, I2S_SAMPLE_COUNT) != HAL_OK){
+	if(Inmp441_init_ver3(&hi2s2, (uint16_t*)mic_ping, (uint16_t*)mic_pong, I2S_SAMPLE_COUNT) != HAL_OK){
 		uart_printf("[INMP441] Inmp441_init_dma_doubleBuffer failed ! \r\n");
 	}
 
@@ -293,7 +316,7 @@ static void __attribute__((unused))Inmp441_DMA_ErrorCallback(DMA_HandleTypeDef *
 }
 /*-----------------------------------------------------------*/
 
-HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver2(I2S_HandleTypeDef *hi2s, uint16_t *ping, uint16_t *pong, uint16_t Size){
+HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver3(I2S_HandleTypeDef *hi2s, uint16_t *ping, uint16_t *pong, uint16_t Size){
 	//Bat double-buffer DMA cho I2S Rx
 	//DR Adress co the khac nhau tuy dong MCU; voi F4: &SPi2->DR
 
@@ -324,7 +347,6 @@ HAL_StatusTypeDef __attribute__((unused))Inmp441_init_ver2(I2S_HandleTypeDef *hi
 	hi2s->hdmarx->XferCpltCallback = Inmp441_DMA_M0CpltCallback;
 	hi2s->hdmarx->XferM1CpltCallback = Inmp441_DMA_M1CpltCallback;
 	hi2s->hdmarx->XferErrorCallback = Inmp441_DMA_ErrorCallback;
-
 
 	//Kiem tra neu Master Rx thi clear overrun flag
 	if((hi2s->Instance->I2SCFGR & SPI_I2SCFGR_I2SCFG) == I2S_MODE_MASTER_RX){
