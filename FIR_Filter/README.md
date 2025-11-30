@@ -44,9 +44,9 @@ $$ H(e^{j\omega})=\sum_{k=0}^{N-1} h[k]e^{(-j\omega k)} $$
 - Từ công thức đáp ứng tần số trên (dựa vào công thức biến đổi Fourier rời rạc), do tín hiệu y sinh về mặt sinh lý thì được coi là tín hiệu tuần hoàn, nhưng xét về mặt toán học, tín hiệu y sinh không tuần hoàn
 	- Lý do là vì một tín hiệu $x(t)$ được xem là tuần hoàn khi nó thỏa mãn công thức toán học sau: 
 	
-	$$x(t) = \x(t + T_{0})$$
+$$x(t) = x(t + T_{0})$$
 	
-	- Trong đó, $T_{0}$ là chu kỳ cơ bản và điều kiện này cần phải thỏa mãn **tuyệt đối** với mọi thời điểm t và tồn tại mãi từ $−∞$ đến $+∞$.
+- Trong đó, $T_{0}$ là chu kỳ cơ bản và điều kiện này cần phải thỏa mãn **tuyệt đối** với mọi thời điểm t và tồn tại mãi từ $−∞$ đến $+∞$
 - Vì thế ta có thể tính ngược lại được các hệ số $h[k]$ bằng cách dùng **IDFT (Inverse Dicrete Fourier Transform) - Biến đổi Fourier rời rạc ngược** cho tín hiệu **không tuần hoàn**:
 
 $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
@@ -67,7 +67,8 @@ $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
 
 ### 4.1. Phương pháp lấy mẫu tần số 
 - Tần số cắt của bộ lọc được xác định bằng cách chia tần số cắt mong muốn $(f_{c}$) cho tần số Nyquist ($\frac{f_{s}}{2}$). Công thức là: 
-	$$f_{c\_norm} = \frac{f_c}{f_s/2}$$
+
+$$f_{c\_norm} = \frac{f_c}{f_s/2}$$
 
 - Trong đó:
     - $f_{c\_norm}$: là tần số cắt đã được chuẩn hóa (normalized cutoff frequency)
@@ -78,7 +79,7 @@ $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
 ### 4.2. Phương pháp cửa sổ (windowing)
  - Trong phương pháp này, tần số cắt được xác đinh dựa trên các thông số của bộ lọc, chẳng hạn tần số dải thông - (**Passband**) là $\(\omega _{p}\)$ và tần số dải dừng - (**Stopband**) là $\(\omega _{s}\)$.
 	
-	$$\omega_{c} = \frac{\omega_p + \omega_s}{2} $$
+$$\omega_{c} = \frac{\omega_p + \omega_s}{2} $$
 	
 - Sau khi tính toán được $omega_{c}$, có thể dùng nó để xác định đáp ứng xung của bộ lọc FIR	
 - Công thức **đổi tần số** trong miền rời rạc giữa ω (rad/sample) và Hz:
