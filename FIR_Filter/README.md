@@ -41,7 +41,13 @@ $$ H(e^{j\omega})=\sum_{k=0}^{N-1} h[k]e^{(-j\omega k)} $$
 	- Tần số nào được giữ lại
 	- Tần số nào bị giảm / loại bỏ
 
-- Từ công thức đáp ứng tần số trên (dựa vào công thức biến đổi Fourier rời rạc), ta có thể tính ngược lại được các hệ số $h[k]$ bằng cách dùng **IDFT (Inverse Dicrete Fourier Transform) - Biến đổi Fourier rời rạc ngược**:
+- Từ công thức đáp ứng tần số trên (dựa vào công thức biến đổi Fourier rời rạc), do tín hiệu y sinh về mặt sinh lý thì được coi là tín hiệu tuần hoàn, nhưng xét về mặt toán học, tín hiệu y sinh không tuần hoàn
+	- Lý do là vì một tín hiệu $x(t)$ được xem là tuần hoàn khi nó thỏa mãn công thức toán học sau: 
+	
+	$$x(t) = \x(t + T_{0})$$
+	
+	- Trong đó, $T_{0}$ là chu kỳ cơ bản và điều kiện này cần phải thỏa mãn **tuyệt đối** với mọi thời điểm t và tồn tại mãi từ $−∞$ đến $+∞$.
+- Vì thế ta có thể tính ngược lại được các hệ số $h[k]$ bằng cách dùng **IDFT (Inverse Dicrete Fourier Transform) - Biến đổi Fourier rời rạc ngược** cho tín hiệu **không tuần hoàn**:
 
 $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
 
