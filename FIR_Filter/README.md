@@ -81,7 +81,7 @@ $$f_{c\_norm} = \frac{f_c}{f_s/2}$$
 	
 $$\omega_{c} = \frac{\omega_p + \omega_s}{2} $$
 	
-- Sau khi tính toán được $omega_{c}$, có thể dùng nó để xác định đáp ứng xung của bộ lọc FIR	
+- Sau khi tính toán được $\omega_{c}$, có thể dùng nó để xác định đáp ứng xung của bộ lọc FIR	
 - Công thức **đổi tần số** trong miền rời rạc giữa ω (rad/sample) và Hz:
 
 $$ ω_{c} = 2π \cdot \frac{f_{s}}{f_{c}}​$$
