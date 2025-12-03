@@ -118,10 +118,13 @@ $$ H(\omega) = |H(\omega)|e^{-j\omega D}$$
 	- Kaiser Window (tùy chỉnh pha)
 - Ví dụ về phương pháp Windowed-sinc làm **Lowpass FIR lý tưởng** sử dụng nhân tố sinc + window 
 
-$$ h_{ideal}[n] = \frac{\sin(2\pi f_c(n-M))}{\pi(n-M)} \cdot w[n] $$
+$$ h[n] = \frac{\sin(2\pi f_c(n-M))}{\pi(n-M)} \cdot w[n] $$
+
+$$ h[n] = {h_{ideal}[n]} \cdot w[n] $$
 
 - Công thức trên đại khái là nhân đáp ứng xung của bộ lọc (hệ số bộ lọc coeffs) ban đầu với hàm cửa sổ để cho ra hệ số của bộ lọc tốt nhất. Phân tích công thức trên: 
-	- $\frac{\sin(2\pi f_c(n-M))}{\pi(n-M)}$ (với tâm của bộ lọc $M = \frac{N - 1}{2}$ và $\omega = 2 \pi f$) là đáp ứng xung của bộ lọc **Lowpass lý tưởng**, sử công thức biến đổi Fourier ngược (IDFT) từ công thức đáp ứng tần số $H(e^{j\omega})$ và là **hình chữ nhật** -> Nên tích phân của nó ra hàm sinc
+	- $\frac{\sin(2\pi f_c(n-M))}{\pi(n-M)}$ (với tâm của bộ lọc $M = \frac{N - 1}{2}$ và $\omega = 2 \pi f$) là đáp ứng xung của bộ lọc **Lowpass lý tưởng**, sử công thức biến đổi Fourier ngược (IDFT) từ công thức đáp ứng tần số $H(e^{j\omega})$ và là **hình chữ nhật** nên tích phân của nó ra hàm sinc.
+ 		- Ký hiệu là $h_{ideal}[n]$
 		- Một số sách lại viết dạng normalised low-pass filter như sau: $h[n] = 2f_c \cdot \text{sinc}(2f_c(n-M))$
 		- Hai công thức là một bởi vì: $\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}$
 	> **Biến đổi Fourier ngược của một cửa sổ hình chữ nhật -> một sinc trong miền thời gian**
