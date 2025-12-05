@@ -23,18 +23,30 @@ $$ y[n]=\sum_{k=0}^{N-1} h[k] \cdot x[n-k] $$
 	- Luôn **ổn định tuyệt đối**
 	- Dễ xây dựng và độ chính xác cao
 	- Có thể thiết kế có pha tuyến tính (linear phase) -> Tín hiệu không bị méo dạng sóng (rất quan trọng trong sinh học)
-		- * Pha tuyến tính (linear phase) là thuật ngữ mô tả mối quan hệ hoặc đáp ứng không làm thay đổi hình dạng của tín hiệu đầu vào, thường xuất hiện trong các bộ lọc hoặc xử lý tín hiệu *
-		- * Nó có nghĩa là tín hiệu được xử lý và đầu ra vẫn giữ nguyên hinh dạng ban đầu, chỉ bị dịch chuyển một cách nhất quán theo thời gian, khác với "pha phi tuyến tính (non-linear phase) làm biến dạng tín hiệu *
+		- *Pha tuyến tính (linear phase) là thuật ngữ mô tả mối quan hệ hoặc đáp ứng không làm thay đổi hình dạng của tín hiệu đầu vào, thường xuất hiện trong các bộ lọc hoặc xử lý tín hiệu*
+		- *Nó có nghĩa là tín hiệu được xử lý và đầu ra vẫn giữ nguyên hinh dạng ban đầu, chỉ bị dịch chuyển một cách nhất quán theo thời gian, khác với "pha phi tuyến tính (non-linear phase) làm biến dạng tín hiệu*
 	
 ## 3. Đáp ứng tần số (Frequency Response)
 - Frequency Response (đáp ứng tần số) là phép đo định lượng của phổ tần số đầu ra của một hệ thống hoặc thiết bị khi phản ứng với một kích thích tần số từ môi trường. Có thể hiểu đơn giản là việc thiết bị hoặc hệ thống phản ứng thế nào khi ta đưa vào các tín hiệu có tần số khác nhau (có bị méo, mạnh yếu ra sao)
 - Đáp ứng tần số của lowpass lý tưởng là hình chữ nhật. Dưới đây là công thức mô tả đáp ứng tần số với 2 cách biểu diễn khác nhau: 
 
-- Biểu diễn trong miền tần số **tuyệt đối** (tần số liên tục hoặc tần số tương tự). Sử dụng biến $\f$:
-$$ H_{\text{ideal}}(f) = \begin{cases} 1, & |f| < f_c \\ 0, & |f| > f_c \end{cases} $$
+* Biểu diễn trong miền tần số **tuyệt đối** (tần số liên tục hoặc tần số tương tự). Sử dụng biến $f$:
 
-- Biểu diễn trong miền tần số góc đã chuẩn hóa (Normalized), thường dùng trong hệ thống xử lý tín hiệu rời rạc (DSP). Sử dụng biến $\omega$:
-$$ H({\e^{j\omega}) = \begin{cases} 1, & |\omega| \leq \omega_c \\ 0, & \text{khác} \end{cases} $$
+$$
+H_{\text{ideal}}(f) = \begin{cases} 
+    1, & |f| < f_c \\ 
+    0, & |f| > f_c 
+\end{cases}
+$$
+
+* Biểu diễn trong miền tần số góc đã chuẩn hóa (Normalized), thường dùng trong hệ thống xử lý tín hiệu rời rạc (DSP). Sử dụng biến $\omega$:
+
+$$
+H(e^{j\omega}) = \begin{cases} 
+    1, & |\omega| \leq \omega_c \\
+    0,  & \text{khác}
+\end{cases}
+$$
 
 - Cụ thể hơn, đáp ứng tần số của FIR được lấy bằng biến đổi Fourier rời rạc (DFT) của $h[k]$:
 
@@ -77,7 +89,7 @@ $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
 ### 4.1. Phương pháp lấy mẫu tần số 
 - **Tần số cắt chuẩn hóa** (biến đổi từ tần số cắt tuyệt đối $f_{c}$ sang) của bộ lọc được xác định bằng cách chia tần số cắt mong muốn $(f_{c}$) cho tần số Nyquist ($\frac{f_{s}}{2}$). Đơn vị là rad/sample. Công thức là: 
 
-$$\omega_{c\_norm} = \frac{f_c}{f_s/2} (1)$$
+$$\omega_{c\_norm} = \frac{f_c}{f_s/2} 		(1)$$
 
 - Trong đó:
     - $\omega_{c\_norm}$: là tần số cắt đã được chuẩn hóa (normalized cutoff frequency)
@@ -93,7 +105,7 @@ $$\omega_{c\_norm} = \frac{f_c}{f_s/2} (1)$$
 $$ ω_{c} = 2π \cdot \frac{f_{c}}{f_{s}}​$$
 
 - Đơn vị: Radian/sample. Phạm vi nằm trong khoảng $[0, \pi]$
-- Công thức $(1)$ chỉ khác công thức trên một hệ số $2\pi$ bởi vì $(1)$ được biến đổi bằng cách nhân thêm $\pi$ vào và biến đổi của $f_{c}/f_{s}$ chính là $ \frac{1}{2} \cdot \frac{f_{c}}{f_{s}/2} !
+- Công thức $(1)$ chỉ khác công thức trên một hệ số $2\pi$ bởi vì $(1)$ được biến đổi bằng cách nhân thêm $\pi$ vào và biến đổi của $f_{c}/f_{s}$ chính là $\frac{1}{2} \cdot \frac{f_{c}}{f_{s}/2}$ !
 - Đó chỉ là công thức lý thuyết. Thực tế, tần số cắt thật được quyết định bởi hệ số của bộ lọc FIR $h[k]$ thông qua việc thiết kế bộ lọc đó (dùng window hoặc Park-McCellan)
 
 ### 4.2. Phương pháp cửa sổ (windowing)
