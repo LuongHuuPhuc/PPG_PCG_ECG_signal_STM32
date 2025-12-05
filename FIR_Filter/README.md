@@ -27,7 +27,16 @@ $$ y[n]=\sum_{k=0}^{N-1} h[k] \cdot x[n-k] $$
 		- * Nó có nghĩa là tín hiệu được xử lý và đầu ra vẫn giữ nguyên hinh dạng ban đầu, chỉ bị dịch chuyển một cách nhất quán theo thời gian, khác với "pha phi tuyến tính (non-linear phase) làm biến dạng tín hiệu *
 	
 ## 3. Đáp ứng tần số (Frequency Response)
-- Đáp ứng tần số của FIR được lấy bằng biến đổi Fourier rời rạc (DFT) của $h[k]$:
+- Frequency Response (đáp ứng tần số) là phép đo định lượng của phổ tần số đầu ra của một hệ thống hoặc thiết bị khi phản ứng với một kích thích tần số từ môi trường. Có thể hiểu đơn giản là việc thiết bị hoặc hệ thống phản ứng thế nào khi ta đưa vào các tín hiệu có tần số khác nhau (có bị méo, mạnh yếu ra sao)
+- Đáp ứng tần số của lowpass lý tưởng là hình chữ nhật. Dưới đây là công thức mô tả đáp ứng tần số với 2 cách biểu diễn khác nhau: 
+
+- Biểu diễn trong miền tần số **tuyệt đối** (tần số liên tục hoặc tần số tương tự). Sử dụng biến $\f$:
+$$ H_{\text{ideal}}(f) = \begin{cases} 1, & |f| < f_c \\ 0, & |f| > f_c \end{cases} $$
+
+- Biểu diễn trong miền tần số góc đã chuẩn hóa (Normalized), thường dùng trong hệ thống xử lý tín hiệu rời rạc (DSP). Sử dụng biến $\omega$:
+$$ H({\e^{j\omega}) = \begin{cases} 1, & |\omega| \leq \omega_c \\ 0, & \text{khác} \end{cases} $$
+
+- Cụ thể hơn, đáp ứng tần số của FIR được lấy bằng biến đổi Fourier rời rạc (DFT) của $h[k]$:
 
 $$ H(e^{j\omega})=\sum_{k=0}^{N-1} h[k]e^{(-j\omega k)} $$
 
@@ -66,32 +75,38 @@ $$ h[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi} H(e^{j\omega})e^{j\omega n}d\omega $$
 - Công thức phổ biến để xác định tần số cắt được chuẩn hóa là:
 
 ### 4.1. Phương pháp lấy mẫu tần số 
-- Tần số cắt của bộ lọc được xác định bằng cách chia tần số cắt mong muốn $(f_{c}$) cho tần số Nyquist ($\frac{f_{s}}{2}$). Công thức là: 
+- **Tần số cắt chuẩn hóa** (biến đổi từ tần số cắt tuyệt đối $f_{c}$ sang) của bộ lọc được xác định bằng cách chia tần số cắt mong muốn $(f_{c}$) cho tần số Nyquist ($\frac{f_{s}}{2}$). Đơn vị là rad/sample. Công thức là: 
 
-$$f_{c\_norm} = \frac{f_c}{f_s/2}$$
+$$\omega_{c\_norm} = \frac{f_c}{f_s/2} (1)$$
 
 - Trong đó:
-    - $f_{c\_norm}$: là tần số cắt đã được chuẩn hóa (normalized cutoff frequency)
+    - $\omega_{c\_norm}$: là tần số cắt đã được chuẩn hóa (normalized cutoff frequency)
 	- $f_c$: tần số cắt mong muốn
-	- $f_s$: tần số lấy mẫu
+	- $f_s$: tần số lấy mẫu -> $f_s / 2$ tần số Nyquist
+- Công thức trên không có đơn vị, vì nó là tỷ lệ giữa 2 tần số. Phạm vi nằm trong khoảng $[0, 1]$
 - Trong ví dụ thực tế, tần số cắt mong muốn có thể là 50Hz và tần số lấy mẫu là 1000Hz, khi đó giá trị được sử dụng trong thiết kế bộ lọc là 50/(1000/2) = 0.1
-	
+
+#### Note
+- Trong vật lý, công thức chuyển đổi giữa tần số và tần số góc là $\omega = 2πf$
+- Từ đó, ta có được công thức biến đổi từ **tần số cắt chuẩn hóa $(1)$** sang **tần số góc chuẩn hóa** trong miền rời rạc cho tần số cắt đó là:
+
+$$ ω_{c} = 2π \cdot \frac{f_{c}}{f_{s}}​$$
+
+- Đơn vị: Radian/sample. Phạm vi nằm trong khoảng $[0, \pi]$
+- Công thức $(1)$ chỉ khác công thức trên một hệ số $2\pi$ bởi vì $(1)$ được biến đổi bằng cách nhân thêm $\pi$ vào và biến đổi của $f_{c}/f_{s}$ chính là $ \frac{1}{2} \cdot \frac{f_{c}}{f_{s}/2} !
+- Đó chỉ là công thức lý thuyết. Thực tế, tần số cắt thật được quyết định bởi hệ số của bộ lọc FIR $h[k]$ thông qua việc thiết kế bộ lọc đó (dùng window hoặc Park-McCellan)
+
 ### 4.2. Phương pháp cửa sổ (windowing)
  - Trong phương pháp này, tần số cắt được xác đinh dựa trên các thông số của bộ lọc, chẳng hạn tần số dải thông - (**Passband**) là $\(\omega _{p}\)$ và tần số dải dừng - (**Stopband**) là $\(\omega _{s}\)$.
 	
 $$\omega_{c} = \frac{\omega_p + \omega_s}{2} $$
 	
-- Sau khi tính toán được $\omega_{c}$, có thể dùng nó để xác định đáp ứng xung của bộ lọc FIR	
-- Công thức **đổi tần số** trong miền rời rạc giữa ω (rad/sample) và Hz:
-
-$$ ω_{c} = 2π \cdot \frac{f_{s}}{f_{c}}​$$
-
-- Đó chỉ là công thức lý thuyết. Thực tế, tần số cắt thật được quyết định bởi hệ số của bộ lọc FIR $h[k]$ thông qua việc thiết kế bộ lọc đó (dùng window hoặc Park-McCellan)
+- Sau khi tính toán được $\omega_{c}$, có thể dùng nó để xác định đáp ứng xung của bộ lọc FIR
 	
 ## 5. Transition band (Dải chuyền tiếp)
 - Là vùng tần số chuyển tiếp nằm giữa vùng Passband (dải cho phép) và Stopband (dải bị chặn).
 - Nó là vùng mà tín hiệu bị suy giảm dần và không có sự thay đổi đột ngột giữa việc tín hiệu được truyền qua và bị chặn hoàn toàn
-	- Transition band nhỏ -> lọc tốt -> nhưng cần nhiêu taps hơn (FIR dài, tốn CPU)
+	- Transition band nhỏ -> lọc tốt -> nhưng cần nhiều taps hay cửa sổ hơn (FIR dài, tốn CPU)
 	- Transition band lớn -> lọc kém nhưng tính toán nhanh
 - Ví dụ, nếu Transition band của 1 bộ lọc 200Hz là 20Hz thì tín hiệu sẽ bắt đầu suy giảm ở 180Hz và cuối cùng bị chặn ở 200Hz
 - *Ví dụ dải chuyền tiếp trong biểu đồ đáp ứng tần số của bộ lọc thông thấp Butterworth, với tần số cắt là 2kHz*
@@ -122,7 +137,7 @@ $$ h[n] = \frac{\sin(2\pi f_c(n-M))}{\pi(n-M)} \cdot w[n] $$
 
 $$ h[n] = {h_{ideal}[n]} \cdot w[n] $$
 
-- Công thức trên đại khái là nhân đáp ứng xung của bộ lọc (hệ số bộ lọc coeffs) ban đầu với hàm cửa sổ để cho ra hệ số của bộ lọc tốt nhất. Phân tích công thức trên: 
+- Công thức trên đại khái là nhân đáp ứng xung $h[n]$ của bộ lọc (hệ số bộ lọc coeffs) ban đầu với hàm cửa sổ để cho ra hệ số của bộ lọc tốt nhất. Phân tích công thức trên: 
 	- $\frac{\sin(2\pi f_c(n-M))}{\pi(n-M)}$ (với tâm của bộ lọc $M = \frac{N - 1}{2}$ và $\omega = 2 \pi f$) là đáp ứng xung của bộ lọc **Lowpass lý tưởng**, sử công thức biến đổi Fourier ngược (IDFT) từ công thức đáp ứng tần số $H(e^{j\omega})$ và là **hình chữ nhật** nên tích phân của nó ra hàm sinc.
  		- Ký hiệu là $h_{ideal}[n]$
 		- Một số sách lại viết dạng normalised low-pass filter như sau: $h[n] = 2f_c \cdot \text{sinc}(2f_c(n-M))$
