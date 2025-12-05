@@ -5,11 +5,11 @@ Với FIR lowpass, đáp ứng tần số có 3 phần:
 - (3) Dải chắn: Tần số cao hơn $f_{c}$. Mục tiêu: giảm biên độ (suy hao càng nhiều càng tốt)
 - Hình ảnh ví dụ đáp ứng FIR thực tế sẽ như thế này: 
 
-!(Alt_text)[../../Images/Frequency-response-of-Lowpass-FIR-filter-4-Filter-Design-using-FDATool-of-MATLAB-The.png]
+![Alt_text](../../Images/Frequency-response-of-Lowpass-FIR-filter-4-Filter-Design-using-FDATool-of-MATLAB-The.png)
 
 - Hình ảnh đáp ứng tần số cho tần số 8000Hz với tần số cắt 450Hz kết hợp cửa sổ hamming:
 
-!(Alt_text)[../../Images/FrequencyResponse128taps.png]
+![Alt_text](../../Images/FrequencyResponse128taps.png)
 
 - Ở passband có ripple nhỏ
 - Ở stopband có side-lobes (ripple) dạng răng cưa
