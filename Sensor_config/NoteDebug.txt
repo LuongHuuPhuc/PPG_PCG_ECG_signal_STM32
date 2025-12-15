@@ -1,0 +1,102 @@
+### INMP441
+A. DEBUG LỖI LIÊN QUAN ĐẾN ISR CỦA NGOẠI VI DMA VÀ FREERTOS
+Date: 2025/12/05
+
+I. DEBUG 1
+1. Ban đầu
+- Cảm biến cấu hình đọc data vào buffer 32-bit thông qua DMA callback + Semaphore trigger
+	- DMA: Sử dụng DMA1 stream 3 trên thanh ghi SPI2_RX (có kích hoạt NVIC với Preemption Priority 5), circular mode, Data width: Word 
+	- Cấu hình I2S: Philips mode, 24-bit data on 32-bit frame, LRCLK = 8kHz
+	- Timer trigger (1000Hz) để đông bộ khung thời gian timestamp và sample_id. Không dùng để trigger Semaphore
+- Sau khi thực hiện xong bước thiết kế bộ lọc và fix lại code cho chuẩn logic và căn chỉnh dữ liệu bit cho phù hợp
+- Tiếp theo đó là thực hiện flash và debug
+
+2. Problem
+- Vấn đề xảy ra khi debug đến hàm xSemaphoreTake() trong hàm Inmp441_task_ver2(). Pointer chạy đến đó và bị chặn sau đó dừng chương trình 
+- Sau đó con trỏ dừng lại tại hàm vPortEnterCritical() (trong tệp FreeRTOS). Đây là hàm kiểm tra xem CPU có đang hoạt động trong 1 interrupt hay không (ISR) 
+- UART để log ra màn hình vẫn hiển thị log báo hiệu rằng task đã chạy.
+=> Chứng tỏ task vẫn oke nhưng bị lỗi tại FreeRTOS cụ thể là lỗi liên quan đến hàm ngắt
+	- Khả năng có thể đang gọi 1 hàm không an toàn (non-ISR safe) từ một trong các hàm ngắt. Cụ thể các hàm callback (DMA, TIM,...) cũng được xem là 1 ISR
+=> Quy tắc FreeRTOS: Không được phép gọi bất kỳ hàm nào trong hàm ISR mà chứa các hàm như portENTER_CRITICAL() hay taskENTER_CRITICAL(),...Điều này sẽ gây ra lỗi trừ khi bạn biết chắc chắn nó là ISR-safe
+Các hàm tương đương được phép gọi từ ISR phải có hậu tố FromISR() (vd: xQueueSendFromISR, xSemaphoreGiveFromISR())
+- Cho thấy rằng có thể xSemaphoreTake() đã không nhận được SemaphoreGive từ hàm callback HAL_I2S_RxCpltCallback()
+
+3. Giải pháp tạm thời 
+- Thay vì đợi sem_mic, thay thế (comment) hàm xSemaphoreTake() bằng vTaskDelay() + log() để Task chạy định kỳ
+	- Nếu task chạy, lỗi nằm ở DMA/I2S không hoàn thành để thả Semaphore
+	- Nếu task không chạy, lỗi là do cấu hình Task/Priority của ban (trường hơp này loại bỏ vì như ở trên, đã có log hiển thị ra từ task)
+	
+	
+II. DEBUG 2
+1. Ban đầu
+- Thay thế bằng hàm vTaskDelay() và comment lại hết đoạn code xử lý, chỉ log ra text đơn giản trong vòng while(1)
+"		vTaskDelay(pdMS_TO_TICKS(500));
+		uart_printf("[INMP441] Task is alive !\r\n");
+"
+
+2. Problem
+- Task vẫn chạy nhưng dừng lại ngay ở                                                                                     
+	
+- Lỗi xuất hiện khi debug task của INMP441 thì bị chặn lại ở hàm Semaphore
+- STM32 (Cortex-M4) thường sử dụng 4-bit để xác định ưu tiên ngắt. 
+
+## CƠ CHẾ ƯU TIÊN NGẮT (IRQ Priority) VÀ CÁC THANH GHI LIÊN QUAN TRONG NVIC (Nest Vectored Interrupt Controller)
+A. Cơ chế ưu tiên ngắt (IRQ Priority) trong NVIC
+- Cơ chế ưu tiên ngắt trong thanh ghi (Interrupt Priority Register - IPR) là cách NVIC quản lý thứ tự và quyền làm gián đoạn (preemption) của các ngắt ngoại vi (IRQ) và ngắt hệ thống
+
+1. Ngắt ngoại vi - IRQ (Interrupt Request)
+- Mỗi ngoại vi (như DMA, SPI, Timer) được gắn 1 số thứ tứ duy nhất được gọi là IRQ Number 
+- IRQ Priority sẽ quyết định ngắt nào sẽ được phục vụ trước nếu nhiều ngắt xảy ra đồng thời, hoặc ngắt nào có thể làm gián đoạn ngắt đang chạy 
+
+2. Ưu tiên và giá trị số (Quy tắc Cortex-M)
+- Gía trị ưu tiên được lưu dưới dạng số:
+	- Giá trị số thấp = ưu tiên cao hơn (được phục vụ trước)
+	- Gía trị số cao = ưu tiên thấp hơn (được phục vụ sau) 
+	
+B. Cấu trúc thanh ghi IPR (Interrupt Priority Register) - thanh ghi ưu tiên ngắt
+- Cơ chế xác định vị trí thanh ghi IPR: Quy tắc này dựa trên kiến trúc bộ nhớ của NVIC (Nested Vectored Interrupt Controller), nơi các thanh ghi IPR được đặt liên tiếp nhau
+
+1. Số lượng thanh ghi IPR
+- Số lượng thanh ghi IPR phụ thuộc vào số lượng ngắt ngoại vi mà vi điều khiển đó hỗ trợ
+- Công thức chung: Số lượng thanh ghi ưu tiên ngắt (IPR) = (Số lượng ngắt ngoại vi (IRQn) / 4)
+- STM32F401: Hỗ trợ khoảng 82 ngoại vi ngắt. Do đó, STM32F401 có 21 thanh ghi IPR (vì 82/4 = 21)
+
+2. Định dạng mỗi thanh ghi IPR 
+- Mỗi thanh ghi IPR là một thanh ghi 32-bit (4 bytes) và đảm nhận chức năng lưu trữ mức ưu tiên cho bốn ngắt liên tiếp (4 IRQ number)
+- Thanh ghi IPR (STM32F401) bắt đầu từ địa chỉ 0xE000E400 (địa chỉ cơ sở). Mỗi thanh ghi 32-bit (4 bytes) chứa ưu tiên cho 4 ngắt
+- Công thức tìm địa chỉ IPR: 
+	IPR Address = 0xE000E400 + (4 x [IRQ Number / 4]) = 0xE000E400 + (4 x Offset) 
+	
+- Ví dụ: ngắt của ngoại vi DMA1 là DMA1_Stream3_IRQn = 14, 
+	- Offset (ví trí thanh ghi) = [IRQ Number / 4 ] = [14 / 4] = [3.5] = 3. Điều này có nghĩa ngắt này nằm trong IPR thứ 3 tính từ địa chỉ cơ sở 0xE000E400
+	- Từ công thức ta có thể tính ra được địa chỉ thanh ghi đó: IPR Address = 0xE000E400 x (4 x 3) = 0xE000E40C 
+
+- Vị trí byte đảm nhận ngắt nào được tính theo công thức: Byte Position = IRQ Number (mod 4)
+	- Ví dụ với IRQ Number = 14 thì vị trí byte đảm nhận ngắt trong thanh ghi ưu tiên ngắt là 14 (mod 4) = 2 => Tại vị trí byte 2
+	
+| Địa chỉ (IPRx)| Byte 3 (Bit 31:24) | Byte 2 (Bit 23:16) | Byte 1 (Bit 15:8) | Byte 0 (Bit 7:0) |
+| 0xE000E400 | IRQ 3 Priority | IRQ 2 Priority | IRQ 1 Priority | IRQ 0 Priority | <-- IPR thứ 1 (cơ sở)
+| 0xE000E404 | IRQ 7 Priority | IRQ 6 Priority | IRQ 5 Priority | IRQ 4 Priority |
+| 0xE000E408 | IRQ 11 Priority| IRQ 10 Priority| IRQ 9 Priority | IRQ 8 Priority |
+| 0xE000E40C | IRQ 15 Priority| IRQ 14 Priority| IRQ 13 Priority| IRQ 12 Priority| <-- IPR thứ 3
+|.....|
+
+- Ví dụ: Thanh ghi IPR tại địa chỉ 0xE000E40C (IPR3) sẽ lưu ưu tiên cho IRQ 12, 13, 14 và 15
+
+3. Vị trí Bit ưu tiên (STM32F401)
+- Trong mỗi byte (8 bits) của thanh ghi IPR, không phải tất cả các bit đều được dùng để xác định mức ưu tiên:
+	- Tổng số bit/byte: 8 bits
+	- Số bit được sử dụng: 4 bit (bit 4-7) 
+	- Số bit không được sử dụng: 4 bit (bit 0-3)
+	
+| Byte (8 Bits) | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
+| Chức năng | P3 | P2 | P1 | P0 | (Unused) | (Unused) | (Unused) | (Unused)|
+
+- P3-P0: 4 bit này lưu trữ giá trị ưu tiên (0-15)
+- Vị trí quan trọng: Giá trị ưu tiên luôn nằm ở 4 bit cao nhất của byte đó
+
+* Tại sao là 4 bit cao nhất ? 
+- Vì khi bạn đặt Preempty Priority là 5, giá trị thực tế của Byte ưu tiên ngắt DMA sẽ là 
+	Gía trị Byte = Ưu tiên x 2^số lượng bit không dùng = 5 x 2^4 = 80
+	- Gía trị 80 (Hex: 0x50) là giá trị mà Kernel RTOS sẽ đọc để xác định mức ưu tiên của DMA ISR
+	

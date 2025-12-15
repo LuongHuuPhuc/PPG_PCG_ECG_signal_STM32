@@ -9,35 +9,40 @@
 extern "C" {
 #endif
 
+#include "Sensor_config.h"
 #include "main.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include "cmsis_os.h"
-#include "Sensor_config.h"
 #include "Logger.h"
 
 // ====== VARIABLES DEFINITION ======
-volatile uint32_t global_sample_id = 0;
-volatile TickType_t global_timestamp = 0;
+#if defined(sensor_config_SYNC_USING)
+
+__attribute__((unused))volatile uint32_t global_sample_id = 0;
+__attribute__((unused))volatile TickType_t global_timestamp = 0;
+
+#endif // sensor_config_SYNC_USING
 
 // ==== FUNCTION DEFINITIONS ====
 /*-----------------------------------------------------------*/
 
 void SensorConfig_Init(void){
-	SERROR_CHECK(Ad8232_init_ver1(&hadc1));
+	SERROR_CHECK(Ad8232_init(&hadc1));
 	uart_printf(">> AD8232 init OK !\r\n");
 
-	SERROR_CHECK(Inmp441_init_ver1(&hi2s2));
+	SERROR_CHECK(Inmp441_init(&hi2s2));
 	uart_printf(">> INMP441 init OK !\r\n");
 
 	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> MAX30102 init OK !\r\n");
 
-#if USING_UART_DMAPHORE
+#ifdef USING_UART_DMAPHORE
 	SERROR_CHECK(Logger_init_ver2());
 	uart_printf(">> LOGGER init OK !\r\n");
-#else
-	SERROR_CHECK(Logger_init_ver1());
+#else // USING_UART_DMAPHORE
+
+	SERROR_CHECK(Logger_init());
 	uart_printf(">> LOGGER init OK !\r\n");
 #endif
 
@@ -50,13 +55,7 @@ void SensorConfig_Init(void){
 // Kiem tra so luong bo nho stack con lai
 void __attribute__((unused))StackCheck(void){
 	UBaseType_t stackleft = uxTaskGetStackHighWaterMark(NULL);
-	uart_printf("[Stack] Stack left: %lu\r\n", (unsigned long)stackleft);
-}
-
-// Them ham callback kiem tra StackOverFlow (ham weak nen co the overwritten)
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName){
-	uart_printf("Stack overflow in %s!\r\n", pcTaskName);
-	Error_Handler();
+	uart_printf("[STACK] Stack left: %lu\r\n", (unsigned long)stackleft);
 }
 
 /*-----------------------------------------------------------*/
@@ -71,6 +70,18 @@ void __attribute__((unused))HeapCheck(void){
 				(unsigned int)heap_min_ever);
 }
 /*-----------------------------------------------------------*/
+
+/**
+ * Ham callback nay se duoc goi de canh bao phat hien StackOverFlow
+ */
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName){
+	taskENTER_CRITICAL();
+
+	uart_printf_fromISR("Stack overflow in %s!\r\n", pcTaskName);
+	Error_Handler();
+
+	taskEXIT_CRITICAL();
+}
 
 #ifdef __cplusplus
 }

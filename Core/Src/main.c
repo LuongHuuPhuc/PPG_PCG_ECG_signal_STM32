@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Sensor_config.h"
 #include "Logger.h"
-#include "FIR_Filter.h"
+#include "Sensor_config.h"
+#include "take_snapsync.h"
 
 /* USER CODE END Includes */
 
@@ -51,9 +51,12 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 I2S_HandleTypeDef hi2s2;
 DMA_HandleTypeDef hdma_spi2_rx;
+
+SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim3;
 
@@ -73,9 +76,14 @@ static void MX_I2S2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_SPI1_Init(void);
+static void MX_I2C2_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
+
+// Dinh nghia trong main.c
+volatile snapshot_sync_t global_snapshot = {0};
 
 /* USER CODE END PFP */
 
@@ -119,6 +127,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
+  MX_SPI1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
   SensorConfig_Init();
@@ -151,29 +161,39 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 
-  /* ----CMSIS-OS API---- */
+#if defined(CMSIS_API_USING)
 
-  // Trigger ADC truc tiep tu TIMER nen priority khong can cao qua
-  osThreadDef(ad8232Task, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-  ad8232_taskId = osThreadCreate(osThread(ad8232Task), NULL);
+  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+  configASSERT(ad8232_taskId);
 
-//  osThreadDef(inmp441Task, Inmp441_task_ver2, osPriorityNormal, 0, 1024 * 2);
-//  inmp441_taskId = osThreadCreate(osThread(inmp441Task), NULL);
+//  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 4);
+//  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
+//  configASSERT(inmp441_taskId);
 
-  osThreadDef(max30102Task, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-  max30102_taskId = osThreadCreate(osThread(max30102Task), NULL);
+  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+  configASSERT(max30102_taskId);
 
   // Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
-  osThreadDef(loggerTask, Logger_two_task, osPriorityAboveNormal, 0, 1024 * 3);
-  logger_taskId = osThreadCreate(osThread(loggerTask), NULL);
+  osThreadDef(loggerTaskName, Logger_two_task, osPriorityHigh, 0, 1024 * 2);
+  logger_taskId = osThreadCreate(osThread(loggerTaskName), NULL);
+  configASSERT(logger_taskId);
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 
-  /* ----FreeRTOS API----*/
-//  TASK_ERR_CHECK(Inmp441_task_ver2, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
-//  TASK_ERR_CHECK(Ad8232_task_ver3, "AD8232", 1024 * 1.5, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
-//  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
-//  TASK_ERR_CHECK(Logger_one_task, "Logger block", 1024 * 2, NULL, tskIDLE_PRIORITY + 5, &logger_task);
+#elif defined(FREERTOS_API_USING)
+
+  TASK_ERR_CHECK(Inmp441_task_ver2, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
+  TASK_ERR_CHECK(Ad8232_task_ver3, "AD8232", 1024 * 3, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
+  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
+  TASK_ERR_CHECK(Logger_one_task, "LOGGER", 1024 * 2, NULL, tskIDLE_PRIORITY + 3, &logger_task);
+
+#else
+
+  uart_printf("You must define CMSIS_API_USING or FREERTOS_API !");
+
+#endif // CMSIS_API_USING
 
   //Check sau khi tao task
   StackCheck();
@@ -338,6 +358,40 @@ static void MX_I2C1_Init(void)
 }
 
 /**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
+
+}
+
+/**
   * @brief I2S2 Initialization Function
   * @param None
   * @retval None
@@ -355,7 +409,7 @@ static void MX_I2S2_Init(void)
   hi2s2.Instance = SPI2;
   hi2s2.Init.Mode = I2S_MODE_MASTER_RX;
   hi2s2.Init.Standard = I2S_STANDARD_PHILIPS;
-  hi2s2.Init.DataFormat = I2S_DATAFORMAT_16B_EXTENDED;
+  hi2s2.Init.DataFormat = I2S_DATAFORMAT_24B;
   hi2s2.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
   hi2s2.Init.AudioFreq = I2S_AUDIOFREQ_8K;
   hi2s2.Init.CPOL = I2S_CPOL_LOW;
@@ -368,6 +422,44 @@ static void MX_I2S2_Init(void)
   /* USER CODE BEGIN I2S2_Init 2 */
 
   /* USER CODE END I2S2_Init 2 */
+
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -461,7 +553,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
@@ -510,7 +602,7 @@ void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
 	(void)(argument);
-	vTaskDelete(defaultTaskHandle);
+	osThreadTerminate(defaultTaskHandle);
   /* USER CODE END 5 */
 }
 
@@ -528,7 +620,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
   /* TIMER co chuc lam diem xuat phat cho cac cam bien dong bo + gop du lieu vao cung 1 khung thoi gian */
 
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   static uint8_t counter_sync = 0;
 
   if(htim->Instance == TIM3){
@@ -536,14 +627,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  // TIMER trigger moi 1ms -> Period count du 32 lan (~32ms) thi Give Semaphore (Trigger Data theo block 32 samples)
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
+
+#if defined(CMSIS_API_USING)
+
+#ifdef sensor_config_SYNC_USING
+		  global_sample_id++;
+		  global_timestamp = osKernelSysTick();
+#else
+		  global_snapshot.sample_id++;
+		  global_snapshot.timestamp = osKernelSysTick();
+
+#endif // sensor_config_SYNC_USING
+
+	      /* MAX va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
+		  osSemaphoreRelease(sem_adcId); //Give Semaphore cho AD8232 sau moi 32ms
+		  osSemaphoreRelease(sem_maxId); //Give Semaphore cho MAX30102 sau moi 32ms
+
+#elif defined(FREERTOS_API_USING)
+		  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+#ifdef sensor_config_SYNC_USING
+		  global_sample_id++;
 		  global_timestamp = xTaskGetTickCountFromISR();
-		  global_sample_id++; //Tang sau 32 sample (32ms) - chi sau khi da ban semaphore
+#else
+		  global_snapshot.sample_id++;
+		  global_snapshot.timestamp = xTaskGetTickCountFromISR();
 
-//		  uart_printf("[DEBUG] Trigger after 32 cycles ! Give Semaphore !\r\n"); //Debug xem co dung 32ms khong
+#endif // sensor_config_SYNC_USING
 
-		  xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
+		  /* MAX va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
 		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
+
+		  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
+#endif // CMSIS_API_USING
+
 	  }
   }
 
@@ -553,7 +672,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
   /* USER CODE END Callback 1 */
 }
 

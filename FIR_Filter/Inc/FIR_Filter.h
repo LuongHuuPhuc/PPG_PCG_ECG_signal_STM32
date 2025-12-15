@@ -63,6 +63,6 @@ EXPORT __attribute__((unused))float fir_window_process(FIRFilter *filter, char *
  *
  * @return tin hieu dau ra y[n] sau khi da thuc hien tich chap
  */
-EXPORT float FIR_Filter(FIRFilter *filter, float input);
+EXPORT float FIR_process_convolution(FIRFilter *filter, float input);
 
 #endif /* INC_FIR_FILTER_H_ */

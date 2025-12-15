@@ -31,7 +31,7 @@ extern "C" {
 	if((expr) != HAL_OK){ \
 		uart_printf("Fail HAL at line %d: %s\r\n", __LINE__, #expr);\
 		HAL_Delay(100);\
-		while(1); \
+		Error_Handler(); \
 	}\
 } while(0)
 
@@ -45,7 +45,7 @@ extern "C" {
 	if(xQueueSendFromISR(logger_queue, (data_ptr), pxHigherPriorityTaskWoken) != pdTRUE){\
 		uart_printf("[WARN] Logger queue full from ISR! \r\n "); \
 	} \
-} while(0) // Dung khi muon send quueu trong cac ham HAL_callback
+} while(0) // Dung khi muon send queue trong cac ham HAL_callback
 
 #define TASK_ERR_CHECK(func, name, stack, param, prio, handle) do { \
 	if(xTaskCreate((void*)func, name, stack, param, prio, handle) != pdPASS){ \
@@ -66,7 +66,6 @@ typedef enum{
 	SENSOR_PCG
 } sensor_type_t;
 
-
 // Cau truc de luu trang thai va gia tri cua cac cam bien
 typedef struct {
 	sensor_type_t type;
@@ -78,7 +77,6 @@ typedef struct {
 	int16_t ecg;
 } __attribute__((unused))sensor_data_t;
 
-
 typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forward declaration
 	sensor_type_t type;
 	uint16_t count; //So luong mau trong mang
@@ -86,12 +84,14 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 	TickType_t timestamp;
 
 	union { // Cac bien nay chia se chung bo nho
-		volatile int16_t ecg[ECG_DMA_BUFFER];
-		struct {
+		volatile int16_t ecg[ECG_DMA_BUFFER]; // ECG
+
+		struct { //PPG
 			volatile uint32_t ir[MAX_FIFO_SAMPLE];
 			volatile uint32_t red[MAX_FIFO_SAMPLE];
 		} ppg;
-		volatile int16_t mic[DOWNSAMPLE_SAMPLE_COUNT]; //PCG
+
+		volatile int32_t mic[DOWNSAMPLE_SAMPLE_COUNT];
 	};
 } sensor_block_t;
 
@@ -103,8 +103,12 @@ extern ADC_HandleTypeDef hadc1;
 extern I2S_HandleTypeDef hi2s2;
 
 // Other externs
+#if defined(sensor_config_SYNC_USING)
+
 extern volatile uint32_t global_sample_id;
 extern volatile TickType_t global_timestamp;
+
+#endif // sensor_config_SYNC_USING
 
 // ==== FUNCTION PROTOTYPE ====
 
@@ -124,7 +128,6 @@ void StackCheck(void);
  * @brief Ham kiem tra bo nho heap con lai
 */
 void HeapCheck(void);
-
 
 #ifdef __cpluplus
 }

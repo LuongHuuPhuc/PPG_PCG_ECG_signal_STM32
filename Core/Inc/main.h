@@ -47,6 +47,12 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
+#define CMSIS_API_USING    		1
+//#define FREERTOS_API_USING		1
+//#define AD8232_ONLY_LOGGER		1
+//#define MAX30102_ONLY_LOGGER	1
+//#define INMP441_ONLY_LOGGER	1
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -61,6 +67,7 @@ void Error_Handler(void);
 #define INT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
+
 extern volatile uint32_t global_sample_id; //Nen de volatile vi co the bi thay doi tu ISR va tu cac task khac
 extern volatile uint32_t global_timestamp; //Dong bo tuyet doi
 

@@ -16,14 +16,16 @@ extern "C" {
 #include "Sensor_config.h"
 #include "Logger.h"
 
+#ifdef USING_UART_DMAPHORE
+
+SemaphoreHandle_t __attribute__((unused)) sem_uart_dma_done = NULL;
+static char uart_buf_dma[UART_TX_BUFFER_SIZE]; // Buffer cho uart_print dung DMA + Semaphore
+
+#endif // USING_UART_DMAPHORE
+
 static char uart_buf[UART_TX_BUFFER_SIZE];  // Buffer cho uart_printf thuong
 
-#if USING_UART_DMAPHORE
-static char uart_buf_dma[UART_TX_BUFFER_SIZE]; // Buffer cho uart_print dung DMA + Semaphore
-#endif
-
 SemaphoreHandle_t sem_uart_log = NULL;
-SemaphoreHandle_t __attribute__((unused)) sem_uart_tx_done = NULL;
 TaskHandle_t logger_task = NULL;
 QueueHandle_t logger_queue = NULL;
 osThreadId logger_taskId = NULL;
@@ -39,6 +41,7 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c){
 		// Ham tren se di qua tung dia chi mot de xem xem co dia chi nao tra ve HAL_OK khong
 		// Moi vong for gia tri cua result se thay doi lien tuc tuy theo address -> Nen dat lam bien cuc bo
 		// De result thanh global thi gia tri cua no se bi ghi de lien tuc -> Anh huong neu co nhieu task goi ham nay
+
 		if(result == HAL_OK){
 			uart_printf("[LOGGER] I2C device found at address: 0x%02X\r\n", address); // Chi luu gia tri address phat hien duoc
 		}
@@ -61,7 +64,8 @@ void isQueueFree(const QueueHandle_t queue, const char *name){
 }
 
 /*-----------------------------------------------------------*/
-HAL_StatusTypeDef Logger_init_ver1(void){
+
+HAL_StatusTypeDef Logger_init(void){
 	HAL_StatusTypeDef ret = HAL_OK;
 
 	// Tao Queue cho Logger
@@ -69,7 +73,6 @@ HAL_StatusTypeDef Logger_init_ver1(void){
 	if(logger_queue == NULL){
 	  uart_printf("[LOGGER] Failed to create logger_queue !\r\n");
 	  ret |= HAL_ERROR;
-	  Error_Handler(); //Thay vi dung while(1) -> Dung quy chuan
 	}
 
 	// Tao Semaphore Mutex cho DMA UART cua Logger
@@ -90,19 +93,36 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 	int len = vsnprintf(uart_buf, sizeof(uart_buf), fmt, args);
 	va_end(args);
 
-	// Phai vao RTOS xong, khi Scheduler chay thi Semaphore moi chay
+	if(len <= 0) return;
 
+	// Phai vao RTOS xong, khi Scheduler chay thi Semaphore moi chay
 	// Neu Semaphore da khoi tao xong va Scheduler dang chay (vao RTOS)
 	if((sem_uart_log != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
-		if(xSemaphoreTake(sem_uart_log, portMAX_DELAY) == pdTRUE){
-			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, len, pdMS_TO_TICKS(100)); // Blocking mode
+
+		// Lay Semaphore de doc quyen truy cap UART
+		if(xSemaphoreTake(sem_uart_log, pdMS_TO_TICKS(100)) == pdTRUE){
+			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, len, portMAX_DELAY); // Blocking mode
+
+			// Tha Semaphore sau khi truyen UART xong
 			xSemaphoreGive(sem_uart_log);
 		}
 	}else{
-		// Neu khong Semaphore chua duoc tao hoac Scheduler chua chay (vi du goi truoc khi RTOS bat dau)
+		// Neu khong Semaphore chua duoc tao hoac Scheduler chua chay (non-RTOS context) (vi du goi truoc khi RTOS bat dau)
 		HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, len, pdMS_TO_TICKS(100)); // Blocking mode
 	}
+}
 
+__attribute__((weak, unused)) void uart_printf_fromISR(const char *fmt,...){
+	char uart_isr_buf[256];
+	va_list args;
+	va_start(args, fmt);
+	int len = vsnprintf((char*)uart_isr_buf, sizeof(uart_isr_buf), fmt, args);
+	va_end(args);
+
+	if(len < 0) return;
+
+	HAL_UART_Transmit(&huart2, (uint8_t*)uart_isr_buf, len, pdMS_TO_TICKS(100));
+	// ....
 }
 
 /*-----------------------------------------------------------*/
@@ -130,11 +150,7 @@ static inline void ResetSensor_flag(sensor_check_t *check){
 }
 /*-----------------------------------------------------------*/
 
-void Logger_task_block(void const *pvParameter){
-	// Do PCG - 8000Hz (32ms thu dc 256 samples), con MAX va ADC la 1000Hz (32ms thu duoc 32 sample)
-	// -> 1 sample cua PCG ung voi 8 samples cua PPG + ECG
-	// -> Log voi 1 sample ECG + 1 sample PPG + 1 sample PCG sau khi downsample tu 8kHz ve 1kHz (lay trung binh mau)
-
+void Logger_three_task(void const *pvParameter){
 	(void)(pvParameter);
 	uart_printf("LOGGER task started !\r\n");
 
@@ -147,7 +163,7 @@ void Logger_task_block(void const *pvParameter){
 
 	while(1){
 		memset(&block, 0, sizeof(sensor_block_t));
-		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE){
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(200)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_ECG:
 				ecg_block = block; // Copy du lieu tu block sang ecg_block neu la type ECG
@@ -237,7 +253,7 @@ void Logger_two_task(void const *pvParameter){
 
 	while(1){
 		memset(&block, 0, sizeof(sensor_block_t));
-		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE){
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(150)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_ECG:
 				ecg_block = block; // Copy du lieu tu block sang ecg_block neu la type ECG
@@ -327,9 +343,9 @@ void Logger_one_task(void const *pvParameter){
 			.mic_ready = false
 	};
 
-	memset(&block, 0, sizeof(sensor_block_t));
 	while(1){
-		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(MAX_TIMEOUT)) == pdTRUE){
+		memset(&block, 0, sizeof(sensor_block_t));
+		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(100)) == pdTRUE){
 			switch(block.type){
 			case SENSOR_PCG:
 				pcg_block = block;
@@ -346,26 +362,54 @@ void Logger_one_task(void const *pvParameter){
 			}
 
 			if(check.ecg_ready || check.max_ready || check.mic_ready){
-//				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ecg_block.sample_id, ecg_block.count, ecg_block.timestamp);
+
+#if defined(MAX30102_ONLY_LOGGER)
+
+				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ppg_block.sample_id, ppg_block.count, ppg_block.timestamp);
 
 				for(uint16_t i = 0; i < MAX_COUNT; i++){
+					uart_printf("%lu\r\n", ppg_block.ppg.ir[i]);
+				}
+
+				isQueueFree(logger_queue, "LOGGER");
+
+				ResetSensor_flag(&check);
+
+#elif defined(AD8232_ONLY_LOGGER)
+
+//				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ecg_block.sample_id, ecg_block.count, ecg_block.timestamp);
+
+				for(uint16_t i = 0; i < ecg_block.count; i++){
 					uart_printf("%d\r\n", ecg_block.ecg[i]);
 				}
 
 				isQueueFree(logger_queue, "LOGGER");
 
 				ResetSensor_flag(&check);
+
+#elif defined(INMP441_ONLY_LOGGER)
+
+				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
+
+				for(uint16_t i = 0; i < MAX_COUNT; i++){
+					uart_printf("%lu\r\n", pcg_block.mic[i]);
+				}
+
+				isQueueFree(logger_queue, "LOGGER");
+
+				ResetSensor_flag(&check);
+
+#endif // SENSOR_MACROS
 			}
 		}else{
 			uart_printf("[LOGGER] Logger queue timeout ! \r\n");
 		}
-
 	}
-
 }
 
 /*-----------------------------------------------------------*/
-#if USING_UART_DMAPHORE
+
+#ifdef USING_UART_DMAPHORE
 
 HAL_StatusTypeDef Logger_init_ver2(void){
 	HAL_StatusTypeDef ret = HAL_OK;
@@ -386,14 +430,14 @@ HAL_StatusTypeDef Logger_init_ver2(void){
 	}
 
 	// Tao Semaphore Binary de kiem tra khi DMA cua UART xong
-	sem_uart_tx_done = xSemaphoreCreateBinary();
-	if(sem_uart_tx_done == NULL){
+	sem_uart_dma_done = xSemaphoreCreateBinary();
+	if(sem_uart_dma_done == NULL){
 		uart_printf("[LOGGER] Failed to create Semaphores Binary !\r\n");
 		ret |= HAL_ERROR;
 	}
 
 	// Give Semaphores lan dau tien cho DMA de Take khong bi block
-	if(xSemaphoreGive(sem_uart_tx_done) != pdTRUE){
+	if(xSemaphoreGive(sem_uart_dma_done) != pdTRUE){
 		uart_printf("[LOGGER] Failed to Give Semaphores Binary for first time !\r\n");
 		ret |= HAL_ERROR;
 	}
@@ -404,14 +448,14 @@ HAL_StatusTypeDef Logger_init_ver2(void){
 __attribute__((weak, unused)) void uart_printf_dmaphore(const char *buffer, uint16_t buflen){
 
 	// Neu Semaphore da khoi tao xong va Scheduler dang chay (vao RTOS)
-	if((sem_uart_log != NULL) && (sem_uart_tx_done != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
+	if((sem_uart_log != NULL) && (sem_uart_dma_done != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
 
 		// Mutex khi khoi tao mac dinh no o trang thai "available" nen Take Mutex duoc luon
 		if(xSemaphoreTake(sem_uart_log, portMAX_DELAY) == pdTRUE){
 			if(buflen > 0){
 
 				// Nhan Semaphore tu callback de bat dau ghi data vao DMA
-				if(xSemaphoreTake(sem_uart_tx_done, portMAX_DELAY) == pdTRUE){
+				if(xSemaphoreTake(sem_uart_dma_done, portMAX_DELAY) == pdTRUE){
 
 					// Copy du lieu an toan
 					uint16_t copy_len = buflen;
@@ -421,7 +465,7 @@ __attribute__((weak, unused)) void uart_printf_dmaphore(const char *buffer, uint
 					// Bat dau ghi vao DMA bang Non-blocking mode
 					HAL_StatusTypeDef ret = HAL_UART_Transmit_DMA(&huart2, (uint8_t*)uart_buf_dma, (uint16_t)copy_len);
 					if(ret != HAL_OK){
-						xSemaphoreGive(sem_uart_tx_done); // Tra token cho DMA
+						xSemaphoreGive(sem_uart_dma_done); // Tra token cho DMA
 						xSemaphoreGive(sem_uart_log); // Release mutex
 						return;
 					}
@@ -448,7 +492,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 		// Giai phong Binary Semaphore sau khi ghi DMA hoan tat
-		xSemaphoreGiveFromISR(sem_uart_tx_done, &xHigherPriorityTaskWoken);
+		xSemaphoreGiveFromISR(sem_uart_dma_done, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }

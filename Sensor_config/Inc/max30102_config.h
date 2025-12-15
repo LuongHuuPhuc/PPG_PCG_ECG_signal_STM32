@@ -28,25 +28,26 @@ extern "C" {
 // Extern variables
 extern max30102_t max30102_obj;
 extern max30102_record record;
-extern __attribute__((unused))uint32_t ir_buffer[MAX_FIFO_SAMPLE];
-extern __attribute__((unused))uint32_t red_buffer[MAX_FIFO_SAMPLE]; //Bien luu gia tri tu FIFO
+extern uint32_t ir_buffer[MAX_FIFO_SAMPLE];
+extern uint32_t red_buffer[MAX_FIFO_SAMPLE]; //Bien luu gia tri tu FIFO
 
 // Extern protocol variables
 extern I2C_HandleTypeDef hi2c1;
 
 // Task & RTOS
+#if defined(FREERTOS_API_USING)
+
 extern TaskHandle_t max30102_task;
 extern SemaphoreHandle_t sem_max;
+
+#elif defined(CMSIS_API_USING)
+
+extern osSemaphoreId sem_maxId;
 extern osThreadId max30102_taskId;
 
-// ==== FUCNTION PROTOTYPE ====
+#endif // CMSIS_API_USING
 
-/**
- * @note - Ham xu ly ngat (ISR) tu chan INT_Pin cua cam bien
- * \note - Ham callback duoc goi moi khi co ngat ngoài (EXTI) xay ra tren 1 chan GPIO
- * \note - Luc do chan GPIO ngat se duoc active-low de thuc thi ngat
- */
-extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+// ==== FUCNTION PROTOTYPE ====
 
 /**
  * @brief Ham khoi tao & cau hinh cam bien `ver1`
@@ -56,20 +57,6 @@ extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
  * @note Ham khoi tao su dung ngat (interrupt)
  */
 __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c);
-
-/**
- * @brief Ham doc du lieu va xu ly ngat
- *
- * @note Ham phuc vu cho version 1 (static function)
- */
-__attribute__((unused)) uint8_t Max30102_interrupt_process(max30102_t *obj);
-
-/**
- * @brief Ham thuc thi luong xu ly `ver1`
- *
- * @note Task dung interrupt de trigger moi khi co data moi
- */
-__attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham khoi tao & cau hinh cam bien `ver2`
@@ -82,6 +69,13 @@ __attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
  * \note Semaphore khac voi Mutex o co che Lock/Unlock va Priority
  */
 HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
+
+/**
+ * @brief Ham thuc thi luong xu ly `ver1`
+ *
+ * @note Task dung interrupt de trigger moi khi co data moi
+ */
+__attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham thuc thi luong xu ly `ver2`

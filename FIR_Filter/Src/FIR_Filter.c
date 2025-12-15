@@ -24,7 +24,7 @@ void fir_init(FIRFilter *filter){
 	filter->index = 0;
 }
 
-float FIR_(FIRFilter *filter, float input){
+float FIR_process_convolution(FIRFilter *filter, float input){
 	filter->buffer[filter->index] = input; //Ghi vao buffer truoc, xu ly index sau
 	float output = 0.0f;
 	int32_t buf_idx = filter->index;
