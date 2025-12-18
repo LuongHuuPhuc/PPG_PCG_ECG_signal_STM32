@@ -1,3 +1,165 @@
+# More about AD8232 sensor and how to use it
+- Datasheet: ![AD8232 datasheet](https://www.alldatasheet.com/datasheet-pdf/download/527942/AD/AD8232.html)
+
+## OVERVIEW - AD8232 là gì ? 
+- AD8232 là một Analog Front-End (AFE) chuyên dụng cho đo tín hiệu ECG
+- IC này không phải là một ADC mà có nhiệm vụ:
+	- Khuếch đại tín hiệu ECG rất nhỏ (uV-mV)
+	- Lọc nhiễu (DC offset, motion artifact, nhiễu điện lưới)
+	- Đưa tín hiệu về mức analog phù hợp để MCU đọc ADC 
+	- Nói chung đây là 1 IC tương tự 
+	
+
+![](../Images/AD8232_FunctionBlockDiagram.png)
+
+## FEATURES 
+- Được tích hợp đầy đủ **Single-lead ECG front-end** (Khối tiền xử lý analog ECG cho 1 kênh đo trước khi vào ADC. Tức là trong 3 điện cực (electrode) của thiết bị cung cấp thì 1 lead (= 1 phép đo hiệu điện thế) bằng cách dùng 2 điện cực đo (LA - RA) **(tín hiệu chung - Common Mode signal)**, có thể thêm 1 điện cực tham chiếu RL (RLD) nhưng không tạo thêm lead mới. AD8232 chỉ nhìn tim ở 1 góc duy nhất).
+- Dòng tiêu thụ thấp **~170µA**
+- **CMRR (Common Mode Rejection Ratio)** (tỷ lệ loại bỏ chế độ chung: là tỷ lệ giữa độ lợi điện áp vi sai (Ad) và độ lợi điện áp chế độ chung (Acm) trong bộ khuếch đại vi sai như Op-Amp. Nó là chỉ số đo lường khả năng loại bỏ tín hiệu xuất hiện như nhau (đồng thời và cùng pha) trên cả 2 đầu vào (tín hiệu chế độ chung). Một bộ khuếch đại vi sai lý tưởng sẽ có CMRR vô hạn, nhưng thực tế càng cao càng tốt) cao: ~80dB (DC ->60Hz) -> Giảm nhiễu mạnh ở 50/60Hz
+- Hỗ trợ 2-electrode hoặc 3-electrode
+- Gain cố định **G = 100 (Instrumentation Amplifier)**.
+- **DC blocking**: Chấp nhận offset điện cực lên tới ±300 mV
+- **High-pass filter**: 
+	- 2-pole, tần số cắt điều chỉnh bằng linh kiện ngoài 
+	- Dùng để loại bỏ baseline wander và motion artifact (chuyển động cơ thể) 
+- **Low-pass filter**: 
+	- 3-pole, dùng Op-Amp A1 tích hợp bên trong 
+	- Giảm nhiễu cao tần, EMG
+- **Right Leg Drive (RLD)** (điện cực tham chiếu) tích hợp -> Cải thiện CMRR
+- **Fast Restore**: phục hồi nhanh sau khi electrode bị tháo/lắp
+- **Lead-offs detection** (Phát hiện mất kết nối điện cực) - Điều này giúp đảm bảo tính chính xác và liên tục của việc đo (chạy bằng cách liên tục kiểm tra trở kháng giữa các điện cực): 
+	- DC mode (3-electrode)
+	- AC mode (2-electrode)
+- **Reference buffer** tạo virtual ground (mid-supply): Tạo "GND" giả để xử lý tín hiệu âm-dương bằng nguồn đơn. Nó là 1 mức điện áp giả đóng vai trò "0V" cho tín hiệu Analog thường nằm giữa VCC và GND. Giá trị đó tầm 1.65V
+	- Vì AD8232 chạy **nguồn đơn (single-supply)** mà tín hiệu ECG thật là tín hiệu xoay chiều quanh 0V. Nhưng Op-Amp không xử lý được điện áp âm -> Sinh ra Virtual Ground bằng cách nâng tín hiệu ECG lên quanh giá trị GND giả đó
+	- Tạo ra điện áp ổn định, trở kháng thấp. Xuất ra tại chân **REFOUT**
+- **Op-Amp Rail-to-rail output**: Ngõ ra tín hiệu có thể giao động rất sát 2 "rail (thanh ray)"nguồn GND và VCC (Low Rail = GND, High Rail = VCC (3.3V))
+- Single Supply: 2.0V - 3.5V 
+- ESD protection: lên tới 8kV (HBM)
+- Chân shutdown (SND) cho thiết bị chạy bằng pin 
+
+## AD8232 BÊN TRONG GỒM NHỮNG KHỐI GÌ ? 
+- AD8232 tích hợp nhiều khối analog chuyên dụng 
+
+![AD8232 Schematic Diagram](../Images/AD8232_SchematicDiagram.png)
+
+**1. Instrumentation Amplifier (IA)**
+- Khuếch hiệu điện thế giữa 2 điện cực 
+- Gain cố định: 100 V/V
+- Kiến trúc **indirect current feedback**
+- Cho phép: 
+	- Khuếch đại ECG
+	- Đồng thời chặn DC offset lớn (±300 mV)
+- Output của IA nằm tại chân **IAOUT**. Nó là đầu ra của tín hiệu sau khi đã được xử lý nội bộ (khuếch đại, lọc nhiễu,...bên trong)
+
+![](../Images/AD8232_IA.png)
+
+**2. High-pass Filter (DC blocking)**
+
+![AD8232_HPF](../Images/AD8232_HPF.png)
+
+- Kiến trúc HPF cho AD8323 không phải Op-amp thường mà được thiết kế theo kiến trúc đặc biệt bao gồm HPA - DC blocking amplifier, Fast restore switches và đường dây feedback đặc biệt của **IA**
+- Khối HPA có 2 chân giao tiếp: 
+	- **HPDRIVE**: là ngõ ra điều khiển (drive output) của khối HPA (High-Pass Amplifier). Mục tiêu: Dùng để bơm xả điện tích vào tụ HPF, kéo mức DC của IAOUT về **REFOUT** (tay đẩy)
+	- **HPSENSE**: là ngõ vào cảm nhận (sense input) của khối HPA. Nối vào điểm giữa R-C của mạch HPF. Để HPA "nhìn xem" mức DC hiện tại đang lệch bao nhiêu (mắt đo)
+	- **RC ngoài**: tích hợp vào 2 chân trên để tạo thành 1 bộ HPF mạnh hơn
+- **HPSENSE** - đo sai lệch DC và **HPDRIVE** - phản hồi để triệt DC -> DC offset bị loại bỏ, AC(ECG) đi qua
+- Mục đích: Loại bỏ Electrode half-cell potential, Baseline wander 
+
+![](../Images/AD8323_HPF.png)
+
+- Ngoài ra, theo datasheet, người dùng cũng có thể tự cấu hình thêm HPF bằng mạch tương tự bên ngoài (lên đến 3-pole) để có thể tăng khả năng lọc nhiễu, thay đổi tần số cắt tùy ý. Nếu không mắc mạch RC thì không lọc nhiễu tốt được.
+- Các cấp độ lọc HPF: 
+	- Level 1: HPF 1 pole (mặc định) 
+		- Dùng DC-blocking bên trong, mắc 1 RC, ít méo dạng, phổ biến cho ECG waveform 
+	- Level 2: HPF 2 pole 
+		- Mắc thêm 1 RC ngoài ở sau IA, kết hợp với SW + fast restore, lọc baseline tốt hơn 
+	- Level 3: HPF 3 pole 
+		- Kết hợp HPF nội, RC ngoài, AC coupling sau IA
+
+![AD8232_altHPF](../Images/AD8232_altHPF.png)
+
+- Công thức tính tần số cắt: 
+	
+$$\f_{c} = frac{1}{2\piRC x 100}$$
+
+> Hệ số 100 ở trên công thức là do gain của IA
+- HPF của AD8232 có sẵn kiến trúc bên trong, nhưng...HPF không tự chạy nếu không tự mắc linh kiện RC bên ngoài. Đặc biệt nếu cần mạnh hơn thì có thể thêm các pole bên ngoài
+
+** 3. Low-pass Filter + Gain Stage (Op-Amp A1)
+- **Op-Amp A1 uncommitted rail-to-rail** tích hợp. Đây là bộ khuếch đại thuật toán có dải điện áp đầu vào (input) và đầu ra (output) có thể dao động rất gần với các đường ray nguồn cung cấp (cả dương và âm/đất)
+	- Op-Amp đẩy điện áp ra gần 0V và kéo lên gần VCC. Ví dụ AD82323 (VCC = 3.3V) -> Vout ~ 0.1V -> 3.2V (tùy dải)
+	- Cho phép tận dụng tối đa phạm vi điện áp hoạt động, đặc biệt hữu ích trong các hệ thống nguồn đơn (single-supply) điện áp thấp
+	- Nếu không sử dụng rail-to-rail, Op-Amp thường chỉ ra được từ 0.8V - 2.5V (ví dụ) -> Mất **dynamic range**, ECG nhỏ dễ bị méo
+
+- Op-Amp A1 này ngoài việc được cấu hình **rail-to-rail output**, USER còn có thể cấu hình nó: 
+	- Buffer: Chỉ nối voltage follower, không lọc, giữ nguyên biên độ
+	- **Khuếch đại thêm**: Thêm gain sau IA. Ví dụ tổng gain = 100 (Gain mặc định)x 11 = 1100
+	- **Tạo LPF** (Sallen Key, lọc RC,...): Đây chính là lúc bạn tự cấu hình LPF cho thiết bị. 
+		- Nếu dùng mạch RC đơn giản -> LPF 1 pole
+		- Thiết kế mạch Sallen-Key -> LPF 2 pole (chuẩn ECG)
+		- Cutoff do USER quyết định
+
+- Lưu ý: AD8232 chỉ có sẵn kiến trúc cho HLF bên trong, còn LPF là do người dùng tự thiết kế bên ngoài cho Op-Amp A1 tích hợp bên trong. 
+	- Bên trong chỉ có 1 Op-Amp rời (Op-Amp A1). Op-Amp này không tự lọc, không tự có cutoff, chỉ là Op-Amp trống. Muốn thành LPF -> Phải tự mắc linh kiện bên ngoài
+	- Nhà sản xuất chỉ tích hợp sẵn Op-Amp còn lọc thế nào là tùy theo ứng dụng của người dùng
+
+![](../Images/AD8232_altLPF.png)
+
+- Tần số cắt LPF thường dùng: 
+	- 40Hz (ECG waveform)
+	- 20-25Hz (Heart rate only)
+
+### Note: Tuy nhiên, đó chỉ là về phần IC, còn module AD8232 màu đỏ trên thị trường đã được tích hợp sẵn các linh kiện RC để lọc HPF và LPF. Người dùng chỉ cần cấp nguồn và đọc OUTPUT
+
+**4. Right Leg Drive (RLD)**
+- Đảo pha **Common-Mode voltage** (Điện áp chung)
+- Bơm ngược lại cơ thể qua điện cực RL
+- Mục tiêu: Giảm nhiễu 50/60Hz (như đã đề cập trên CMRR), ổn định mức **Common-Mode**
+- Khuyến nghị: Có điện trở hạn dòng ≥ 330 kΩ, dòng qua cơ thể < 10 µA (an toàn sinh học)
+- Đầu ra của Op-Amp A2
+
+![](../Images/AD8323_RLD.png)
+
+**5. Reference Buffer (Virtual Ground)**
+- Tạo mức điện áp Vref ~ VCC / 2
+- Output tại chân **REFOUT**
+- Tất cả tín hiệu ECG giao động quanh mức này
+- MCU ADC nên dùng **REFOUT** làm reference hoặc mid-scale
+- Tín hiệu tại chân **OUTPUT** là Analog Voltage với mức điện áp giao động quanh **REFOUT**
+
+![](../Images/AD8323_ReferenceBuffer.png)
+
+**6. Fast Restore Circuit**
+- Kích hoạt khi IA bị saturation (do electrode off, di chuyển mạnh)
+- Hoạt động: Tạm thời tăng tần số cắt HPF, xả nhanh điện tích trên tụ 
+- Giúp tín hiệu ổn định lại trong vài chục ms, không phải chờ vài giây như HPF thông thường
+
+![](../Images/AD8323_FastRestoreCircuit.png)
+
+**7. Leads-Off Detection**
+- DC Mode (3 điện cực): 
+	- Phát hiện điện cực nào bị rơi
+	- Xuất tín hiệu tại chân **LOD+** và **LOD-**
+	
+![](../Images/AD8323_DCLeadOffs.png)
+
+- AC Mode (2 điện cực):
+	- Dùng dòng AC ~ 100kHz, 200nA
+	- Chỉ phát hiện có bị rơi hay không, không phân biệt điện cực
+	
+![](../Images/AD8323_ACLeadOffs.png)
+
+## ĐƠN VỊ TÍN HIỆU ECG TRONG AD8323
+
+|Giai đoạn|Đơn vị|
+|---------|------|
+|Trên da| µV – mV|
+|Sau IA| mV - V|
+|Chân OUT| Volt(Analog)|
+|ADC MCU|Code số (0 -> 2ⁿ−1)|
+
+
 # More about INMP441 sensor and how to use it
 - Datasheet: ![INMP441 datasheet](https://www.alldatasheet.com/view.jsp?Searchword=Inmp441%20datasheet&gad_source=1&gad_campaignid=1437346752&gclid=Cj0KCQiA5uDIBhDAARIsAOxj0CFfq9F_HSslDNU-THqFUq_C06z7uZzPhY20R8oG9GdGnRkCX6TjEKwaAhi8EALw_wcB)
 

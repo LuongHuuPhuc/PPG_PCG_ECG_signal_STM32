@@ -100,3 +100,18 @@ B. Cấu trúc thanh ghi IPR (Interrupt Priority Register) - thanh ghi ưu tiên
 	Gía trị Byte = Ưu tiên x 2^số lượng bit không dùng = 5 x 2^4 = 80
 	- Gía trị 80 (Hex: 0x50) là giá trị mà Kernel RTOS sẽ đọc để xác định mức ưu tiên của DMA ISR
 	
+	
+### DEBUG 3
+! Đồng bộ 2 cảm biến PPG và ECG. 
+- Ban đầu 2 task chạy được ổn định và sau đó bị lệch pha 1 chu kỳ TIMER 
+- Lý do (Chủ quan và khách quan): 
+	+ Priority của task 
+	+ Snapshot tham số đồng bộ bằng phép gán 2 lần (thông qua hàm take_snapshot()) ma khong gan truc tiep bien toan cuc do vao luon
+	+ Scheduler không chạy 2 task cùng lúc mà chạy luôn có ưu tiên giữa các task. 
+		- Thực chất song song trên CPU 1 core là CPU switch context giữa các thread rất nhanh, thoạt nhin có vẻ là song song nhưng là xen kẽ tuần tự cực nhanh
+		- OS quản lý cái này bằng cách phát "time-slice" cho từng thread.
+	+ Task trước thì đọc tham số đồng bộ trước sau đó mới đến bước xử lý 
+	+ Task sau do trễ tích lũy của task trước nên chưa kịp lấy tham số đồng bộ trước đó thì TIMER đã lại trigger số mới, đến lúc task sau chạy thì đọc trước giá trị mới
+		- Giá trị đã bị thay đổi trước khi task sau chạy ! -> là Race condition cổ điển
+		- Nguyên nhân đến từ hàm 
+=> Chốt lại: Nếu timestamp được tạo trong ISR, thì timestamp PHẢI được truyền từ ISR sang task -> Không được đọc lại global trong task

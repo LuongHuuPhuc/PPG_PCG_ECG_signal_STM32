@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -129,6 +130,7 @@ int main(void)
   MX_TIM3_Init();
   MX_SPI1_Init();
   MX_I2C2_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
   SensorConfig_Init();
@@ -163,20 +165,21 @@ int main(void)
 
 #if defined(CMSIS_API_USING)
 
-  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
-  configASSERT(ad8232_taskId);
+//  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+//  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+//  configASSERT(ad8232_taskId);
 
-//  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 4);
-//  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
-//  configASSERT(inmp441_taskId);
+  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityHigh, 0, 1024 * 3);
+  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
+  configASSERT(inmp441_taskId);
 
-  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
-  configASSERT(max30102_taskId);
+  // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
+//  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+//  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+//  configASSERT(max30102_taskId);
 
   // Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
-  osThreadDef(loggerTaskName, Logger_two_task, osPriorityHigh, 0, 1024 * 2);
+  osThreadDef(loggerTaskName, Logger_one_task, osPriorityHigh, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(loggerTaskName), NULL);
   configASSERT(logger_taskId);
 
@@ -628,6 +631,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
 
+		  // TIMER chi update va chot snapshot parameter
 #if defined(CMSIS_API_USING)
 
 #ifdef sensor_config_SYNC_USING
@@ -639,7 +643,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 #endif // sensor_config_SYNC_USING
 
-	      /* MAX va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
+	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
 		  osSemaphoreRelease(sem_adcId); //Give Semaphore cho AD8232 sau moi 32ms
 		  osSemaphoreRelease(sem_maxId); //Give Semaphore cho MAX30102 sau moi 32ms
 
@@ -655,7 +659,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 #endif // sensor_config_SYNC_USING
 
-		  /* MAX va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
+	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
 		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
 		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
 

@@ -43,12 +43,12 @@ extern "C" {
 // Macros
 #define PCG_SAMPLE_RATE	 			8000 // 8000Hz (Hardware)
 #define TARGET_SAMPLE_RATE			1000 // 1000Hz (desired)
-#define DOWNSAMPLE_FACTOR			(PCG_SAMPLE_RATE / TARGET_SAMPLE_RATE) //8
+#define DOWNSAMPLE_FACTOR			(PCG_SAMPLE_RATE / TARGET_SAMPLE_RATE) // 8
 
-#define PCG_DMA_BUFFER   			1024 //bytes (8000Hz trong 32ms)
+#define PCG_DMA_BUFFER   			1024u //bytes (8000Hz trong 32ms)
 #define I2S_SAMPLE_COUNT 			(PCG_DMA_BUFFER / sizeof(int32_t)) // Desired 256 samples (Sample that)
-#define I2S_DMA_FRAME_COUNT			(I2S_SAMPLE_COUNT * 2) // DMA data (dung de ghep 2 frame HALF-WORD)
-#define I2S_HALF_SAMPLE_COUNT 		(I2S_SAMPLE_COUNT / 2)
+#define I2S_DMA_FRAME_COUNT			(I2S_SAMPLE_COUNT * 2u) // DMA data (dung de ghep 2 frame HALF-WORD) = So lan DMA transfer
+#define I2S_HALF_SAMPLE_COUNT 		(I2S_SAMPLE_COUNT / 2u)
 #define DOWNSAMPLE_SAMPLE_COUNT		(I2S_SAMPLE_COUNT / DOWNSAMPLE_FACTOR) // 32 samples (mat mau do ep du lieu xuong 32)
 
 // Extern protocol variable cho function trong .c
@@ -182,6 +182,20 @@ void Inmp441_task_ver2(void const *pvParameter);
  */
 __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter);
 
+/**
+ * @brief Ham debug xem frame nao duoc truyen truoc den thanh ghi
+ * tu cam bien INMP441 bang cach in ra 10 sample dau
+ *
+ * Thu tu nao dung thi se thay (s_..._first & 0xFF) thuong xuyen ~ 0x00 (hoac rat gan 0 voi nhieu)
+ * Thu tu nao sai thi low byte se nhay loan len
+ *
+ * @note Trong datashett, INMP441 co bit order la left-justified (MSB se sinh ra truoc)
+ * va truyen data theo frame 32-bit (chi co 24-bit co nghia, 8-bit cuoi la padding)
+ * Frame HIGH tuong duong voi phan chua bit MSB, frame LOW tuong duong voi phan chua bit LSB
+ *
+ * Data duoc gui vao thanh ghi voi Frame Order la HIGH frame first (MSB truoc) roi sau do moi den LOW
+ */
+__attribute__((unused)) void Inmp441_frame_debug(volatile uint16_t *inputBuffer);
 
 #ifdef __cplusplus
 }

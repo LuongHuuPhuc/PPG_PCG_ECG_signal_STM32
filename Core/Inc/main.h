@@ -51,7 +51,7 @@ extern "C" {
 //#define FREERTOS_API_USING		1
 //#define AD8232_ONLY_LOGGER		1
 //#define MAX30102_ONLY_LOGGER	1
-//#define INMP441_ONLY_LOGGER	1
+#define INMP441_ONLY_LOGGER	1
 
 /* USER CODE END EM */
 

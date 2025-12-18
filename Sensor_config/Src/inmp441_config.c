@@ -91,6 +91,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 	int32_t sum;
 
 	uart_printf("INMP441 task started !\r\n");
+	memset(&block, 0, sizeof(sensor_block_t));
 
 	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz)
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer32, I2S_SAMPLE_COUNT * 2) != HAL_OK){
@@ -109,7 +110,6 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Block task cho den khi DMA hoan tat (bao ve tu RxCpltCallback)
 
-				memset(&block, 0, sizeof(sensor_block_t));
 				block.type = SENSOR_PCG;
 
 #ifdef sensor_config_SYNC_USING
@@ -220,7 +220,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
  * Du 2 lan DMA -> co duoc 1 sample frame 32-bit. No duoc can chinh vao 24-bit cao (bit[31:8] cua thanh ghi Memory do (32-bits).
  * De dam bao du lieu 24-bit xuat ra la so co dau, ta can mo rong dau (sign extension) sample tu 24-bit len 32-bit
  */
-static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sync_t *snap){
+__attribute__((always_inline)) static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sync_t *snap){
 	uint16_t idx_out = 0; // Duy tri gia tri cho bien
 	uint16_t decimation_index = 0; // Chi so decimation de dem xem da du 8 mau de thuc hien decimate chua
 
@@ -228,8 +228,8 @@ static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sy
 
 #ifdef sensor_config_SYNC_USING
 
-	block->timestamp = snap.timestamp;
-	block->sample_id = snap.sample_id; //Danh dau thoi diem -> dong bo
+	block->timestamp = snap->timestamp;
+	block->sample_id = snap->sample_id; //Danh dau thoi diem -> dong bo
 
 #else
 	UNUSED(snap); // Con tro snap khong can dung vi da luu truc tiep bien dong bo
@@ -244,7 +244,7 @@ static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sy
 
 		// 1. Doc buffer16[] (buffer luu data DMA) tu Memory de ghep 2 frame LOW va HIGH lai thanh 1 sample 32-bit dung nghia
 		// Hai gia tri lien tiep tu buffer16[] se ra duoc sample co nghia -> Lam den khi nao du I2S_SAMPLE_COUNT sample
-
+		// DMA day HIGH half-word ra truoc, LOW half-word ra sau
 		uint16_t FRAME_HIGH = buffer16[2u * i + 0u]; // MSB Truoc
 		uint16_t FRAME_LOW = buffer16[2u * i + 1u];  // Sau
 
@@ -252,7 +252,7 @@ static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sy
 		// 32-bit nay se nam o [31:0] nhung vi tri [7:0] khong co y nghia vi data chi nam o [31:8]
 		uint32_t sample32bit = ((uint32_t)FRAME_HIGH << 16) | (uint32_t)FRAME_LOW;
 
-		// 3. Xu ly dau cua sample32bit (noi dung cua thanh ghi 32-bit) ve 24-bit co y ngghia va can chinh dau
+		// 3. Xu ly dau cua sample32bit (noi dung cua thanh ghi 32-bit) ve 24-bit co y nghia va can chinh dau
 		// Dich phai 8-bit de thuc hien mo rong dau neu co so am cho 24-bit
 		int32_t sample24bit = (int32_t)(sample32bit) >> 8; // Gio sample24 la signed 24-bit trong int32_t
 
@@ -286,9 +286,11 @@ void Inmp441_task_ver2(void const *pvParameter){
 	uart_printf("INMP441 task started !\r\n");
 	memset(&block, 0, sizeof(block));
 
-	// buffer16: Buffer chua frame data HALF-WORD tu register SPI->DR truyen vao Memory
+	// buffer16: Buffer chua frame data HALF-WORD tu register SPI->DR truyen vao Memory (kich thuoc phai bang so lan DMA transfer)
 	// I2S_DMA_FRAME_COUNT: So lan DMA transfer tu register
-	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer16, I2S_DMA_FRAME_COUNT) != HAL_OK){ // 256 sample 24-bit
+	// Tuy nhien trong ham HAL_I2S_Receive_DMA da xu ly luon viec nhan doi Size (hi2s->RxXferSize = Size << 1U)
+	// neu frame > 16-bit (24/32-bit) roi nen chi can truyen vao Size = I2S_SAMPLE_COUNT la duoc roi (so sample count)
+	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){ // 256 sample 24-bit
 		uart_printf("[INMP441] HAL_I2S_Receive_DMA failed !\r\n");
 	}
 
@@ -296,16 +298,19 @@ void Inmp441_task_ver2(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
+//		if(osSemaphoreWait(sem_micId, osWaitForever)) {
 		if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
 #endif // sensor_config_SYNC_USING
 
+//			Inmp441_frame_debug(buffer16); // Debug frame order
 			Inmp441_downsample_process(&block, &snap);
 		}
 		else{
-			uart_printf("[INMP441] Can not take semaphore !\r\n");
+			uart_printf("[INMP441] Can not take DMA callback !\r\n");
+//			uart_printf("[INMP441] Can not take semaphore !\r\n");
 		}
 
 #elif defined(FREERTOS_API_USING)
@@ -510,7 +515,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 			QUEUE_SEND_FROM_TASK(&block);
 
 		}else{
-			uart_printf("[INMP441] Can not take Semaphore !\r\n");
+			uart_printf("[INMP441] Can not take semaphore !\r\n");
 			continue;
 		}
 
@@ -580,6 +585,22 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 }
 /*-----------------------------------------------------------*/
 
+__attribute__((unused)) void Inmp441_frame_debug(volatile uint16_t *inputBuffer){
+	for(uint8_t i = 0; i < 10; i++){
+		uint16_t a = inputBuffer[2u * i + 0u];
+		uint16_t b = inputBuffer[2u * i + 1u];
+
+		uint32_t s_high_first = ((uint32_t)a << 16) | b;
+		uint32_t s_low_first = ((uint32_t)b << 16) | a;
+
+		// In ra 24-bit dau va 8-bit cuoi (padding thi se la 0)
+		uart_printf("i = %d: HF: 0x%08lX low8=0x%02lX | LF: 0x%08lX low8=0x%02lX\r\n", i,
+				s_high_first & 0xFF,
+				s_low_first & 0xFF);
+	}
+}
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Khi ghi DMA hoan tat (256 samples) -> Ngat (ISR) se sinh ra va ham nay se duoc goi (Circular)
  * Ly do khong dung Timer trigger moi 32ms ma dung DMA callback:
@@ -603,10 +624,10 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 
 		// Van de xay ra neu buffer trong ham chua xu ly xong ma DMA Callback cu ban Semaphore Give lien tuc thi Semaphore Take se bi tre !
 		// Khong duoc phep Give Semaphore neu trang thai Semaphore = 1 (non-available)
-		// Kha nang dung Semaphore de trigger khong on lam
+		// Kha nang dung Semaphore de trigger khong on lam => Su dung TaskNotify
 //		osSemaphoreRelease(sem_micId);
 
-		vTaskNotifyGiveFromISR(inmp441_taskId, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
+		vTaskNotifyGiveFromISR(inmp441_taskId, &xHigherPriorityTaskWoken);
 
 #elif defined(FREERTOS_API_USING)
 

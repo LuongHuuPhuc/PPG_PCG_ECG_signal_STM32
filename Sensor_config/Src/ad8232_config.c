@@ -84,7 +84,7 @@ void Ad8232_task_ver3(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-		if(osSemaphoreWait(sem_adcId, osWaitForever) == osOK){ // Sau 32ms thi TIMER nha semaphore
+		if(osSemaphoreWait(sem_adcId, 100) == osOK){ // Sau 32ms thi TIMER nha semaphore
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);

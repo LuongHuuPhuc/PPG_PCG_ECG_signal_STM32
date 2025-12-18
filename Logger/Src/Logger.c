@@ -99,7 +99,7 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 	// Neu Semaphore da khoi tao xong va Scheduler dang chay (vao RTOS)
 	if((sem_uart_log != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
 
-		// Lay Semaphore de doc quyen truy cap UART
+		// Lay Semaphore de doc quyen truy cap UART (Tranh overwrite)
 		if(xSemaphoreTake(sem_uart_log, pdMS_TO_TICKS(100)) == pdTRUE){
 			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, len, portMAX_DELAY); // Blocking mode
 
@@ -199,7 +199,7 @@ void Logger_three_task(void const *pvParameter){
 								pcg_block.count, pcg_block.sample_id);
 
 						for(uint16_t i = 0; i < min_count; i++){ //In theo so luong sample nho nhat trong 3 data
-							uart_printf("%d,%lu,%d\n",
+							uart_printf("%d,%lu,%ld\n",
 									ecg_block.ecg[i],
 									ppg_block.ppg.ir[i],
 									pcg_block.mic[i]);
@@ -226,8 +226,8 @@ void Logger_three_task(void const *pvParameter){
 				}
 
 			}else{
-				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
+//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
 			}
 		}else{
 			uart_printf("[LOGGER] Logger queue timeout !\r\n");
@@ -282,13 +282,27 @@ void Logger_two_task(void const *pvParameter){
 					if((ecg_block.sample_id == ppg_block.sample_id) || (ecg_block.sample_id == pcg_block.sample_id)
 																  || (ppg_block.sample_id == pcg_block.sample_id)){
 
+#if defined(AD8232_ONLY_LOGGER) && defined(MAX30102_ONLY_LOGGER)
+
 						// Lay so sample be nhat trong 3 kenh thu duoc
 						uint16_t min_count = MIN(ecg_block.count, ppg_block.count);
 
-//						uart_printf("[LOGGER] ECG count - ID: %d - %lu, PPG count - ID: %d - %lu, PCG count - ID: %d - %lu\r\n",
-//								ecg_block.count, ecg_block.sample_id,
-//								ppg_block.count, ppg_block.sample_id,
-//								pcg_block.count, pcg_block.sample_id);
+#elif defined(AD8232_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
+
+						// Lay so sample be nhat trong 3 kenh thu duoc
+						uint16_t min_count = MIN(ecg_block.count, pcg_block.count);
+
+#elif defined(MAX30102_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
+
+						// Lay so sample be nhat trong 3 kenh thu duoc
+						uint16_t min_count = MIN(ppg_block.count, pcg_block.count);
+#else
+						uint16_t min_count = 32; // default
+#endif
+						uart_printf("[LOGGER] ECG count - ID: %d - %lu, PPG count - ID: %d - %lu, PCG count - ID: %d - %lu\r\n",
+								ecg_block.count, ecg_block.sample_id,
+								ppg_block.count, ppg_block.sample_id,
+								pcg_block.count, pcg_block.sample_id);
 
 						for(uint16_t i = 0; i < min_count; i++){ //In theo so luong sample nho nhat trong 3 data
 							uart_printf("%d,%lu,%d\n",
@@ -367,7 +381,7 @@ void Logger_one_task(void const *pvParameter){
 
 				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ppg_block.sample_id, ppg_block.count, ppg_block.timestamp);
 
-				for(uint16_t i = 0; i < MAX_COUNT; i++){
+				for(uint16_t i = 0; i < ppg_block.count; i++){
 					uart_printf("%lu\r\n", ppg_block.ppg.ir[i]);
 				}
 
@@ -389,10 +403,10 @@ void Logger_one_task(void const *pvParameter){
 
 #elif defined(INMP441_ONLY_LOGGER)
 
-				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
+//				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
 
-				for(uint16_t i = 0; i < MAX_COUNT; i++){
-					uart_printf("%lu\r\n", pcg_block.mic[i]);
+				for(uint16_t i = 0; i < pcg_block.count; i++){
+					uart_printf("%ld\r\n", pcg_block.mic[i]);
 				}
 
 				isQueueFree(logger_queue, "LOGGER");

@@ -54,7 +54,7 @@ extern osThreadId max30102_taskId;
  *
  * @param i2c Con tro den struct dinh nghia cau hinh I2C
  *
- * @note Ham khoi tao su dung ngat (interrupt)
+ * @note Ham khoi tao su dung ngat ngoai (external interrupt)
  */
 __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c);
 
@@ -73,14 +73,15 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
 /**
  * @brief Ham thuc thi luong xu ly `ver1`
  *
- * @note Task dung interrupt de trigger moi khi co data moi
+ * @note Task dung external interrupt de trigger moi khi co data moi
  */
 __attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
 
 /**
  * @brief Ham thuc thi luong xu ly `ver2`
  *
- * @note Task khong dung interrupt ma dung timer de trigger
+ * @note Task khong dung interrupt ma dung TIMER de trigger
+ * TIMER ban semaphore sau moi 32ms de task thuc hien xu ly
  */
 void Max30102_task_ver2(void const *pvParameter);
 

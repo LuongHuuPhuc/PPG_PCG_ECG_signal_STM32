@@ -20,6 +20,7 @@
     - Cảm biến sử dụng bộ mã hõa PCM cho tín hiệu âm thanh ADC từ môi trường thông qua giao thức I2S (Inter Integrate-circuit Sound)
     - Độ phân giải ADC: 24-bits
     - Tần số lấy mẫu: 8000Hz (tối thiểu của phần mềm) sau đó downsample về 1000Hz để đồng bộ
+    - Chương trình sử dụng bộ lọc số **FIR low-pass filter** để tạo tần số cắt 450Hz trước khi downsampling
    
   - Logger: **CP2103 USB to TTL**
     - Module giao tiếp UART để xuất dữ liệu từ MCU ra monitor
@@ -38,3 +39,6 @@
 - **Application**: STM32CubeMX, STM32CubeProgrammer, CoolTerm64 (hiện tại)
 - **Framework**: CMSIS-OS, STM32Cube HAL/LL, FreeRTOS
 - **Build Tools**: Makefile, CMake, GCC Toolchain, arm-none-eabi-gcc
+
+## Cơ chế đồng bộ được sử dụng trong dự án 
+
