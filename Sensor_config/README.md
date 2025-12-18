@@ -77,7 +77,7 @@
 
 - Công thức tính tần số cắt: 
 	
-$$\f_{c} = frac{1}{2\piRC x 100}$$
+$$f_{c} = \frac{1}{2 \pi RC x 100}$$
 
 > Hệ số 100 ở trên công thức là do gain của IA
 - HPF của AD8232 có sẵn kiến trúc bên trong, nhưng...HPF không tự chạy nếu không tự mắc linh kiện RC bên ngoài. Đặc biệt nếu cần mạnh hơn thì có thể thêm các pole bên ngoài
