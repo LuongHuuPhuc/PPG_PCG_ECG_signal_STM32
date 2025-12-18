@@ -54,9 +54,6 @@
 ![](../Images/AD8232_IA.png)
 
 **2. High-pass Filter (DC blocking)**
-
-![AD8232_HPF](../Images/AD8232_HPF.png)
-
 - Kiến trúc HPF cho AD8323 không phải Op-amp thường mà được thiết kế theo kiến trúc đặc biệt bao gồm HPA - DC blocking amplifier, Fast restore switches và đường dây feedback đặc biệt của **IA**
 - Khối HPA có 2 chân giao tiếp: 
 	- **HPDRIVE**: là ngõ ra điều khiển (drive output) của khối HPA (High-Pass Amplifier). Mục tiêu: Dùng để bơm xả điện tích vào tụ HPF, kéo mức DC của IAOUT về **REFOUT** (tay đẩy)
@@ -65,7 +62,7 @@
 - **HPSENSE** - đo sai lệch DC và **HPDRIVE** - phản hồi để triệt DC -> DC offset bị loại bỏ, AC(ECG) đi qua
 - Mục đích: Loại bỏ Electrode half-cell potential, Baseline wander 
 
-![](../Images/AD8323_HPF.png)
+![](../Images/AD8232_HPF.png)
 
 - Ngoài ra, theo datasheet, người dùng cũng có thể tự cấu hình thêm HPF bằng mạch tương tự bên ngoài (lên đến 3-pole) để có thể tăng khả năng lọc nhiễu, thay đổi tần số cắt tùy ý. Nếu không mắc mạch RC thì không lọc nhiễu tốt được.
 - Các cấp độ lọc HPF: 
