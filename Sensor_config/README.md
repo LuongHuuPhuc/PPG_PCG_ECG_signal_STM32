@@ -82,7 +82,7 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 > Hệ số 100 ở trên công thức là do gain của IA
 - HPF của AD8232 có sẵn kiến trúc bên trong, nhưng...HPF không tự chạy nếu không tự mắc linh kiện RC bên ngoài. Đặc biệt nếu cần mạnh hơn thì có thể thêm các pole bên ngoài
 
-** 3. Low-pass Filter + Gain Stage (Op-Amp A1)
+**3. Low-pass Filter + Gain Stage (Op-Amp A1)**
 - **Op-Amp A1 uncommitted rail-to-rail** tích hợp. Đây là bộ khuếch đại thuật toán có dải điện áp đầu vào (input) và đầu ra (output) có thể dao động rất gần với các đường ray nguồn cung cấp (cả dương và âm/đất)
 	- Op-Amp đẩy điện áp ra gần 0V và kéo lên gần VCC. Ví dụ AD82323 (VCC = 3.3V) -> Vout ~ 0.1V -> 3.2V (tùy dải)
 	- Cho phép tận dụng tối đa phạm vi điện áp hoạt động, đặc biệt hữu ích trong các hệ thống nguồn đơn (single-supply) điện áp thấp
@@ -90,7 +90,7 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 
 - Op-Amp A1 này ngoài việc được cấu hình **rail-to-rail output**, USER còn có thể cấu hình nó: 
 	- Buffer: Chỉ nối voltage follower, không lọc, giữ nguyên biên độ
-	- **Khuếch đại thêm**: Thêm gain sau IA. Ví dụ tổng gain = 100 (Gain mặc định)x 11 = 1100
+	- **Khuếch đại thêm**: Thêm gain sau IA. Ví dụ tổng gain = 100 (Gain mặc định) x 11 = 1100
 	- **Tạo LPF** (Sallen Key, lọc RC,...): Đây chính là lúc bạn tự cấu hình LPF cho thiết bị. 
 		- Nếu dùng mạch RC đơn giản -> LPF 1 pole
 		- Thiết kế mạch Sallen-Key -> LPF 2 pole (chuẩn ECG)
@@ -131,7 +131,7 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 - Hoạt động: Tạm thời tăng tần số cắt HPF, xả nhanh điện tích trên tụ 
 - Giúp tín hiệu ổn định lại trong vài chục ms, không phải chờ vài giây như HPF thông thường
 
-![](../Images/AD8323_FastRestoreCircuit.png)
+![](../Images/AD8232_FastRestoreCircuit.png)
 
 **7. Leads-Off Detection**
 - DC Mode (3 điện cực): 
