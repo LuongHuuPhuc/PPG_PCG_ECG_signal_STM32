@@ -9,8 +9,7 @@
 	- Đưa tín hiệu về mức analog phù hợp để MCU đọc ADC 
 	- Nói chung đây là 1 IC tương tự 
 	
-
-![](../Images/AD8232_FunctionBlockDiagram.png)
+![](../Images/AD8232_FunctionalBlockDiagram.png)
 
 ## FEATURES 
 - Được tích hợp đầy đủ **Single-lead ECG front-end** (Khối tiền xử lý analog ECG cho 1 kênh đo trước khi vào ADC. Tức là trong 3 điện cực (electrode) của thiết bị cung cấp thì 1 lead (= 1 phép đo hiệu điện thế) bằng cách dùng 2 điện cực đo (LA - RA) **(tín hiệu chung - Common Mode signal)**, có thể thêm 1 điện cực tham chiếu RL (RLD) nhưng không tạo thêm lead mới. AD8232 chỉ nhìn tim ở 1 góc duy nhất).
