@@ -123,7 +123,7 @@ $$\omega_{c} = \frac{\omega_p + \omega_s}{2} $$
 - Ví dụ, nếu Transition band của 1 bộ lọc 200Hz là 20Hz thì tín hiệu sẽ bắt đầu suy giảm ở 180Hz và cuối cùng bị chặn ở 200Hz
 - *Ví dụ dải chuyền tiếp trong biểu đồ đáp ứng tần số của bộ lọc thông thấp Butterworth, với tần số cắt là 2kHz*
 
-![Alt text](../Images/Butterworth_lowpass.png)
+![Alt text](../../Images/Butterworth_lowpass.png)
 
 ## 6. Linear Phase - Pha tuyến tính (đặc trưng cực mạnh của FIR) 
 - Đa số FIR được thiết kế để có pha tuyến tính : 
@@ -170,4 +170,4 @@ $$ h[n] = {h_{ideal}[n]} \cdot w[n] $$
 - Tần số cắt thực tế được quyết định hoàn toàn vào dãy hệ số bộ lọc (FIR coefficients) (hay đáp ứng xung) thông qua các thuật toán như đã đề cập ở trên.
 - Bộ dãy hệ số này nên được tạo ra bằng các công cụ mô phỏng để cho độ chính xác nhất (ví dụ Python hay Matlab,...)
 - Khi đã mô phỏng thành công thì sẽ có được các hệ số chính xác, sau đó mới đưa vào code nhúng và xử lý
-- Tóm lại 1 câu: **"Bộ lọc FIR không phân biệt Low-pass, High-pass, Band-pass,...nó chỉ là kết quả của đáp ứng xung $h[n] và phổ $H(\omega)$"**
+- Tóm lại 1 câu: **"Bộ lọc FIR không phân biệt Low-pass, High-pass, Band-pass,...nó chỉ là kết quả của đáp ứng xung $h[n]$ và phổ $H(\omega)$"**
