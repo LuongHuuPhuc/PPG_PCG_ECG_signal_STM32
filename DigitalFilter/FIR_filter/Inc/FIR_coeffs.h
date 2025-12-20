@@ -7,8 +7,8 @@
  * @remark He so bo loc su dung MATLAB mo phong
  */
 
-#ifndef INC_FIR_COEFFS_H_
-#define INC_FIR_COEFFS_H_
+#ifndef FIR_FILTER_INC_FIR_COEFFS_H_
+#define FIR_FILTER_INC_FIR_COEFFS_H_
 
 #include "stdio.h"
 
@@ -54,4 +54,4 @@ const float fir_coeffs_lowpass[32] = {
        -0.001185691f
 };
 
-#endif /* INC_FIR_COEFFS_H_ */
+#endif /* FIR_FILTER_INC_FIR_COEFFS_H_ */

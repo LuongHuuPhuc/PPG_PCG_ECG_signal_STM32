@@ -30,7 +30,7 @@
 	- DC mode (3-electrode)
 	- AC mode (2-electrode)
 - **Reference buffer** tạo virtual ground (mid-supply): Tạo "GND" giả để xử lý tín hiệu âm-dương bằng nguồn đơn. Nó là 1 mức điện áp giả đóng vai trò "0V" cho tín hiệu Analog thường nằm giữa VCC và GND. Giá trị đó tầm 1.65V
-	- Vì AD8232 chạy **nguồn đơn (single-supply)** mà tín hiệu ECG thật là tín hiệu xoay chiều quanh 0V. Nhưng Op-Amp không xử lý được điện áp âm -> Sinh ra Virtual Ground bằng cách nâng tín hiệu ECG lên quanh giá trị GND giả đó
+	- Vì AD8232 chạy **nguồn đơn (single-supply)** mà tín hiệu ECG thật là tín hiệu xoay chiều quanh 0V. Nhưng Op-Amp không xử lý được điện áp âm hiệu quả (do tín hiệu sẽ bị cắt hoặc không được khuếch đại đúng cách) -> Sinh ra Virtual Ground bằng cách nâng tín hiệu ECG lên quanh giá trị GND giả đó
 	- Tạo ra điện áp ổn định, trở kháng thấp. Xuất ra tại chân **REFOUT**
 - **Op-Amp Rail-to-rail output**: Ngõ ra tín hiệu có thể giao động rất sát 2 "rail (thanh ray)"nguồn GND và VCC (Low Rail = GND, High Rail = VCC (3.3V))
 - Single Supply: 2.0V - 3.5V 
@@ -50,13 +50,14 @@
 	- Khuếch đại ECG
 	- Đồng thời chặn DC offset lớn (±300 mV)
 - Output của IA nằm tại chân **IAOUT**. Nó là đầu ra của tín hiệu sau khi đã được xử lý nội bộ (khuếch đại, lọc nhiễu,...bên trong)
+- Tuy nhiên gain này có sai số vài phần trăm và tổng gain của hệ còn phụ thuộc vào Op-Amp A1 bên ngoài (lên đến 400 - 1100)
 
 ![](../Images/AD8232_IA.png)
 
 **2. High-pass Filter (DC blocking)**
 - Kiến trúc HPF cho AD8323 không phải Op-amp thường mà được thiết kế theo kiến trúc đặc biệt bao gồm HPA - DC blocking amplifier, Fast restore switches và đường dây feedback đặc biệt của **IA**
 - Khối HPA có 2 chân giao tiếp: 
-	- **HPDRIVE**: là ngõ ra điều khiển (drive output) của khối HPA (High-Pass Amplifier). Mục tiêu: Dùng để bơm xả điện tích vào tụ HPF, kéo mức DC của IAOUT về **REFOUT** (tay đẩy)
+	- **HPDRIVE**: là ngõ ra điều khiển (drive output) của khối HPA (High-Pass Amplifier). Mục tiêu: Dùng để bơm xả điện tích vào tụ HPF, kéo mức DC của **IAOUT** về **REFOUT** (tay đẩy)
 	- **HPSENSE**: là ngõ vào cảm nhận (sense input) của khối HPA. Nối vào điểm giữa R-C của mạch HPF. Để HPA "nhìn xem" mức DC hiện tại đang lệch bao nhiêu (mắt đo)
 	- **RC ngoài**: tích hợp vào 2 chân trên để tạo thành 1 bộ HPF mạnh hơn
 - **HPSENSE** - đo sai lệch DC và **HPDRIVE** - phản hồi để triệt DC -> DC offset bị loại bỏ, AC(ECG) đi qua
@@ -91,7 +92,7 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 - Op-Amp A1 này ngoài việc được cấu hình **rail-to-rail output**, USER còn có thể cấu hình nó: 
 	- Buffer: Chỉ nối voltage follower, không lọc, giữ nguyên biên độ
 	- **Khuếch đại thêm**: Thêm gain sau IA. Ví dụ tổng gain = 100 (Gain mặc định) x 11 = 1100
-	- **Tạo LPF** (Sallen Key, lọc RC,...): Đây chính là lúc bạn tự cấu hình LPF cho thiết bị. 
+	- **Tạo LPF** (Sallen Key, lọc RC,...): Đây chính là lúc bạn tự cấu hình LPF cho thiết bị => LPF nằm trong mạng hồi tiếp của Op-Amp A1. 
 		- Nếu dùng mạch RC đơn giản -> LPF 1 pole
 		- Thiết kế mạch Sallen-Key -> LPF 2 pole (chuẩn ECG)
 		- Cutoff do USER quyết định
@@ -100,13 +101,32 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 	- Bên trong chỉ có 1 Op-Amp rời (Op-Amp A1). Op-Amp này không tự lọc, không tự có cutoff, chỉ là Op-Amp trống. Muốn thành LPF -> Phải tự mắc linh kiện bên ngoài
 	- Nhà sản xuất chỉ tích hợp sẵn Op-Amp còn lọc thế nào là tùy theo ứng dụng của người dùng
 
+### Cơ chế hoạt động của Op-Amp A1 để tạo ra OUTPUT**
+- Op-Amp A1 này được cấu hình tự dùng 2 chân *OPAMP+** và **OPAMP-** để thực hiện 2 những việc trên và tín hiệu đầu ra của A1 sẽ đi ra chân **OUTPUT**, có giá trị xoay quanh **REFOUT** để MCU đọc ADC
+	- **OPAMP+ (Non-inverting input)**: là đầu vào không đảo, thường được nối từ đầu ra của **IAOUT** (tín hiệu sau IA) hoặc **REFOUT** (virtual ground) hoặc điểm trung gian của mạch lọc. Điện áp ở **OPAMP+** được khuếch đại theo gain của mạch hồi tiếp 
+	- **OPAMP-** (Inverting input): là đầu vào đảo, nối với mạng hồi tiếp (R,C) và **OUTPUT**. Nó quyết định gain và đặc tính lọc
+- A1 hoạt động theo nguyên lý: luôn làm cho $V_{OPAMP+} = V_{OPAMP-}$.
+- Nó điều chỉnh điện áp tại OUT để thỏa mãn điều kiện trên. Mạng linh kiện nối vào **OPAMP-** chính là thứ quyết định gain. Vì vậy **OUTPUT** được khuếch đại + lọc theo mạng RC bên ngoài
+- Tín hiệu không được lấy trực tiếp từ IAOUT vì khi đó chưa được LPF đầy đủ, trở kháng không tối ưu cho ADC, biên độ có thể chưa phù hợp. Op-Amp A1 có nhiệm vụ "đóng gói cuối" cho ADC
+=> Op-Amp A1 nhận tín hiệu sau IA + HPF, khuếch dại thêm, lọc thấp và xuất ra chân **OUTPUT** với mức điện áp quanh **REFOUT** để MCU đọc ADC
+
+- Gain của A1: 
+
+$$Gain_{A1} = 1 + \frac{R_{feedback}{R_{REFOUT}$$
+
+- Gain của A1 do 2 con trở $R_{feedback}$ (điện trở nối **OUTPUT** -> **OPAMP-**) và $R_{REFOUT}$ (điện trở nối **OPAMP-** tới **REFOUT**)
+
+- Gain tổng của module: 
+
+$$Gain_{total} = Gain_{IA} \cdot Gain_{A1})$$
+ 
 ![](../Images/AD8232_altLPF.png)
 
 - Tần số cắt LPF thường dùng: 
 	- 40Hz (ECG waveform)
 	- 20-25Hz (Heart rate only)
 
-### Note: Tuy nhiên, đó chỉ là về phần IC, còn module AD8232 màu đỏ trên thị trường đã được tích hợp sẵn các linh kiện RC để lọc HPF và LPF. Người dùng chỉ cần cấp nguồn và đọc OUTPUT
+### Note: Tuy nhiên, đó chỉ là về phần IC, còn module AD8232 màu đỏ trên thị trường đã được tích hợp sẵn các linh kiện RC để lọc HPF và LPF. Người dùng chỉ cần cấp nguồn và đọc **OUTPUT**
 
 **4. Right Leg Drive (RLD)**
 - Đảo pha **Common-Mode voltage** (Điện áp chung)
@@ -146,6 +166,24 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 	
 ![](../Images/AD8323_ACLeadOffs.png)
 
+### TÓM LẠI DÒNG TÍN HIỆU CỦA AD8232 
+
+```java
+Điện cực da
+   ↓
+Instrumentation Amplifier (IA, gain ≈ 100)
+   ↓
+High-Pass Filter (DC blocking, HPA)
+   ↓
+IAOUT
+   ↓
+OPAMP+ (A1)
+   ↓
+Op-amp A1 (gain + LPF do module mắc sẵn)
+   ↓
+OUT  →  chân OUTPUT trên module
+```
+
 ## ĐƠN VỊ TÍN HIỆU ECG TRONG AD8323
 
 |Giai đoạn|Đơn vị|
@@ -154,7 +192,6 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 |Sau IA| mV - V|
 |Chân OUT| Volt(Analog)|
 |ADC MCU|Code số (0 -> 2ⁿ−1)|
-
 
 # More about INMP441 sensor and how to use it
 - Datasheet: ![INMP441 datasheet](https://www.alldatasheet.com/view.jsp?Searchword=Inmp441%20datasheet&gad_source=1&gad_campaignid=1437346752&gclid=Cj0KCQiA5uDIBhDAARIsAOxj0CFfq9F_HSslDNU-THqFUq_C06z7uZzPhY20R8oG9GdGnRkCX6TjEKwaAhi8EALw_wcB)

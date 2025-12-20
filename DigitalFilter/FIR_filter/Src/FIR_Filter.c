@@ -14,8 +14,8 @@
 extern "C" {
 #endif
 
-#include "FIR_Filter.h"
-#include "FIR_coeffs.h"
+#include "../Inc/FIR_Filter.h"
+#include "../Inc/FIR_coeffs.h"
 
 void fir_init(FIRFilter *filter){
 	for(uint16_t i = 0; i < FIR_TAP_NUM; i++){

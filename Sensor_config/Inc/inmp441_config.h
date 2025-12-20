@@ -18,7 +18,7 @@ extern "C" {
 #include "stdio.h"
 #include "stdbool.h"
 #include "cmsis_os.h"
-#include "FIR_Filter.h"
+#include "../../DigitalFilter/FIR_filter/Inc/FIR_Filter.h"
 
 /* @note BIG NOTE BEFORE CODE (VAN DE & Y TUONG)
  * 		 IDEA: Do xung clock LRCLK (tao ra Sample Rate) cua phan mem gioi han toi thieu la 8000Hz nen ta can phai Downsample xuong 1000Hz

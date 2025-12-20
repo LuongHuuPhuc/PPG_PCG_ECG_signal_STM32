@@ -21,7 +21,13 @@ extern "C" {
 #include "cmsis_os.h"
 
 // MACROS
-#define ECG_DMA_BUFFER	32
+#define ECG_DMA_BUFFER			32
+#define ECG_DEFAULT_GAIN		100
+#define ECG_OPAMP_A1_GAIN		11
+#define ECG_TOTAL_GAIN			((ECG_DEFAULT_GAIN) * (ECG_OPAMP_A1_GAIN))
+#define ADC_REF_VOL				3.3f
+#define VIRTUAL_GND_VOL			ADC_REF_VOL / 2.0f // V
+#define ADC_VOL_LEVEL_12B		((1UL << 12) - 1.0f) // 12-bit ADC
 
 // Extern variable
 extern int16_t ecg_buffer[ECG_DMA_BUFFER]; //Bien luu gia tri tu DMA

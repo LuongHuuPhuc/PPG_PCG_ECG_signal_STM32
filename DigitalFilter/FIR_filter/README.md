@@ -170,3 +170,4 @@ $$ h[n] = {h_{ideal}[n]} \cdot w[n] $$
 - Tần số cắt thực tế được quyết định hoàn toàn vào dãy hệ số bộ lọc (FIR coefficients) (hay đáp ứng xung) thông qua các thuật toán như đã đề cập ở trên.
 - Bộ dãy hệ số này nên được tạo ra bằng các công cụ mô phỏng để cho độ chính xác nhất (ví dụ Python hay Matlab,...)
 - Khi đã mô phỏng thành công thì sẽ có được các hệ số chính xác, sau đó mới đưa vào code nhúng và xử lý
+- Tóm lại 1 câu: **"Bộ lọc FIR không phân biệt Low-pass, High-pass, Band-pass,...nó chỉ là kết quả của đáp ứng xung $h[n] và phổ $H(\omega)$"**

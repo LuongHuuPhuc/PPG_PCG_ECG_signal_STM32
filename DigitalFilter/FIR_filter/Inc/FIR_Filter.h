@@ -12,8 +12,8 @@
  * => Can phai loai bo do tre pha do
  */
 
-#ifndef INC_FIR_FILTER_H_
-#define INC_FIR_FILTER_H_
+#ifndef FIR_FILTER_INC_FIR_FILTER_H_
+#define FIR_FILTER_INC_FIR_FILTER_H_
 
 #include <stdio.h>
 #include <stdint.h>
@@ -65,4 +65,4 @@ EXPORT __attribute__((unused))float fir_window_process(FIRFilter *filter, char *
  */
 EXPORT float FIR_process_convolution(FIRFilter *filter, float input);
 
-#endif /* INC_FIR_FILTER_H_ */
+#endif /* FIR_FILTER_INC_FIR_FILTER_H_ */
