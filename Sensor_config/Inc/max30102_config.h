@@ -18,12 +18,14 @@ extern "C" {
 #include "stdio.h"
 #include "stdlib.h"
 #include "cmsis_os.h"
-#include "max30102_low_level.h"
-#include "max30102_lib.h"
 
 // ==== MACROS　====
-#define MAX_FIFO_SAMPLE  MAX30102_SAMPLE_LEN_MAX
+#define MAX_FIFO_SAMPLE  32
 #define MAX_ACTIVE_LEDS  2
+
+// Foward Declaration (de giam tai cong viec cho compiler)
+typedef struct max30102_t max30102_t;
+typedef struct max30102_record max30102_record;
 
 // Extern variables
 extern max30102_t max30102_obj;
@@ -38,14 +40,18 @@ extern I2C_HandleTypeDef hi2c1;
 #if defined(FREERTOS_API_USING)
 
 extern TaskHandle_t max30102_task;
-extern SemaphoreHandle_t sem_max;
+extern SemaphoreHandle_t max30102_sem;
 
 #elif defined(CMSIS_API_USING)
 
-extern osSemaphoreId sem_maxId;
+extern osSemaphoreId max30102_semId;
 extern osThreadId max30102_taskId;
 
 #endif // CMSIS_API_USING
+
+// Logger.h - muon dung ham do thi khai bao extern
+extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
+extern void uart_printf(const char *fmt,...);
 
 // ==== FUCNTION PROTOTYPE ====
 

@@ -9,11 +9,11 @@
 extern "C" {
 #endif // __cplusplus
 
+#include "max30102_low_level.h"
 #include "main.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-#include "max30102_low_level.h"
 
 HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
 {

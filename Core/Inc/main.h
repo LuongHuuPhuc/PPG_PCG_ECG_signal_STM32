@@ -48,10 +48,12 @@ extern "C" {
 /* USER CODE BEGIN EM */
 
 #define CMSIS_API_USING    		1
-//#define FREERTOS_API_USING		1
-//#define AD8232_ONLY_LOGGER		1
+//#define FREERTOS_API_USING	1
+//#define AD8232_ONLY_LOGGER	1
 //#define MAX30102_ONLY_LOGGER	1
-#define INMP441_ONLY_LOGGER	1
+//#define INMP441_ONLY_LOGGER	1
+//#define sensor_config_SYNC_USING	1
+#define SYNC_TO_LOGGER_MAIL_USING	1
 
 /* USER CODE END EM */
 
@@ -63,13 +65,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define CS_PIN_Pin GPIO_PIN_4
+#define CS_PIN_GPIO_Port GPIOA
 #define INT_Pin GPIO_PIN_9
 #define INT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
-extern volatile uint32_t global_sample_id; //Nen de volatile vi co the bi thay doi tu ISR va tu cac task khac
-extern volatile uint32_t global_timestamp; //Dong bo tuyet doi
 
 /* USER CODE END Private defines */
 

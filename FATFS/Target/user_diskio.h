@@ -29,8 +29,17 @@
 /* USER CODE BEGIN 0 */
 
 /* Includes ------------------------------------------------------------------*/
+
+#include "main.h"
+#include "ff_gen_drv.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+
+/* Moi lenh SPI voi SD card deu phai boc bang CS */
+#define SD_CS_LOW()		HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_RESET)  // SD card duoc chon (Select)
+#define SD_CS_HIGH()	HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET)    // SD card bi bo chon (Deselect)
+
 /* Exported functions ------------------------------------------------------- */
 extern Diskio_drvTypeDef  USER_Driver;
 

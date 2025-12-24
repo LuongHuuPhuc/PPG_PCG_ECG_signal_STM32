@@ -3,10 +3,9 @@
  * @author LuongHuuPhuc
  */
 
-#include <stdio.h>
-#include <max30102_lib.h>
+#include "max30102_lib.h"
+#include "stdio.h"
 #include "max30102_low_level.h"
-#include "Logger.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -382,13 +381,13 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
 	return num_samples; //Tra ve so mau da doc
 }
 
-void max30102_config_register_status_verbose(void){
+void max30102_config_register_status_verbose(max30102_t *obj){
 	uint8_t mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg;
-	max30102_read(&max30102_obj, MAX30102_MODE_CONFIG, &mode_reg, 1); //Khong can kiem tra loi
-	max30102_read(&max30102_obj, MAX30102_SPO2_CONFIG, &spo2_reg, 1);
-	max30102_read(&max30102_obj, MAX30102_LED_IR_PA1, &irled_reg, 1);
-	max30102_read(&max30102_obj, MAX30102_LED_RED_PA2, &redled_reg, 1);
-	max30102_read(&max30102_obj, MAX30102_FIFO_CONFIG, &fifo_reg, 1);
+	max30102_read(obj, MAX30102_MODE_CONFIG, &mode_reg, 1); //Khong can kiem tra loi
+	max30102_read(obj, MAX30102_SPO2_CONFIG, &spo2_reg, 1);
+	max30102_read(obj, MAX30102_LED_IR_PA1, &irled_reg, 1);
+	max30102_read(obj, MAX30102_LED_RED_PA2, &redled_reg, 1);
+	max30102_read(obj, MAX30102_FIFO_CONFIG, &fifo_reg, 1);
 
 	uart_printf("[DEBUG] MODE=0x%02X SPO2=0x%02X IRLED=0x%02X REDLED=0x%02X FIFO=0x%02X\r\n",
 							mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg);

@@ -11,8 +11,6 @@ extern "C" {
 
 #include "ad8232_config.h"
 #include "stdio.h"
-#include "cmsis_os.h"
-#include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
 
@@ -22,13 +20,13 @@ int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
 
 #if defined(CMSIS_API_USING)
 
-osSemaphoreId sem_adcId = NULL;
+osSemaphoreId ad8232_semId = NULL;
 osThreadId ad8232_taskId = NULL;
 
 #elif defined(FREERTOS_API_USING)
 
 TaskHandle_t ad8232_task = NULL;
-SemaphoreHandle_t sem_adc = NULL;
+SemaphoreHandle_t ad8232_sem = NULL;
 
 #endif //CMSIS_API_USING
 
@@ -43,16 +41,16 @@ HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc){
 #if defined(CMSIS_API_USING)
 
 	osSemaphoreDef(ad8232SemaphoreName);
-	sem_adcId = osSemaphoreCreate(osSemaphore(ad8232SemaphoreName), 1);
-	if(sem_adcId == NULL){
+	ad8232_semId = osSemaphoreCreate(osSemaphore(ad8232SemaphoreName), 1);
+	if(ad8232_semId == NULL){
 		uart_printf("[AD8232] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
 
 #elif defined(FREERTOS_API_USING)
 
-	sem_adc = xSemaphoreCreateBinary();
-	if(sem_adc == NULL){
+	ad8232_sem = xSemaphoreCreateBinary();
+	if(ad8232_sem == NULL){
 		uart_printf("[AD8232] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
@@ -69,7 +67,9 @@ void Ad8232_task_ver3(void const *pvParameter){
 	(void)(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 
 	uart_printf("AD8232 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
@@ -84,7 +84,7 @@ void Ad8232_task_ver3(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-		if(osSemaphoreWait(sem_adcId, 100) == osOK){ // Sau 32ms thi TIMER nha semaphore
+		if(osSemaphoreWait(ad8232_semId, 100) == osOK){ // Sau 32ms thi TIMER nha semaphore
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -111,7 +111,7 @@ void Ad8232_task_ver3(void const *pvParameter){
 					block.ecg[i] = ecg_buffer[i]; // Copy gia tri sang bien ecg trong sensor_block_t
 				}
 
-				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+				MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
 
 			}else{
 				uart_printf("[ADC8232] Timeout waiting for DMA done !\r\n");
@@ -122,7 +122,7 @@ void Ad8232_task_ver3(void const *pvParameter){
 
 #elif defined(FREERTOS_API_USING)
 
-		if(xSemaphoreTake(sem_adc, portMAX_DELAY) == pdTRUE){ // Sau 32ms thi TIMER nha semaphore
+		if(xSemaphoreTake(ad8232_sem, portMAX_DELAY) == pdTRUE){ // Sau 32ms thi TIMER nha semaphore
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -170,7 +170,9 @@ __attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
 	(void)(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 
 	uart_printf("AD8232 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
@@ -205,7 +207,15 @@ __attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
 				block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_block_t
 			}
 
-			QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+#ifdef CMSIS_API_USING
+
+				MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
+
+#elif defined(FREERTOS_API_USING)
+
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+
+#endif // CMSIS_API_USING
 
 		}else{
 			uart_printf("[ADC8232] Timeout waiting for DMA done !\r\n");
@@ -219,7 +229,7 @@ __attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
 
 __attribute__((unused)) void Ad8232_task_ver1(void const *pvParameter){
 	(void)(pvParameter);
-	sensor_data_t sensor_data;
+	__attribute__((unused)) sensor_block_t block;
 
 	uart_printf("AD8232 task started !\r\n");
 
@@ -227,26 +237,28 @@ __attribute__((unused)) void Ad8232_task_ver1(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-		if(osSemaphoreWait(sem_adcId, osWaitForever) == osOK){ //Trigger tu ham Callback de lay semaphore
+		if(osSemaphoreWait(ad8232_semId, osWaitForever) == osOK){ //Trigger tu ham Callback de lay semaphore
 			uart_printf("[ADC8232] got Semaphore !\r\n");
 			HAL_ADC_Start(&hadc1);
 			if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK){
-				sensor_data.type = SENSOR_ECG;
-				sensor_data.ecg = HAL_ADC_GetValue(&hadc1);
-				QUEUE_SEND_FROM_TASK(&sensor_data);
+				block.type = SENSOR_ECG;
+//				block.ecg = HAL_ADC_GetValue(&hadc1);
+
+//				MAIL_SEND_FROM_TASK(block);// Gui 32 sample vao Sync Task
 			}
 			HAL_ADC_Stop(&hadc1);
 		}
 
 #elif defined(FREERTOS_API_USING)
 
-		if(xSemaphoreTake(sem_adc, pdMS_TO_TICKS(100)) == pdTRUE){ //Trigger tu ham Callback de lay semaphore
+		if(xSemaphoreTake(ad8232_sem, pdMS_TO_TICKS(100)) == pdTRUE){ //Trigger tu ham Callback de lay semaphore
 			uart_printf("[ADC8232] got Semaphore !\r\n");
 			HAL_ADC_Start(&hadc1);
 			if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK){
-				sensor_data.type = SENSOR_ECG;
-				sensor_data.ecg = HAL_ADC_GetValue(&hadc1);
-				QUEUE_SEND_FROM_TASK(&sensor_data);
+				block.type = SENSOR_ECG;
+//				block.ecg = HAL_ADC_GetValue(&hadc1);
+
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
 			}
 			HAL_ADC_Stop(&hadc1);
 		}

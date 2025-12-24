@@ -32,6 +32,8 @@ typedef struct FIR_FILTER_t{
 	int index;
 } FIRFilter;
 
+extern FIRFilter fir;
+
 /**
  * @brief Ham khoi tao bo loc so FIR
  *

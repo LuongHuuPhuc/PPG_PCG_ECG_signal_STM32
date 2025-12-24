@@ -29,6 +29,10 @@
 
 /* USER CODE BEGIN Includes */
 
+// Thu muc nay chua ham khoi tao FATFS cho he thong cua CubeMX o Application Layer
+// No goi cac API cua folder Middlewares/FatFS de thuc hien logic
+// Mac dinh khong dung gi vao thu muc nay
+
 /* USER CODE END Includes */
 
 extern uint8_t retUSER; /* Return value for USER */

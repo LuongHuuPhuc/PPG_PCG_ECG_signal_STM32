@@ -20,7 +20,7 @@ extern "C" {
 #include <stdbool.h>
 #include "cmsis_os.h"
 
-// MACROS
+// ==== MACROS　====
 #define ECG_DMA_BUFFER			32
 #define ECG_DEFAULT_GAIN		100
 #define ECG_OPAMP_A1_GAIN		11
@@ -31,8 +31,8 @@ extern "C" {
 
 // Extern variable
 extern int16_t ecg_buffer[ECG_DMA_BUFFER]; //Bien luu gia tri tu DMA
-extern volatile int16_t __attribute__((unused))ecg_dma_value;
-extern volatile bool __attribute__((unused))adc_full_ready;
+extern __attribute__((unused)) volatile int16_t ecg_dma_value;
+extern __attribute__((unused)) volatile bool adc_full_ready;
 
 // Extern protocol variable cho function trong .c
 extern ADC_HandleTypeDef hadc1;
@@ -41,14 +41,16 @@ extern ADC_HandleTypeDef hadc1;
 #if defined(CMSIS_API_USING)
 
 extern osThreadId ad8232_taskId;
-extern osSemaphoreId sem_adcId;
+extern osSemaphoreId ad8232_semId;
 
 #elif defined (FREERTOS_API_USING)
 
 extern TaskHandle_t ad8232_task;
-extern SemaphoreHandle_t sem_adc;
+extern SemaphoreHandle_t ad8232_sem;
 
 #endif // CMSIS_API_USING
+
+extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 //==== FUNCTION PROTOTYPE ====
 

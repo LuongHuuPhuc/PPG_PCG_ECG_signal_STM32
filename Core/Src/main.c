@@ -165,21 +165,26 @@ int main(void)
 
 #if defined(CMSIS_API_USING)
 
-//  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-//  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
-//  configASSERT(ad8232_taskId);
+  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+  configASSERT(ad8232_taskId);
 
-  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityHigh, 0, 1024 * 3);
+  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
   inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
   configASSERT(inmp441_taskId);
 
   // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
-//  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-//  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
-//  configASSERT(max30102_taskId);
+  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+  configASSERT(max30102_taskId);
+
+  osThreadDef(syncTaskName, SyncTask, osPriorityNormal, 0, 1024);
+  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
+  configASSERT(sync_taskId);
 
   // Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
-  osThreadDef(loggerTaskName, Logger_one_task, osPriorityHigh, 0, 1024 * 2);
+  // Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
+  osThreadDef(loggerTaskName, Logger_three_task_ver2, osPriorityNormal, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(loggerTaskName), NULL);
   configASSERT(logger_taskId);
 
@@ -556,7 +561,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 6, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
@@ -576,9 +581,42 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pins : PC13 PC14 PC15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA1 PA8 PA10 PA11
+                           PA12 PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_8|GPIO_PIN_10|GPIO_PIN_11
+                          |GPIO_PIN_12|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : CS_PIN_Pin */
+  GPIO_InitStruct.Pin = CS_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB0 PB1 PB2 PB14
+                           PB4 PB5 PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_14
+                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : INT_Pin */
   GPIO_InitStruct.Pin = INT_Pin;
@@ -644,8 +682,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 #endif // sensor_config_SYNC_USING
 
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-		  osSemaphoreRelease(sem_adcId); //Give Semaphore cho AD8232 sau moi 32ms
-		  osSemaphoreRelease(sem_maxId); //Give Semaphore cho MAX30102 sau moi 32ms
+		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
+		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
 
 #elif defined(FREERTOS_API_USING)
 		  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -660,8 +698,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 #endif // sensor_config_SYNC_USING
 
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-		  xSemaphoreGiveFromISR(sem_max, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
-		  xSemaphoreGiveFromISR(sem_adc, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
+		  xSemaphoreGiveFromISR(max30102_sem, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
+		  xSemaphoreGiveFromISR(ad8232_sem, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
 
 		  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 

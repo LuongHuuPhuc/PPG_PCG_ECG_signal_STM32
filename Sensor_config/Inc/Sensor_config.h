@@ -6,7 +6,7 @@
  *
  *  Su dung TIMER(TIM) de dong bo hoa 3 cam bien thay cho osTimer trong FreeRTOS
  *  MAX30102(PPG): FIFO polling + TIM3 Trigger
- *  INMP441(PCG): I2S with DMA + TIM3 trigger + DOWNSAMPLE
+ *  INMP441(PCG): I2S with DMA + DOWNSAMPLE
  *  AD8232(ECG): ADC with DMA + TIM3 trigger
  */
 
@@ -24,35 +24,26 @@ extern "C" {
 #include "ad8232_config.h"
 #include "max30102_config.h"
 #include "inmp441_config.h"
-#include "Logger.h"
 
 #define SERROR_CHECK(expr) do {\
 	/* expr la bieu thuc ban muon truyen vao */ \
 	if((expr) != HAL_OK){ \
-		uart_printf("Fail HAL at line %d: %s\r\n", __LINE__, #expr);\
+		uart_printf(" [SENCONF] Fail HAL at line %d: %s\r\n", __LINE__, #expr);\
 		HAL_Delay(100);\
 		Error_Handler(); \
 	}\
 } while(0)
 
-#define QUEUE_SEND_FROM_TASK(data_ptr) do { \
-	if(xQueueSend(logger_queue, (data_ptr), portMAX_DELAY) != pdTRUE){ \
-		uart_printf("[WARN] Logger queue full!\r\n"); \
-	} \
-} while(0)
-
-#define QUEUE_SEND_FROM_ISR(data_ptr) do { \
-	if(xQueueSendFromISR(logger_queue, (data_ptr), pxHigherPriorityTaskWoken) != pdTRUE){\
-		uart_printf("[WARN] Logger queue full from ISR! \r\n "); \
-	} \
-} while(0) // Dung khi muon send queue trong cac ham HAL_callback
+#ifdef FREERTOS_API_USING
 
 #define TASK_ERR_CHECK(func, name, stack, param, prio, handle) do { \
 	if(xTaskCreate((void*)func, name, stack, param, prio, handle) != pdPASS){ \
-		uart_printf("[ERROR] Failed to create task: %s\r\n", name); \
+		uart_printf("[SENCONF] Failed to create task: %s\r\n", name); \
 		Error_Handler(); \
 	}\
 } while(0) //Dung khi muon kiem tra loi task
+
+#endif // FREERTOS_API_USING
 
 #ifndef MIC_WARN_OVERWRITTEN
 #define MIC_WARN_OVERWRITTEN 1
@@ -66,22 +57,12 @@ typedef enum{
 	SENSOR_PCG
 } sensor_type_t;
 
-// Cau truc de luu trang thai va gia tri cua cac cam bien
-typedef struct {
-	sensor_type_t type;
-	uint32_t ir;
-	uint32_t red;
-	int16_t mic_frame[I2S_SAMPLE_COUNT]; //Dung khi muon luu nhieu mau/lan
-	int16_t mic; //Real-time, in 1 gia tri tai 1 thoi diem nhung mat mau (khong nen dung)
-	uint16_t byte_read; //So mau thuc te
-	int16_t ecg;
-} __attribute__((unused))sensor_data_t;
-
+/* STRUCT luu data chinh tu Sensor Task */
 typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forward declaration
 	sensor_type_t type;
-	uint16_t count; //So luong mau trong mang
-	uint32_t sample_id; //Dung de dong bo du lieu
-	TickType_t timestamp;
+	uint16_t count; 		// So luong mau trong mang
+	uint32_t sample_id; 	// Dung de dong bo du lieu
+	TickType_t timestamp;	// Danh dau thoi gian dong bo
 
 	union { // Cac bien nay chia se chung bo nho
 		volatile int16_t ecg[ECG_DMA_BUFFER]; // ECG

@@ -13,38 +13,33 @@ extern "C" {
 #include "stdio.h"
 #include "stdlib.h"
 #include "math.h"
-#include "cmsis_os.h"
-#include "Logger.h"
+#include "FIR_Filter.h"
 #include "Sensor_config.h"  // Dinh nghia struct cho inmp441_config.h
 #include "take_snapsync.h"  // Dinh nghia struct cho inmp441_config.h
 
 // ====== VARIABLES DEFINITION ======
 
-FIRFilter fir = {0};
-
 #if defined(CMSIS_API_USING)
 
-osSemaphoreId sem_micId = NULL;
+osSemaphoreId inmp441_semId = NULL;
 osThreadId inmp441_taskId = NULL;
 
 #elif defined(FREERTOS_API_USING)
 
 TaskHandle_t inmp441_task = NULL;
-SemaphoreHandle_t sem_mic = NULL;
+SemaphoreHandle_t inmp441_sem = NULL;
 
 #endif // CMSIS_USING_API
 
 // INMP441
 volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT] = {0};
-volatile int32_t __attribute__((unused))buffer32[I2S_SAMPLE_COUNT] = {0};
-volatile bool __attribute__((unused))mic_full_ready = false;
-volatile bool __attribute__((unused))mic_half_ready = false;
+__attribute__((unused)) volatile int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
 
 // doubleBuffer Ping-pong
-volatile int16_t __attribute__((unused))mic_ping[I2S_SAMPLE_COUNT] = {0};
-volatile int16_t __attribute__((unused))mic_pong[I2S_SAMPLE_COUNT] = {0};
-volatile bool __attribute__((unused))mic_ping_ready = false;
-volatile bool __attribute__((unused))mic_pong_ready = false;
+__attribute__((unused)) volatile int16_t mic_ping[I2S_SAMPLE_COUNT] = {0};
+__attribute__((unused)) volatile int16_t mic_pong[I2S_SAMPLE_COUNT] = {0};
+__attribute__((unused)) volatile bool mic_ping_ready = false;
+__attribute__((unused)) volatile bool mic_pong_ready = false;
 
 // ====== FUCNTION DEFINITION ======
 /*-----------------------------------------------------------*/
@@ -60,16 +55,16 @@ HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 #if defined(CMSIS_API_USING)
 
 	osSemaphoreDef(inmp441SemaphoreName);
-	sem_micId = osSemaphoreCreate(osSemaphore(inmp441SemaphoreName), 1);
-	if(sem_micId == NULL){
+	inmp441_semId = osSemaphoreCreate(osSemaphore(inmp441SemaphoreName), 1);
+	if(inmp441_semId == NULL){
 		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
 
 #elif defined(FREERTOS_API_USING)
 
-	sem_mic = xSemaphoreCreateBinary();
-	if(sem_mic == NULL){
+	inmp441_sem = xSemaphoreCreateBinary();
+	if(inmp441_sem == NULL){
 		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
@@ -86,9 +81,11 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
 	int idx_out = 0;
 	int32_t sum;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 
 	uart_printf("INMP441 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t));
@@ -102,7 +99,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-		if(osSemaphoreWait(sem_micId, 100) == osOK){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
+		if(osSemaphoreWait(inmp441_semId, 100) == osOK){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -133,7 +130,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
 
-				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
+				MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
 
 				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
 				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
@@ -149,7 +146,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 #elif defined(FREERTOS_API_USING)
 
-		if(xSemaphoreTake(sem_mic, pdMS_TO_TICKS(100)) == pdTRUE){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
+		if(xSemaphoreTake(inmp441_sem, pdMS_TO_TICKS(100)) == pdTRUE){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -181,7 +178,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
 
-				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample da downsample vao queue
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
 
 				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
 				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
@@ -272,7 +269,15 @@ __attribute__((always_inline)) static inline void Inmp441_downsample_process(sen
 
 	block->count = idx_out; //Ky vong 32 sample sau khi downsample tu 256
 
-	QUEUE_SEND_FROM_TASK(block); //Gui 32 sample da downsample vao queue
+#ifdef CMSIS_API_USING
+
+				MAIL_SEND_FROM_TASK(*block); // Gui 32 sample vao Sync Task
+
+#elif defined(FREERTOS_API_USING)
+
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+
+#endif // CMSIS_API_USING
 }
 
 /*-----------------------------------------------------------*/
@@ -281,7 +286,7 @@ void Inmp441_task_ver2(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
+	__attribute__((unused)) snapshot_sync_t snap;
 
 	uart_printf("INMP441 task started !\r\n");
 	memset(&block, 0, sizeof(block));
@@ -298,7 +303,7 @@ void Inmp441_task_ver2(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-//		if(osSemaphoreWait(sem_micId, osWaitForever)) {
+//		if(osSemaphoreWait(inmp441_semId, osWaitForever)) {
 		if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){
 
 #ifdef sensor_config_SYNC_USING
@@ -315,7 +320,7 @@ void Inmp441_task_ver2(void const *pvParameter){
 
 #elif defined(FREERTOS_API_USING)
 
-		if(xSemaphoreTake(sem_mic, pdMS_TO_TICKS(100)) == pdTRUE){
+		if(xSemaphoreTake(inmp441_sem, pdMS_TO_TICKS(100)) == pdTRUE){
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -331,6 +336,8 @@ void Inmp441_task_ver2(void const *pvParameter){
 }
 
 /*-----------------------------------------------------------*/
+
+/* FIXME INMP441 theo kieu Ping-Pong Buffer nhung hien tai dang chua can den nen khong sua tiep (chua chay duoc) */
 
 // === VERSION 3: DOUBLE BUFFER PING-PONG ===
 
@@ -447,7 +454,9 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 	UNUSED(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 	int idx_out = 0;
 
 	uart_printf("INMP441 task started !\r\n");
@@ -462,7 +471,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 #if defined(CMSIS_API_USING)
 
 		// Cho semaphore tu TIM3 (moi 32ms) de dong bo voi PPG/ECG
-		if(osSemaphoreWait(sem_micId, 100) == osOK){
+		if(osSemaphoreWait(inmp441_semId, 100) == osOK){
 
 			// Snapshot sync tu TIM ISR (tranh truong hop counter tang len ma task chua xu ly xong, gay mismatch)
 			// Dam bao timestamp va sample_id duoc lay cung thoi diem
@@ -512,7 +521,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 			}
 			block.count = idx_out; // Mong doi gia tri bang I2S_SAMPLE_COUNT (32)
 
-			QUEUE_SEND_FROM_TASK(&block);
+			MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
 
 		}else{
 			uart_printf("[INMP441] Can not take semaphore !\r\n");
@@ -522,7 +531,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 #elif defined(FREERTOS_API_USING)
 
 		// Cho semaphore tu TIM3 (moi 32ms) de dong bo voi PPG/ECG
-		if(xSemaphoreTake(sem_mic, portMAX_DELAY) == pdTRUE){
+		if(xSemaphoreTake(inmp441_sem, portMAX_DELAY) == pdTRUE){
 
 			// Snapshot sync tu TIM ISR (tranh truong hop counter tang len ma task chua xu ly xong, gay mismatch)
 			// Dam bao timestamp va sample_id duoc lay cung thoi diem
@@ -573,7 +582,8 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 				}
 			}
 			block.count = idx_out; // Mong doi gia tri bang I2S_SAMPLE_COUNT (32)
-			QUEUE_SEND_FROM_TASK(&block);
+
+			QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
 
 		}else{
 			uart_printf("[INMP441] Can not take Semaphore !\r\n");
@@ -585,7 +595,21 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 }
 /*-----------------------------------------------------------*/
 
-__attribute__((unused)) void Inmp441_frame_debug(volatile uint16_t *inputBuffer){
+/**
+ * @brief Ham debug xem frame nao duoc truyen truoc den thanh ghi
+ * tu cam bien INMP441 bang cach in ra 10 sample dau
+ *
+ * Thu tu nao dung thi se thay (s_..._first & 0xFF) thuong xuyen ~ 0x00 (hoac rat gan 0 voi nhieu)
+ * Thu tu nao sai thi low byte se nhay loan len
+ *
+ * @note Trong datashett, INMP441 co bit order la left-justified (MSB se sinh ra truoc)
+ * va truyen data theo frame 32-bit (chi co 24-bit co nghia, 8-bit cuoi la padding)
+ * Frame HIGH tuong duong voi phan chua bit MSB, frame LOW tuong duong voi phan chua bit LSB
+ *
+ * Data duoc gui vao thanh ghi voi Frame Order la HIGH frame first (MSB truoc) roi sau do moi den LOW
+ */
+ /* De thanh ham staic de tranh ton bo nho RAM */
+__attribute__((unused)) static void Inmp441_frame_debug(volatile uint16_t *inputBuffer){
 	for(uint8_t i = 0; i < 10; i++){
 		uint16_t a = inputBuffer[2u * i + 0u];
 		uint16_t b = inputBuffer[2u * i + 1u];
@@ -625,7 +649,7 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 		// Van de xay ra neu buffer trong ham chua xu ly xong ma DMA Callback cu ban Semaphore Give lien tuc thi Semaphore Take se bi tre !
 		// Khong duoc phep Give Semaphore neu trang thai Semaphore = 1 (non-available)
 		// Kha nang dung Semaphore de trigger khong on lam => Su dung TaskNotify
-//		osSemaphoreRelease(sem_micId);
+//		osSemaphoreRelease(inmp441_semId);
 
 		vTaskNotifyGiveFromISR(inmp441_taskId, &xHigherPriorityTaskWoken);
 
@@ -633,16 +657,12 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 
 		// Phat hien: Loi treo CPU khi dat ham nay o trong ISR callback cua DMA -> Cac API FreeRTOS ke tu luc ham nay
 		// duoc goi khong the chay duoc nua -> Kernel dong bang
-		xSemaphoreGiveFromISR(sem_mic, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
+		xSemaphoreGiveFromISR(inmp441_sem, &xHigherPriorityTaskWoken); //Give semaphore cho INMP441 sau moi 32ms
 
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 #endif // CMSIS_API_USING
 
-//		if(mic_full_ready){ //Neu data truoc do chua xu ly xong ma DMA da hoan tat (neu task xu ly cham)
-//			uart_printf_fromISR("[INMP441] mic_full_ready OVERWRITTEN ! Previous data not processed!\r\n");
-//		}
-//		mic_full_ready = true; //Danh dau buffer DMA da san sang -> Mo flag cho task xu ly DMA
 	}
 }
 

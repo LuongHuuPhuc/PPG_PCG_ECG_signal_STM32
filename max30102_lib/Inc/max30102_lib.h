@@ -13,11 +13,11 @@
 extern "C"{
 #endif
 
-#include "main.h"
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cmsis_os.h"
 #include "max30102_low_level.h"
 
 // Macro de debug write va read low level
@@ -376,7 +376,7 @@ uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30
  * MODE_CONFIG (0x09) - SPO2_CONFIG (0x0A) - LED1 (0x0C) - LED2 (0x0D) - FIFO_CONFIG(0x08)
  * Giup xac dinh cau hinh hien tai
  */
-void max30102_config_register_status_verbose(void);
+void max30102_config_register_status_verbose(max30102_t *obj);
 
 /**
  * @brief Ham doc gia tri FIFO troi tra ve so mau da doc

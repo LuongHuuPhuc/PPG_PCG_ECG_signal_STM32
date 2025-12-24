@@ -11,8 +11,8 @@ extern "C" {
 
 #include "max30102_config.h"
 #include "stdio.h"
-#include "cmsis_os.h"
-#include "Logger.h"
+#include "max30102_low_level.h" // max30102_t
+#include "max30102_lib.h" // max30102_record
 #include "Sensor_config.h"
 #include "take_snapsync.h"
 
@@ -25,13 +25,13 @@ max30102_record record;
 
 #if defined(CMSIS_API_USING)
 
-osSemaphoreId sem_maxId = NULL;
+osSemaphoreId max30102_semId = NULL;
 osThreadId max30102_taskId = NULL;
 
 #elif defined(FREERTOS_API_USING)
 
 TaskHandle_t max30102_task = NULL;
-SemaphoreHandle_t sem_max = NULL;
+SemaphoreHandle_t max30102_sem = NULL;
 
 #endif // FREERTOS_API_USING
 
@@ -47,16 +47,16 @@ __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *
 #if defined(CMSIS_API_USING)
 
 	osSemaphoreDef(max30102SemaphoreName);
-	sem_maxId = osSemaphoreCreate(osSemaphore(max30102SemaphoreName), 1);
-	if(sem_maxId == NULL){
+	max30102_semId = osSemaphoreCreate(osSemaphore(max30102SemaphoreName), 1);
+	if(max30102_semId == NULL){
 		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
 
 #elif defined(FREERTOS_API_USING)
 
-	sem_max = xSemaphoreCreateBinary();
-	if(sem_max == NULL){
+	max30102_sem = xSemaphoreCreateBinary();
+	if(max30102_sem == NULL){
 		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
@@ -71,7 +71,6 @@ __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *
 
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
-		vTaskDelay(pdMS_TO_TICKS(200));
 		if(max30102_clear_fifo(&max30102_obj) == HAL_OK){
 			uart_printf("[MAX30102] clear_fifo OK !\r\n");
 			break;
@@ -143,9 +142,11 @@ __attribute__((unused)) static inline uint8_t Max30102_interrupt_process(max3010
 __attribute__((unused)) void Max30102_task_ver1(void const *pvParameter){
 	(void)(pvParameter);
 
-	__attribute__((unused))snapshot_sync_t snap;
 	sensor_block_t block;
 	uint8_t num_samples = 0;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 
 	uart_printf("MAX30102 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
@@ -179,7 +180,16 @@ __attribute__((unused)) void Max30102_task_ver1(void const *pvParameter){
 					block.ppg.ir[i] = ir_buffer[i];
 					block.ppg.red[i] = red_buffer[i];
 				}
-				QUEUE_SEND_FROM_TASK(&block); //Moi lan du 32 mau se gui 1 lan len queue
+
+#ifdef CMSIS_API_USING
+
+				MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
+
+#elif defined(FREERTOS_API_USING)
+
+				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+
+#endif // CMSIS_API_USING
 			}
 		}
 	}
@@ -195,16 +205,16 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 #if defined(CMSIS_API_USING)
 
 	osSemaphoreDef(max30102SemaphoreName);
-	sem_maxId = osSemaphoreCreate(osSemaphore(max30102SemaphoreName), 1);
-	if(sem_maxId == NULL){
+	max30102_semId = osSemaphoreCreate(osSemaphore(max30102SemaphoreName), 1);
+	if(max30102_semId == NULL){
 		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
 
 #elif defined(FREERTOS_API_USING)
 
-	sem_max = xSemaphoreCreateBinary();
-	if(sem_max == NULL){
+	max30102_sem = xSemaphoreCreateBinary();
+	if(max30102_sem == NULL){
 		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
@@ -219,7 +229,6 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
-		vTaskDelay(pdMS_TO_TICKS(200));
 		if(max30102_clear_fifo(&max30102_obj) == HAL_OK){
 			uart_printf("[MAX30102] clear_fifo OK !\r\n");
 			break;
@@ -243,7 +252,7 @@ HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c){
 	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 0); // Gia tri mong muon: 0x10
 
 	// Kiem tra trang thai thanh ghi cau hinh
-	max30102_config_register_status_verbose();
+	max30102_config_register_status_verbose(&max30102_obj);
 	return ret;
 }
 /*-----------------------------------------------------------*/
@@ -252,7 +261,9 @@ void Max30102_task_ver2(void const *pvParameter){
 	(void)(pvParameter);
 
 	sensor_block_t block;
-	__attribute__((unused))snapshot_sync_t snap;
+#ifdef sensor_config_SYNC_USING
+	snapshot_sync_t snap;
+#endif // sensor_config_SYNC_USING
 
 	uart_printf("MAX30102 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t));
@@ -261,7 +272,7 @@ void Max30102_task_ver2(void const *pvParameter){
 
 #if defined(CMSIS_API_USING)
 
-		if(osSemaphoreWait(sem_maxId, 100) == osOK){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
+		if(osSemaphoreWait(max30102_semId, 100) == osOK){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);
@@ -272,7 +283,7 @@ void Max30102_task_ver2(void const *pvParameter){
 			if(num_samples > 0){
 				for(uint8_t i = 0; i < num_samples; i++){
 					block.ppg.ir[i] = ir_buffer[i];
-					block.ppg.red[i] = red_buffer[i];
+//					block.ppg.red[i] = red_buffer[i];
 				}
 
 				block.type = SENSOR_PPG;
@@ -289,7 +300,7 @@ void Max30102_task_ver2(void const *pvParameter){
 
 #endif // sensor_config_SYNC_USING
 
-				QUEUE_SEND_FROM_TASK(&block); //Gui 32 sample vao queue
+				MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
 
 			}else{ // Neu khong du 32 samples 1 lan
 				uart_printf("[MAX30102] Warining: FIFO is not enoungh 32 samples !\r\n");
@@ -300,7 +311,7 @@ void Max30102_task_ver2(void const *pvParameter){
 
 #elif defined(FREERTOS_API_USING)
 
-		if(xSemaphoreTake(sem_max, pdMS_TO_TICKS(100)) == pdTRUE){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
+		if(xSemaphoreTake(max30102_sem, pdMS_TO_TICKS(100)) == pdTRUE){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
 #ifdef sensor_config_SYNC_USING
 			take_snapshotSYNC(&snap);

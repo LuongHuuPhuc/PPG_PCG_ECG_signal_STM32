@@ -18,7 +18,6 @@ extern "C" {
 #include "stdio.h"
 #include "stdbool.h"
 #include "cmsis_os.h"
-#include "../../DigitalFilter/FIR_filter/Inc/FIR_Filter.h"
 
 /* @note BIG NOTE BEFORE CODE (VAN DE & Y TUONG)
  * 		 IDEA: Do xung clock LRCLK (tao ra Sample Rate) cua phan mem gioi han toi thieu la 8000Hz nen ta can phai Downsample xuong 1000Hz
@@ -40,7 +39,7 @@ extern "C" {
  *         Trong truong hop mau 24-bit la so am thi (MSB = 1), se can phai tu mo rong dau (Sign Extension) tu 24-bit len 32-bit
 */
 
-// Macros
+// ==== MACROS　====
 #define PCG_SAMPLE_RATE	 			8000 // 8000Hz (Hardware)
 #define TARGET_SAMPLE_RATE			1000 // 1000Hz (desired)
 #define DOWNSAMPLE_FACTOR			(PCG_SAMPLE_RATE / TARGET_SAMPLE_RATE) // 8
@@ -54,39 +53,35 @@ extern "C" {
 // Extern protocol variable cho function trong .c
 extern I2S_HandleTypeDef hi2s2;
 extern DMA_HandleTypeDef hdma_spi2_rx;
-extern FIRFilter fir;
 
 // Task & RTOS
 #if defined(FREERTOS_API_USING)
 
 extern TaskHandle_t inmp441_task;
-extern SemaphoreHandle_t sem_mic;
+extern SemaphoreHandle_t inmp441_sem;
 
 #elif defined(CMSIS_API_USING)
 
-extern osSemaphoreId sem_micId;
+extern osSemaphoreId inmp441_semId;
 extern osThreadId inmp441_taskId;
 
 #endif // CMSIS_API_USING
 
 // INMP441
 extern volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT]; // Buffer cho DMA ghi data HALF-WORD vao (Khong chua sample hoan chinh)
-extern volatile int32_t __attribute__((unused))buffer32[I2S_SAMPLE_COUNT]; // Buffer de luu sample that (da ghep framw LOW + HIGH)
-extern volatile bool __attribute__((unused))mic_half_ready;
-extern volatile bool __attribute__((unused))mic_full_ready;
+extern volatile int32_t __attribute__((unused)) buffer32[I2S_SAMPLE_COUNT]; // Buffer de luu sample that (da ghep framw LOW + HIGH)
+extern volatile bool __attribute__((unused)) mic_half_ready;
+extern volatile bool __attribute__((unused)) mic_full_ready;
 
 // Flag do DMA set de bao buffer nao vua day VER3
-extern volatile bool __attribute__((unused))mic_ping_ready;
-extern volatile bool __attribute__((unused))mic_pong_ready;
+extern volatile bool __attribute__((unused)) mic_ping_ready;
+extern volatile bool __attribute__((unused)) mic_pong_ready;
 
 // 2 buffer ping/pong (DMA se tu ghi luan phien)
-extern volatile int16_t __attribute__((unused))mic_ping[I2S_SAMPLE_COUNT];
-extern volatile int16_t __attribute__((unused))mic_pong[I2S_SAMPLE_COUNT];
+extern volatile int16_t __attribute__((unused)) mic_ping[I2S_SAMPLE_COUNT];
+extern volatile int16_t __attribute__((unused)) mic_pong[I2S_SAMPLE_COUNT];
 
-// Forward Declaration (Khai bao tam thoi de compiler biet kieu du lieu nay se duoc dinh nghia o noi khac sau nay)
-// Tranh include cheo nhau (A can B, B can A)
-typedef struct SENSOR_BLOCK_t sensor_block_t; // From Sensor_config.h
-typedef struct SNAPSHOT_SYNC_t snapshot_sync_t; // From take_snapsync.h
+extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 //==== FUNCTION PROTOTYPE ====
 
@@ -181,21 +176,6 @@ void Inmp441_task_ver2(void const *pvParameter);
  * @remark Ham prototype, chua hoat dong duoc
  */
 __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter);
-
-/**
- * @brief Ham debug xem frame nao duoc truyen truoc den thanh ghi
- * tu cam bien INMP441 bang cach in ra 10 sample dau
- *
- * Thu tu nao dung thi se thay (s_..._first & 0xFF) thuong xuyen ~ 0x00 (hoac rat gan 0 voi nhieu)
- * Thu tu nao sai thi low byte se nhay loan len
- *
- * @note Trong datashett, INMP441 co bit order la left-justified (MSB se sinh ra truoc)
- * va truyen data theo frame 32-bit (chi co 24-bit co nghia, 8-bit cuoi la padding)
- * Frame HIGH tuong duong voi phan chua bit MSB, frame LOW tuong duong voi phan chua bit LSB
- *
- * Data duoc gui vao thanh ghi voi Frame Order la HIGH frame first (MSB truoc) roi sau do moi den LOW
- */
-__attribute__((unused)) void Inmp441_frame_debug(volatile uint16_t *inputBuffer);
 
 #ifdef __cplusplus
 }

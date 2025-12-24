@@ -33,8 +33,10 @@
 /* USER CODE BEGIN DECL */
 
 /* Includes ------------------------------------------------------------------*/
-#include <string.h>
-#include "ff_gen_drv.h"
+
+#include "user_diskio.h"
+#include "string.h"
+#include "diskio.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -96,6 +98,7 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
+	// TODO(LuongHuuPhuc): Toi uu hoa thuat toan nay vao ngay mai
     Stat = STA_NOINIT;
     return Stat;
   /* USER CODE END STATUS */

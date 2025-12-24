@@ -1,60 +1,95 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
+
+def bandpass_filter(signal, fs, lowcut, highcut, order=4):
+    nyq = 0.5 * fs
+    b, a = butter(order, [lowcut/nyq, highcut/nyq], btype='band')
+    return filtfilt(b, a, signal)
+
+def compute_fft(signal, fs, remove_dc=True):
+    signal = np.asarray(signal, dtype=int)
+
+    if remove_dc:
+        signal = signal - np.mean(signal)  # Loai bo DC (lech baseline) de ve FFT cho Raw Signal
+
+    N = len(signal)
+    window = np.hanning(N)
+    signal_w = signal * window
+
+    fft_vals = np.fft.rfft(signal_w)    # 1-sided FFT
+    mag = np.abs(fft_vals) / N
+    mag[1:-1] *= 2                      # Scale 1-sided (Tru DC va Nyquist)
+    freqs = np.fft.rfftfreq(N, d=1/fs)
+    return freqs, mag
 
 def plot_signal_and_fft(
     csv_path,
-    column_index=0,
+    column_name="ECG",   # <<< Default
     fs=1000,
-    dtype=np.int16,
+    lowcut=5,
+    highcut=40,
     title_prefix="Signal"
 ):
-    # ===== ĐỌC FILE CSV =====
+    # ===== ĐỌC CSV (CÓ HEADER) =====
     data = pd.read_csv(csv_path)
 
-    if column_index >= data.shape[1]:
-        raise ValueError(f"CSV chỉ có {data.shape[1]} cột, không có cột {column_index}")
+    if column_name not in data.columns:
+        raise ValueError(f"Không có cột '{column_name}'. Các cột có: {list(data.columns)}")
 
-    signal = data.iloc[:, column_index].to_numpy(dtype=dtype)
+    raw_signal = data[column_name].to_numpy(dtype=float)
+    time = np.arange(len(raw_signal)) / fs
 
-    # ===== THAM SỐ =====
-    N = len(signal)
-    T = 1 / fs
-    time = np.arange(N) * T
+    # ===== LỌC =====
+    filtered_signal = bandpass_filter(raw_signal, fs, lowcut, highcut)
 
-    # ===== WINDOWING =====
-    window = np.hanning(N)
-    windowed_signal = signal * window
+    # ===== FFT =====
+    f_raw, fft_raw = compute_fft(raw_signal, fs, remove_dc=True)
+    f_filt, fft_filt = compute_fft(filtered_signal, fs, remove_dc=True)
 
-    # ===== FFT (1-sided) =====
-    fft_values = np.fft.fft(windowed_signal)
-    fft_magnitude = np.abs(fft_values) / N
-    fft_magnitude = fft_magnitude[:N // 2] * 2
+    # ===== VẼ 2x2 =====
+    plt.figure(figsize=(14, 8))
 
-    freqs = np.fft.fftfreq(N, d=T)[:N // 2]
-
-    # ===== VẼ =====
-    plt.figure(figsize=(12, 8))
-
-    # Time domain
-    plt.subplot(2, 1, 1)
-    plt.plot(time, signal, linewidth=0.7, color='blue')
-    plt.title(f"{title_prefix} – Time Domain (Column {column_index})")
+    # RAW SIGNAL
+    plt.subplot(2, 2, 1)
+    plt.plot(time, raw_signal, linewidth=0.7)
+    plt.title(f"{title_prefix} – Raw ({column_name})")
     plt.xlabel("Time (s)")
-    plt.ylabel("Amplitude")
     plt.grid(True)
 
-    # Frequency domain
-    plt.subplot(2, 1, 2)
-    plt.plot(freqs, fft_magnitude, linewidth=0.7, color='red')
-    plt.title(f"{title_prefix} – Frequency Domain (FFT)")
+    # FILTERED SIGNAL
+    plt.subplot(2, 2, 2)
+    plt.plot(time, filtered_signal, linewidth=0.7)
+    plt.title(f"{title_prefix} – Filtered ({column_name})")
+    plt.xlabel("Time (s)")
+    plt.grid(True)
+
+    # FFT RAW SIGNAL
+    plt.subplot(2, 2, 3)
+    plt.plot(f_raw, fft_raw, linewidth=0.7)
+    plt.title("FFT – Raw")
     plt.xlabel("Frequency (Hz)")
-    plt.ylabel("Magnitude")
+    plt.grid(True)
+
+    # FFT FILTERED SIGNAL
+    plt.subplot(2, 2, 4)
+    plt.plot(f_filt, fft_filt, linewidth=0.7)
+    plt.title("FFT – Filtered")
+    plt.xlabel("Frequency (Hz)")
     plt.grid(True)
 
     plt.tight_layout()
     plt.show()
 
-INPUT_PATH = r'D:\Esp-idf\Test_source\max30102_test\data_text\ECG_PPG_STM32\NgoTuanAnh_ECG_PPG.csv'
-TITLE = "FFT for ECG"
-plot_signal_and_fft(INPUT_PATH, column_index=0, fs=1000, title_prefix=TITLE)
+# ===== GỌI HÀM =====
+INPUT_PATH = r'D:\Esp-idf\Test_source\max30102_test\data_text\ECG_PPG_STM32\BuiNgocDat_ECG_PPG1.csv'
+
+plot_signal_and_fft(
+    INPUT_PATH,
+    column_name="ECG",     # đổi cột ở đây
+    fs=1000,
+    lowcut=1,
+    highcut=20,
+    title_prefix="Signal"
+)

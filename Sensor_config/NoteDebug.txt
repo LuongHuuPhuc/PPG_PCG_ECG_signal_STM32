@@ -115,3 +115,48 @@ B. Cấu trúc thanh ghi IPR (Interrupt Priority Register) - thanh ghi ưu tiên
 		- Giá trị đã bị thay đổi trước khi task sau chạy ! -> là Race condition cổ điển
 		- Nguyên nhân đến từ hàm 
 => Chốt lại: Nếu timestamp được tạo trong ISR, thì timestamp PHẢI được truyền từ ISR sang task -> Không được đọc lại global trong task
+
+### DEBUG 4
+- Mục tiêu đòng bộ frame của 3 cảm biến PPG PCG và ECG 
+- Mục tiêu hiện tại: 
+	- In 1 lần = 3 cột
+	- đúng 32 sample mỗi cột
+	- sample_id + timestamp phải khớp tuyệt đối
+	- Chấp nhận drop 1-2 mẫu (tần suất ít) nhưng đa phần là luôn đủ mẫu
+	- chấp nhận chậm
+=> Sensor đọc data thì realtime còn UART logger thì không cần (non-realtime). Chỉ cần đủ mẫu và không bị lệch pha ! (Quan trọng)
+- Không có hệ thống nào RealTime cả, vẫn có hiện tượng mất mẫu xảy ra, chẳng là ít hay nhiều thôi.
+- Cần 1 đệm hay 1 phương thức gì đó để trống tràn hay lệch frame
+- Ước tính: 32ms thì cả 3 block cùng gửi data => 94 block/s
+
+- Thiết kế ban đầu: 
+	- Sau khi 3 task xử lý xong 32 sample -> Gửi từng block vào Queue/Mail (CMSIS-API) -> Logger nhận đủ 3 sensor -> In ra màn hình qua UART
+- Vấn đề: Logger sau khi nhận đủ 3 block, nó phải làm những việc: 
+	- Giữ 3 biến tạm, chờ đủ , so sánh timestamp, sample_id, xử lý mismatch, reset flag
+	- Nó đang làm nhiều việc hơn so với việc vốn dĩ nó làm là In ra màn hình 
+- Và khi đồng bộ cả 3 cảm biến để in ra cùng 1 frame, khả năng cao sẽ bị: 
+	- Mail đến lệch thời gian (Các task chưa xử lý xong, đang chờ task còn lại xử lý,... thì lại bị Timer trigger đồng bộ xen ngang gây trễ, lệch frame)
+=> task Logger đang gánh hết trách nhiệm 
+=> Đề xuất việc tách Logger thành 1 Sync task bé hơn để đồng bộ (làm bộ đệm), còn Logger chỉ cần UART in ra màn hình, trễ 1 tí cũng được, miễn là không ảnh hưởng đến data
+
+ECG task   ┐
+PPG task   ├──> MailQueue(sensor_block_t) ──> Sync task ──> Queue(sync_block_t) ──> Logger ──> UART / SD
+PCG task   ┘
+
+[ ECG task ]  ┐
+[ PPG task ]  ├─> sensor_queue (sensor_block_t)
+[ PCG task ]  ┘
+
+                ↓
+        [ Sync task ]
+        - gom block
+        - kiểm timestamp / sample_id
+        - đủ 3 thì tạo sync_block
+
+                ↓
+        sync_queue (sync_block_t)
+
+                ↓
+            Logger
+        - UART / SD
+
