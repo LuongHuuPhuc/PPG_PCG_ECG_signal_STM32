@@ -110,9 +110,9 @@ $$f_{c} = \frac{1}{2 \pi RC x 100}$$
 - Tín hiệu không được lấy trực tiếp từ IAOUT vì khi đó chưa được LPF đầy đủ, trở kháng không tối ưu cho ADC, biên độ có thể chưa phù hợp. Op-Amp A1 có nhiệm vụ "đóng gói cuối" cho ADC
 => Op-Amp A1 nhận tín hiệu sau IA + HPF, khuếch dại thêm, lọc thấp và xuất ra chân **OUTPUT** với mức điện áp quanh **REFOUT** để MCU đọc ADC
 
-- Gain của A1: 
+- Gain của A1:
 
-$$Gain_{A1} = 1 + \frac{R_{feedback}{R_{REFOUT}$$
+$$Gain_{A1} = 1 + \frac{R_{feedback}}{R_{REFOUT}}$$
 
 - Gain của A1 do 2 con trở $R_{feedback}$ (điện trở nối **OUTPUT** -> **OPAMP-**) và $R_{REFOUT}$ (điện trở nối **OPAMP-** tới **REFOUT**)
 
