@@ -10,9 +10,17 @@ extern "C" {
 #endif //__cplusplus
 
 #include "ad8232_config.h"
-#include "stdio.h"
+
+#include "string.h"
+
 #include "Sensor_config.h"
 #include "take_snapsync.h"
+
+#if defined(SYNC_TO_LOGGER_MAIL_USING)
+/**/
+#else
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#endif // Not using SYNC_TO_LOGGER_MAIL_USING
 
 // ====== VARIABLES DEFINITION ======
 

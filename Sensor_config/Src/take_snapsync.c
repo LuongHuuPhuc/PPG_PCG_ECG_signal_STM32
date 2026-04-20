@@ -10,9 +10,11 @@ extern "C" {
 #endif //__cplusplus
 
 #include "take_snapsync.h"
-#include "stdio.h"
+
 #include "string.h"
 #include "Logger.h" // Lay macro de gui block cam bien
+
+#ifdef SYNC_TO_LOGGER_MAIL_USING
 
 #ifdef CMSIS_API_USING
 
@@ -21,13 +23,17 @@ osMailQId sync_queueId = NULL;
 
 #endif // CMSIS_API_USING
 
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+volatile uint32_t g_sync_block_per_sec = 0;
+#endif // SYNC_BLOCK_COUNT_DEBUG
+
 /*-----------------------------------------------------------*/
 
 /* Ham se reset trang thai slot */
 __attribute__((always_inline)) static inline void sync_slot_reset(sync_slot_t *slot){
 	slot->ecg_ready = false;
-	slot->max_ready = false;
-	slot->mic_ready = false;
+	slot->ppg_ready = false;
+	slot->pcg_ready = false;
 }
 
 /*-----------------------------------------------------------*/
@@ -50,15 +56,15 @@ __attribute__((always_inline)) static inline void sync_drop_oldest(sync_slot_t *
 
 	// So sanh de xem nen drop block nao
 	if(slot->ecg_ready && id_ecg == min_sampleId) slot->ecg_ready = false;  // Drop
-	if(slot->max_ready && id_ppg == min_sampleId) slot->max_ready = false;  // Drop
-	if(slot->mic_ready && id_pcg == min_sampleId) slot->mic_ready = false;  // Drop
+	if(slot->ppg_ready && id_ppg == min_sampleId) slot->ppg_ready = false;  // Drop
+	if(slot->pcg_ready && id_pcg == min_sampleId) slot->pcg_ready = false;  // Drop
 }
 
 /*-----------------------------------------------------------*/
 
 /* Ham kiem tra du 3 block hay khong */
 __attribute__((always_inline)) static inline bool sync_slot_ready(sync_slot_t *slot){
-	return (slot->ecg_ready && slot->max_ready && slot->mic_ready);
+	return (slot->ecg_ready && slot->ppg_ready && slot->pcg_ready);
 }
 
 /*-----------------------------------------------------------*/
@@ -121,11 +127,11 @@ void SyncTask(void const *pvParameter){
 			break;
 		case SENSOR_PCG:
 			slot.pcg = *in;
-			slot.mic_ready = true;
+			slot.pcg_ready = true;
 			break;
 		case SENSOR_PPG:
 			slot.ppg = *in;
-			slot.max_ready = true;
+			slot.ppg_ready = true;
 			break;
 		}
 
@@ -137,18 +143,23 @@ void SyncTask(void const *pvParameter){
 			// Neu timestamp va sampleId match nhau
 			if(sync_match(&slot)){
 
-				out.sample_id = slot.ecg.sample_id;
-				out.timestamp = slot.ecg.timestamp;
-				out.count = MIN(MIN(slot.ecg.count, slot.ppg.count), slot.pcg.count);
+				out.sample_id_sync = slot.ecg.sample_id;
+				out.timestamp_sync = slot.ecg.timestamp;
+				out.count_sync = MIN(MIN(slot.ecg.count, slot.ppg.count), slot.pcg.count);
 
 				// !!! Gan truc tiep chi cho bien co cung kieu !!!
 				// Ep sang const cho dung voi memcpy (data gio da duoc snapshot roi)
-				memcpy(out.ecg, (const int16_t*)slot.ecg.ecg, out.count * sizeof(int16_t));
-				memcpy(out.ppg_ir, (const uint32_t*)slot.ppg.ppg.ir, out.count * sizeof(uint32_t));
-				memcpy(out.mic, (const uint32_t*)slot.pcg.mic, out.count * sizeof(int32_t));
+				memcpy(out.ecg_sync, (const int16_t*)slot.ecg.ecg, out.count_sync * sizeof(int16_t));
+				memcpy(out.ppg_ir_sync, (const uint32_t*)slot.ppg.ppg.ir, out.count_sync * sizeof(uint32_t));
+				memcpy(out.pcg_sync, (const uint32_t*)slot.pcg.pcg, out.count_sync * sizeof(int32_t));
 
 				// Thuc hien gui Mail cho Logger Task de in ra man hinh
 				MAIL_SEND_FROM_SYNC(out);
+
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+				g_sync_block_per_sec++; /* Dem so block duoc gui di */
+#endif // SYNC_BLOCK_COUNT_DEBUG
+
 
 				// Tiep tuc reset 3 frame neu moi thu deu on
 				sync_slot_reset(&slot);
@@ -163,6 +174,8 @@ void SyncTask(void const *pvParameter){
 		}
 	}
 }
+
+#endif  // SYNC_TO_LOGGER_MAIL_USING
 
 #ifdef __cplusplus
 }

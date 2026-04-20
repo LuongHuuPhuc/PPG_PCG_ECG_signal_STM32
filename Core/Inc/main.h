@@ -49,11 +49,14 @@ extern "C" {
 
 #define CMSIS_API_USING    		1
 //#define FREERTOS_API_USING	1
+
 //#define AD8232_ONLY_LOGGER	1
 //#define MAX30102_ONLY_LOGGER	1
 //#define INMP441_ONLY_LOGGER	1
-//#define sensor_config_SYNC_USING	1
-#define SYNC_TO_LOGGER_MAIL_USING	1
+
+//#define sensor_config_SYNC_USING	1 /* Su dung bien dong bo tu Sensor_config.c */
+//#define SYNC_TO_LOGGER_MAIL_USING	1 /* Su dung sync task trung gian cho dong bo */
+//#define SYNC_BLOCK_COUNT_DEBUG  1	/* Uncomment de su dung debug */
 
 /* USER CODE END EM */
 

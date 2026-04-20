@@ -1,5 +1,5 @@
 # GIỚI THIỆU VỀ FATFS
-- FatFS (File Allocation Table File System) là một thư viện hệ thống tập tin nhỏ gọn, mã nguồn C, được phát triển để chuyên dùng cho MCU và hệ thống nhúng
+- **FatFS (File Allocation Table File System)** là một thư viện hệ thống tập tin nhỏ gọn, mã nguồn C, được phát triển để chuyên dùng cho MCU và hệ thống nhúng
 - FatFS cho phép MCU: 
 	- Tạo/mở/ghi/đọc file
 	- Làm việc với SD card, USB MSC, NOR/NAND flash
@@ -36,11 +36,12 @@
 - FATFS hỗ trợ: 
 	- FAT12, FAT16, FAT32 (phổ biến nhất với SD Card)
 - Cấu trúc cơ bản:
-	- Sector (Vùng): 512 byte (đơn vị thấp nhất). 
+	- **Sector (Vùng)**: 512 byte (đơn vị thấp nhất). 
 		- Là đơn vị lưu trữ dữ liệu nhỏ nhất, giống như những ngăn nhỏ trên ổ cứng hay USB
 		- Mỗi sector có địa chỉ riêng để máy tính có thể đọc/ghi dữ liệu 1 cách độc lập.
 		- Khi file không lấp đầy một sector, phần còn lại được điền bằng số 0
-	- Cluster (Cụm): Nhiều Sector. Là đơn vị quản lý của hệ điều hành
+
+	- **Cluster (Cụm)**: Nhiều Sector. Là đơn vị quản lý của hệ điều hành
 		- Khi lưu file, hệ điều hành sẽ cấp cho nó 1 số lượng cluster nhất định, mỗi cluster có kích thước cố định
 		- Kích thước Cluster lớn thường giúp tăng tốc độ truy cập cho các file lớn vì ít phải truy cập nhiều Cluster khác.
 		- Tuy nhiên các file nhỏ hơn lại gây lãng phí dung lượng hơn
@@ -48,27 +49,27 @@
 	- Directory Entry: Metadata của file
 	
 ## 2. Cơ chế ghi File trong FATFS
-1. Mount file system
+### 1. Mount file system
 - Đọc thông tin FAT từ SD card vào RAM
 ```c
 f_mount(&fs, "", 1);
 ```
 
-2. Mở file 
+### 2. Mở file 
 - Nếu file chưa tồn tại -> tạo mới
 - Nếu đã tồn tại -> Mở lại
 ```c
 f_open(&file, "data.csv", FA_OPEN_ALWAYS | FA_WRITE);
 ```
 
-3. Ghi dữ liệu
+### 3. Ghi dữ liệu
 - Dữ liệu chưa chắc đã ghi xuống ngay SD card
 - FatFS sử dụng Sector buffer (cache) trong RAM
 ```c
 f_write(&file, buffer, len, &bw);
 ```
 
-4. Đồng bộ dữ liệu (quan trọng)
+### 4. Đồng bộ dữ liệu (quan trọng)
 - Ép cache ghi xuống SD card
 - Nếu reset MCU mà không sync -> có thể mất data cuối
 ```c
@@ -76,7 +77,7 @@ f_sync(&file);
 
 ```
 
-5. Đóng file
+### 5. Đóng file
 - Tự động gọi `f_sync()`
 ```c
 f_close(&file);
@@ -179,7 +180,7 @@ SD_CS_HIGH();
 - Không kéo CS trong application
 - Chỉ kéo CS trong diskio/BSP Layer
 
-# LÀM RÕ VỀ HỆ THỐNG FOLDER TRONG FATFS
+# HỆ THỐNG FOLDER FATFS TRONG CubeMX
 - Bạn để ý thì thấy ngoài các thư viện low-level của FATFS nằm trong folder **Middlewares** ra thì còn folder FATFS nữa phải không ?
 - Nhìn có vẻ trùng chức năng nhưng thực chất chúng có mối liên hệ với nhau và dưới đây mình sẽ làm mối liên hệ đó và chỉ ra nơi để bạn có thể cho Code của bản thân vào mà không sợ bị ảnh hưởng đến các file hệ thống
 - CubeMX thiết kế như vậy vì họ muốn: 
@@ -219,23 +220,25 @@ Middlewares/
             ├── ff_gen_drv.h
             ├── ff.c / ff.h
 ``` 
-- Đây là thư viện FATFS gốc của **ChaN**, đã được STM tích hợp
+- Đây là thư viện FATFS gốc của **ChaN (người làm thư viện này)**, đã được STM tích hợp
 - Đặc điểm: 
 	- Không chứa code phần cứng
 	- Không biết SPI, SD card, CS
 	- Không chỉnh sửa
 - Chức năng từng file 
+
 | File | Vai trò|
 |------|--------|
 |`ff.c`/`ff.h`| FATFS core (f_open, f_write, f_close,...) chứa toàn bộ logic hệ thống file FAT|
 |`diskio.h`| Inteface chuẩn (API contract) cho disk|
-|`diskio.c`| Dispatcher - gọi Driver phù hợp|
-|`ff_gen_drv.c`| Quản lý & map driver (USER, USB, SDIO,...)|
-|`integer.h`| Kiểu dữ liệu cho FATFS|
+|`diskio.c`| Dispatcher - gọi Driver phù hợp, interface trung gian mà FatFS dùng để gọi sang driver block device|
+|`ff_gen_drv.c`| Quản lý nhiều ổ logic & map driver (USER, USB, SDIO,...)|
+|`integer.h`| typedef số nguyên, kiểu dữ liệu cho FATFS|
 
 - `ff.c` và `ff.h` là API mức cao (filesystem layer) để đọc và ghi data lên ổ đĩa theo chuẩn FAT
 	- Nó chỉ chứa logic cách xử lý file theo đúng chuẩn FAT chứ không tương tác trực tiếp với phần cứng 
 	- Có nhiệm vụ chỉ là xử lý logic và gửi lệnh cho các API cấp thấp để xử lý request của nó
+
 - `diskio.h` và `diskio.c` là lớp trung gian giữa filesystem layer và driver.
 	- Nó định nghĩa các interface chuẩn `disk_initialize`, `disk_read`, disk_write`,...
 	- Không xử lý file, chỉ có nhiệm vụ duy nhất là lớp giao tiếp giữa driver và chuẩn FAT
@@ -253,10 +256,11 @@ FATFS/
 - Là nơi chuyển "Sector-level-request" của FATFS thành "SPI transaction thật với SD card"
 - Chức năng:
 	- Implement các hàm mà FATFS yêu cầu:
-		- `disk_initialize`	
-		- `disk_read`
-		- `disk_write`
-		- `disk_ioctl`
+		- `USER_initialize`	- Khởi tạo card
+		- `USER_read` - đọc sector 512 bytes
+		- `USER_write` - ghi sector 512 
+		- `USER_ioctl`
+		- `USER_status`
 	- Giao tiếp trực tiếp với SPI
 	- Điều khiển CS LOW/HIGH
 	- Gửi Command SD Card

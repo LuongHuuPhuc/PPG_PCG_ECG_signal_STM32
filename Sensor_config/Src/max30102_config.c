@@ -10,11 +10,17 @@ extern "C" {
 #endif // __cplusplus
 
 #include "max30102_config.h"
-#include "stdio.h"
 #include "max30102_low_level.h" // max30102_t
 #include "max30102_lib.h" // max30102_record
+
 #include "Sensor_config.h"
 #include "take_snapsync.h"
+
+#if defined(SYNC_TO_LOGGER_MAIL_USING)
+/**/
+#else
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#endif // Not using SYNC_TO_LOGGER_MAIL_USING
 
 //====== VARIABLES DEFINITION ======
 

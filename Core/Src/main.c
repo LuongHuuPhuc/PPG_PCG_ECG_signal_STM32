@@ -23,9 +23,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
@@ -52,7 +54,6 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
-I2C_HandleTypeDef hi2c2;
 
 I2S_HandleTypeDef hi2s2;
 DMA_HandleTypeDef hdma_spi2_rx;
@@ -78,7 +79,6 @@ static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_SPI1_Init(void);
-static void MX_I2C2_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
@@ -129,14 +129,17 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   MX_SPI1_Init();
-  MX_I2C2_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
-  SensorConfig_Init();
+//  SensorConfig_Init();
+
+  SERROR_CHECK(Logger_init());
+  uart_printf(">> [APP] LOGGER init OK !\r\n");
+
   uart_printf("[DEBUG] Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
 
-  HAL_TIM_Base_Start_IT(&htim3); //Khoi dong TIM3 voi interrupt TIMER (1000Hz)
+  HAL_TIM_Base_Start_IT(&htim3); // Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
   /* USER CODE END 2 */
 
@@ -165,26 +168,28 @@ int main(void)
 
 #if defined(CMSIS_API_USING)
 
-  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
-  configASSERT(ad8232_taskId);
+//  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+//  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+//  configASSERT(ad8232_taskId);
 
-  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
-  configASSERT(inmp441_taskId);
+//  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+//  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
+//  configASSERT(inmp441_taskId);
 
   // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
-  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
-  configASSERT(max30102_taskId);
+//  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+//  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+//  configASSERT(max30102_taskId);
 
-  osThreadDef(syncTaskName, SyncTask, osPriorityNormal, 0, 1024);
-  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
-  configASSERT(sync_taskId);
+//  osThreadDef(syncTaskName, SyncTask, osPriorityNormal, 0, 1024);
+//  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
+//  configASSERT(sync_taskId);
 
-  // Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
-  // Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
-  osThreadDef(loggerTaskName, Logger_three_task_ver2, osPriorityNormal, 0, 1024 * 2);
+  /**
+   * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
+   * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
+   */
+  osThreadDef(loggerTaskName, Logger_write_data_to_SD, osPriorityLow, 0, 1024 * 3);
   logger_taskId = osThreadCreate(osThread(loggerTaskName), NULL);
   configASSERT(logger_taskId);
 
@@ -199,14 +204,14 @@ int main(void)
 
 #else
 
-  uart_printf("You must define CMSIS_API_USING or FREERTOS_API !");
+  uart_printf("[APP] You must define CMSIS_API_USING or FREERTOS_API !");
 
 #endif // CMSIS_API_USING
 
   //Check sau khi tao task
   StackCheck();
   HeapCheck();
-  uart_printf("Starting Tasks...! \r\n");
+  uart_printf("[APP] Starting Tasks...! \r\n");
 
   // Set gia tri dem ban dau cua TIMER ve 0
   __HAL_TIM_SET_COUNTER(&htim3, 0);
@@ -366,40 +371,6 @@ static void MX_I2C1_Init(void)
 }
 
 /**
-  * @brief I2C2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C2_Init(void)
-{
-
-  /* USER CODE BEGIN I2C2_Init 0 */
-
-  /* USER CODE END I2C2_Init 0 */
-
-  /* USER CODE BEGIN I2C2_Init 1 */
-
-  /* USER CODE END I2C2_Init 1 */
-  hi2c2.Instance = I2C2;
-  hi2c2.Init.ClockSpeed = 100000;
-  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c2.Init.OwnAddress1 = 0;
-  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c2.Init.OwnAddress2 = 0;
-  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C2_Init 2 */
-
-  /* USER CODE END I2C2_Init 2 */
-
-}
-
-/**
   * @brief I2S2 Initialization Function
   * @param None
   * @retval None
@@ -532,7 +503,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 230400;
+  huart2.Init.BaudRate = 460800;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_2;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -610,10 +581,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB14
-                           PB4 PB5 PB8 PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_14
-                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_9;
+  /*Configure GPIO pins : PB0 PB1 PB2 PB10
+                           PB14 PB3 PB4 PB5
+                           PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
+                          |GPIO_PIN_14|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5
+                          |GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -682,8 +655,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 #endif // sensor_config_SYNC_USING
 
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
-		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
+//		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
+//		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
 
 #elif defined(FREERTOS_API_USING)
 		  BaseType_t xHigherPriorityTaskWoken = pdFALSE;

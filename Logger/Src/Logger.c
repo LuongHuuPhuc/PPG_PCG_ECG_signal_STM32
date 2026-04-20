@@ -10,10 +10,12 @@ extern "C" {
 #endif
 
 #include "Logger.h"
-#include "stdio.h"
+
 #include "string.h"
+#include "stdarg.h"
+
 #include "cmsis_os.h"
-#include "MicroSD_config.h"
+#include "MicroSD_config.h" // Thay vi in ra man hinh thi ghi vao the SD (neu dung)
 
 #ifdef USING_UART_DMAPHORE
 
@@ -60,12 +62,13 @@ HAL_StatusTypeDef Logger_init(void){
 
 #else
 
-	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_block_t);
-		logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
-		if(logger_queueId == NULL){
-			uart_printf("[LOGGER] Failed to create logger_queue !\r\n");
-			ret |= HAL_ERROR;
-		}
+	// Tao Queue cho Logger de nhan block truc tiep tu Sensor task
+//	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_block_t);
+//		logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
+//		if(logger_queueId == NULL){
+//			uart_printf("[LOGGER] Failed to create logger_queue !\r\n");
+//			ret |= HAL_ERROR;
+//		}
 
 #endif // SYNC_TO_LOGGER_MAIL_USING
 
@@ -135,6 +138,13 @@ void isQueueFree(const QueueHandle_t queue, const char *name){
 
 /*-----------------------------------------------------------*/
 
+/* Check neu ham uart_printf() co duoc goi trong ISR */
+static inline bool uart_printf_in_isr(void){
+	return (__get_IPSR() != 0U);
+}
+
+/*-----------------------------------------------------------*/
+
 __attribute__((weak)) void uart_printf(const char *fmt,...){
 	// Giam stack usage
 	static char uart_buf[UART_TX_BUFFER_SIZE];  // Buffer cho uart_printf thuong
@@ -150,6 +160,11 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 		len = (int)sizeof(uart_buf) - 1; // vi vnsprintf da dam bao co '\0'
 	}
 
+	// Neu dang trong ISR thi khong duoc dung mutex RTOS gay can tro
+	if(uart_printf_in_isr()){
+		HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, (uint16_t)len, pdMS_TO_TICKS(100)); // Blocking mode
+		return;
+	}
 #if defined(CMSIS_API_USING)
 
 	// Phai vao RTOS xong, khi Scheduler chay thi Semaphore moi chay
@@ -188,24 +203,6 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 	}
 }
 
-__attribute__((weak, unused)) void uart_printf_safe(const char *fmt,...){
-	static char uart_isr_buf[256];
-	va_list args;
-	va_start(args, fmt);
-	int len = vsnprintf((char*)uart_isr_buf, sizeof(uart_isr_buf), fmt, args);
-	va_end(args);
-
-	if(len < 0) return;
-
-	// Clamp len ve dung so byte thuc co trong buffer
-	if(len >= (int)sizeof(uart_isr_buf)){
-		len = (int)sizeof(uart_isr_buf) - 1; // vi vnsprintf da dam bao co '\0'
-	}
-
-	HAL_UART_Transmit(&huart2, (uint8_t*)uart_isr_buf, (uint16_t)len, pdMS_TO_TICKS(100));
-	// ....
-}
-
 /*-----------------------------------------------------------*/
 
 // Tinh chenh lech thoi gian so voi time hien tai cua Logger
@@ -226,8 +223,50 @@ __attribute__((unused)) static inline void debugSYNC(sensor_block_t *ecg_block, 
 //Reset trang thai flag ready cua sensor
 __attribute__((unused)) static inline void ResetSensor_flag(sensor_check_t *check){
 	check->ecg_ready = false;
-	check->mic_ready = false;
-	check->max_ready = false;
+	check->pcg_ready = false;
+	check->ppg_ready = false;
+}
+
+/*-----------------------------------------------------------*/
+
+void Logger_write_data_to_SD(void const *pvParameter){
+	(void)(pvParameter);
+	sd_status_t ret;
+	uint8_t count = 0;
+	uart_printf("Logger task started !\r\n");
+
+	ret = MicroSD_Init();
+	if(ret != SD_OK){
+		uart_printf("[LOGGER] MircoSD_Init failed: %d\r\n", ret);
+		for(;;) osDelay(1000);
+	}
+	uart_printf("[LOGGER] MicroSD_Init OK!\r\n");
+
+	ret = MicroSD_Open(LOGGER_FILE_NAME, true);
+	if(ret != SD_OK){
+		uart_printf("[LOGGER] MircoSD_Open failed: %d\r\n", ret);
+		for(;;) osDelay(1000);
+	}
+	uart_printf("[LOGGER] File %s opened!\r\n", LOGGER_FILE_NAME);
+
+	while(count < 20){
+		// Thu chi ghi 1 lan roi close luon xem sao
+		ret = MicroSD_WriteLine("Lan %d: Demo ghi SD card bang FatFS\r\n", count + 1);
+		if (ret == SD_OK) uart_printf("[LOGGER] Ghi thanh cong!\r\n");
+		else uart_printf("[LOGGER] MircoSD_WriteLine failed: %d\r\n", ret);
+
+		ret = MicroSD_Flush();
+		if(ret == SD_OK) uart_printf("[LOGGER] MircoSD_Flush OK!\r\n");
+		else uart_printf("[LOGGER] MicroSD_Flush failed!: %d\r\n", ret);
+
+		count++;
+		osDelay(1000);
+	}
+	ret = MicroSD_Close();
+	if(ret == SD_OK) uart_printf("[LOGGER] MircoSD_Close OK!\r\n");
+	else uart_printf("[LOGGER] MicroSD_Close failed!: %d\r\n", ret);
+
+	for(;;)osDelay(1000);
 }
 
 /*-----------------------------------------------------------*/
@@ -240,6 +279,11 @@ void Logger_three_task_ver2(void const *pvParameter){
 	osEvent evt;
 	sensor_sync_block_t *data;
 
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+	static uint32_t last_count = 0;
+	static TickType_t last_tick = 0;
+#endif // SYNC_BLOCK_COUNT_DEBUG
+
 	while(1){
 		evt = osMailGet(logger_queueId, osWaitForever);
 		if(evt.status != osEventMail){
@@ -249,15 +293,27 @@ void Logger_three_task_ver2(void const *pvParameter){
 		// Lay con tro Mail
 		data = evt.value.p;
 
-//		uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", data->sample_id, data->count, data->timestamp);
+//		uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", data->sample_id_sync, data->count_sync, data->timestamp_sync);
 
-		for(uint16_t i = 0; i < data->count; i++){ //In theo so luong sample nho nhat trong 3 data
+		for(uint16_t i = 0; i < data->count_sync; i++){ //In theo so luong sample nho nhat trong 3 data
 			uart_printf("%d,%lu,%ld\n",
-					data->ecg[i],
-					data->ppg_ir[i],
-					data->mic[i]);
+					data->ecg_sync[i],
+					data->ppg_ir_sync[i],
+					data->pcg_sync[i]);
 		}
 		osMailFree(logger_queueId, data); // Giai phong Mail
+
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+		// Debug so block nhan duoc tu SyncTask de biet bottleneck xay ra the nao
+		TickType_t now = osKernelSysTick();
+		if(now - last_tick >= 1000){
+			uint32_t block_get = g_sync_block_per_sec;
+			uint32_t diff = block_get - last_count;
+			uart_printf("[LOGGER] Blocks get from SyncTask in 1s: %lu\r\n", diff);
+			last_count = block_get;
+			last_tick = now;
+		}
+#endif // SYNC_BLOCK_COUNT_DEBUG
 	}
 }
 #endif // SYNC_TO_LOGGER_MAIL_USING
@@ -278,8 +334,8 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 	sensor_block_t ecg_block = {0}, ppg_block = {0}, pcg_block = {0};
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,
-			.max_ready = false,
-			.mic_ready = false
+			.ppg_ready = false,
+			.pcg_ready = false
 	};
 
 	while(1){
@@ -297,18 +353,18 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 				break;
 			case SENSOR_PPG:
 				ppg_block = *block; //Copy du lieu tu block sang ppg_block neu la type PPG
-				sensor_check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_PCG:
 				pcg_block = *block; //Copy du lieu tu block sang pcg_block neu la type PCG
-				sensor_check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			}
 
 			osMailFree(logger_queueId, block); // Giai phong bo nho heap ngay de cho block khac gui
 
 			// Neu 3 data da ready
-			if(sensor_check.ecg_ready && sensor_check.max_ready && sensor_check.mic_ready){
+			if(sensor_check.ecg_ready && sensor_check.ppg_ready && sensor_check.pcg_ready){
 
 				// Neu timestamp match nhau
 				if(ecg_block.timestamp == ppg_block.timestamp && ecg_block.timestamp == pcg_block.timestamp){
@@ -330,7 +386,7 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 							uart_printf("%d,%lu,%ld\n",
 									ecg_block.ecg[i],
 									ppg_block.ppg.ir[i],
-									pcg_block.mic[i]);
+									pcg_block.pcg[i]);
 						}
 
 						//Reset flag
@@ -352,14 +408,14 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 
 			}else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 
 		}else if(evt.status != osEventTimeout){ // Neu ticks != 0 thi se tra ve timeout
 			uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);
 		}
 
-#elif FREERTOS_API_USING
+#elif defined(FREERTOS_API_USING)
 
 		memset(&block, 0, sizeof(sensor_block_t));
 		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(200)) == pdTRUE){
@@ -370,16 +426,16 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 				break;
 			case SENSOR_PPG:
 				ppg_block = block; //Copy du lieu tu block sang ppg_block neu la type PPG
-				sensor_check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_PCG:
 				pcg_block = block; //Copy du lieu tu block sang pcg_block neu la type PCG
-				sensor_check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			}
 
 			// Neu 3 data da ready
-			if(sensor_check.ecg_ready && sensor_check.max_ready && sensor_check.mic_ready){
+			if(sensor_check.ecg_ready && sensor_check.ppg_ready && sensor_check.pcg_ready){
 
 				// Neu timestamp match nhau
 				if(ecg_block.timestamp == ppg_block.timestamp && ecg_block.timestamp == pcg_block.timestamp){
@@ -401,7 +457,7 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 							uart_printf("%d,%lu,%ld\n",
 									ecg_block.ecg[i],
 									ppg_block.ppg.ir[i],
-									pcg_block.mic[i]);
+									pcg_block.pcg[i]);
 						}
 
 						// Kiem tra hang doi
@@ -426,7 +482,7 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 
 			}else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 		}else{
 			uart_printf("[LOGGER] Logger queue timeout !\r\n");
@@ -455,8 +511,8 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,
-			.max_ready = false,
-			.mic_ready = false
+			.ppg_ready = false,
+			.pcg_ready = false
 	};
 
 	while(1){
@@ -474,19 +530,19 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 				break;
 			case SENSOR_PPG:
 				ppg_block = *block; //Copy du lieu tu block sang ppg_block neu la type PPG
-				sensor_check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_PCG:
 				pcg_block = *block; //Copy du lieu tu block sang pcg_block neu la type PCG
-				sensor_check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			}
 
 			osMailFree(logger_queueId, block); // Giai phong bo nho heap ngay de cho block khac gui
 
 			// Neu 3 data da ready
-			if((sensor_check.ecg_ready && sensor_check.max_ready) || (sensor_check.max_ready && sensor_check.mic_ready)
-																|| (sensor_check.ecg_ready && sensor_check.mic_ready)){
+			if((sensor_check.ecg_ready && sensor_check.ppg_ready) || (sensor_check.ppg_ready && sensor_check.pcg_ready)
+																|| (sensor_check.ecg_ready && sensor_check.pcg_ready)){
 				// Neu timestamp match nhau
 				if((ecg_block.timestamp == ppg_block.timestamp) || (ecg_block.timestamp == pcg_block.timestamp)
 															  || (ppg_block.timestamp == pcg_block.timestamp)){
@@ -523,7 +579,7 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 							uart_printf("%d,%lu,%ld\n",
 									ecg_block.ecg[i],
 									ppg_block.ppg.ir[i],
-									pcg_block.mic[i]);
+									pcg_block.pcg[i]);
 						}
 
 						//Reset flag
@@ -545,7 +601,7 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 
 			}else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 		}else if(evt.status != osEventTimeout){ // Neu ticks != 0 thi se tra ve timeout
 			uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);
@@ -562,17 +618,17 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 				break;
 			case SENSOR_PPG:
 				ppg_block = block; //Copy du lieu tu block sang ppg_block neu la type PPG
-				sensor_check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_PCG:
 				pcg_block = block; //Copy du lieu tu block sang pcg_block neu la type PCG
-				sensor_check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			}
 
 			// Neu 3 data da ready
-			if((sensor_check.ecg_ready && sensor_check.max_ready) || (sensor_check.max_ready && sensor_check.mic_ready)
-																|| (sensor_check.ecg_ready && sensor_check.mic_ready)){
+			if((sensor_check.ecg_ready && sensor_check.ppg_ready) || (sensor_check.ppg_ready && sensor_check.pcg_ready)
+																|| (sensor_check.ecg_ready && sensor_check.pcg_ready)){
 				// Neu timestamp match nhau
 				if((ecg_block.timestamp == ppg_block.timestamp) || (ecg_block.timestamp == pcg_block.timestamp)
 															  || (ppg_block.timestamp == pcg_block.timestamp)){
@@ -609,7 +665,7 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 							uart_printf("%d,%lu,%ld\n",
 									ecg_block.ecg[i],
 									ppg_block.ppg.ir[i],
-									pcg_block.mic[i]);
+									pcg_block.pcg[i]);
 						}
 
 						// Kiem tra hang doi
@@ -634,7 +690,7 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 
 			}else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 
 		}else{
@@ -661,10 +717,10 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 	sensor_block_t __attribute__((unused))pcg_block = {0};
 	sensor_block_t __attribute__((unused))ecg_block = {0};
 
-	sensor_check_t check = {
+	sensor_check_t sensor_check = {
 			.ecg_ready = false,
-			.max_ready = false,
-			.mic_ready = false
+			.ppg_ready = false,
+			.pcg_ready = false
 	};
 
 	while(1){
@@ -678,21 +734,21 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 			switch(block->type){
 			case SENSOR_PCG:
 				pcg_block = *block;
-				check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			case SENSOR_PPG:
 				ppg_block = *block;
-				check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_ECG:
 				ecg_block = *block;
-				check.ecg_ready = true;
+				sensor_check.ecg_ready = true;
 				break;
 			}
 
 			osMailFree(logger_queueId, block); // Giai phong bo nho heap ngay de cho block khac gui
 
-			if(check.ecg_ready || check.max_ready || check.mic_ready){
+			if(sensor_check.ecg_ready || sensor_check.ppg_ready || sensor_check.pcg_ready){
 
 #if defined(MAX30102_ONLY_LOGGER)
 
@@ -702,7 +758,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 					uart_printf("%lu\r\n", ppg_block.ppg.ir[i]);
 				}
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #elif defined(AD8232_ONLY_LOGGER)
 
@@ -712,17 +768,17 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 					uart_printf("%d\r\n", ecg_block.ecg[i]);
 				}
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #elif defined(INMP441_ONLY_LOGGER)
 
 //				uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
 
 				for(uint16_t i = 0; i < pcg_block.count; i++){
-					uart_printf("%ld\r\n", pcg_block.mic[i]);
+					uart_printf("%ld\r\n", pcg_block.pcg[i]);
 				}
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #endif // SENSOR_MACROS
 
@@ -738,19 +794,19 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 			switch(block.type){
 			case SENSOR_PCG:
 				pcg_block = block;
-				check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			case SENSOR_PPG:
 				ppg_block = block;
-				check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_ECG:
 				ecg_block = block;
-				check.ecg_ready = true;
+				sensor_check.ecg_ready = true;
 				break;
 			}
 
-			if(check.ecg_ready || check.max_ready || check.mic_ready){
+			if(sensor_check.ecg_ready || sensor_check.ppg_ready || sensor_check.pcg_ready){
 
 #if defined(MAX30102_ONLY_LOGGER)
 
@@ -762,7 +818,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 
 				isQueueFree(logger_queue, "LOGGER");
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #elif defined(AD8232_ONLY_LOGGER)
 
@@ -774,19 +830,19 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 
 				isQueueFree(logger_queue, "LOGGER");
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #elif defined(INMP441_ONLY_LOGGER)
 
 //				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
 
 				for(uint16_t i = 0; i < pcg_block.count; i++){
-					uart_printf("%ld\r\n", pcg_block.mic[i]);
+					uart_printf("%ld\r\n", pcg_block.pcg[i]);
 				}
 
 				isQueueFree(logger_queue, "LOGGER");
 
-				ResetSensor_flag(&check);
+				ResetSensor_flag(&sensor_check);
 
 #endif // SENSOR_MACROS
 
@@ -802,7 +858,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 /*-----------------------------------------------------------*/
 /* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
 
-#ifdef USING_UART_DMAPHORE
+#ifdef USING_UART_DMAPHORE /* Non-blocking mode */
 
 HAL_StatusTypeDef Logger_init_ver2(void){
 	HAL_StatusTypeDef ret = HAL_OK;
@@ -906,8 +962,8 @@ void __attribute__((unused)) Logger_two_task_dmaphore(void const *pvParameter){
 
 	sensor_check_t sensor_check = {
 			.ecg_ready = false,
-			.max_ready = false,
-			.mic_ready = false
+			.ppg_ready = false,
+			.pcg_ready = false
 	};
 
 	while(1){
@@ -920,17 +976,17 @@ void __attribute__((unused)) Logger_two_task_dmaphore(void const *pvParameter){
 				break;
 			case SENSOR_PPG:
 				ppg_block = block; //Copy du lieu tu block sang ppg_block neu la type PPG
-				sensor_check.max_ready = true;
+				sensor_check.ppg_ready = true;
 				break;
 			case SENSOR_PCG:
 				pcg_block = block; //Copy du lieu tu block sang pcg_block neu la type PCG
-				sensor_check.mic_ready = true;
+				sensor_check.pcg_ready = true;
 				break;
 			}
 
 			// Neu 3 data da ready
-			if((sensor_check.ecg_ready && sensor_check.max_ready) || (sensor_check.max_ready && sensor_check.mic_ready)
-																  || (sensor_check.ecg_ready && sensor_check.mic_ready)){
+			if((sensor_check.ecg_ready && sensor_check.ppg_ready) || (sensor_check.ppg_ready && sensor_check.pcg_ready)
+																  || (sensor_check.ecg_ready && sensor_check.pcg_ready)){
 				// Neu timestamp match nhau
 				if((ecg_block.timestamp == ppg_block.timestamp) || (ecg_block.timestamp == pcg_block.timestamp)
 															    || (ppg_block.timestamp == pcg_block.timestamp)){
@@ -974,7 +1030,7 @@ void __attribute__((unused)) Logger_two_task_dmaphore(void const *pvParameter){
 												"%d,%lu,%d\n",
 												ecg_block.ecg[i],
 												ppg_block.ppg.ir[i],
-												pcg_block.mic[i]);
+												pcg_block.pcg[i]);
 
 							if(offset >= sizeof(batch_buffer) - 50){
 								break; // Neu buffer gan day, thoat vong lap
@@ -1009,7 +1065,7 @@ void __attribute__((unused)) Logger_two_task_dmaphore(void const *pvParameter){
 
 			}else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
-//						sensor_check.ecg_ready, sensor_check.max_ready, sensor_check.mic_ready);
+//						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 		}else{
 			uart_printf("[LOGGER] Logger queue timeout !\r\n");

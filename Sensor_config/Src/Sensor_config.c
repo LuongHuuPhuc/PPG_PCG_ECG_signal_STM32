@@ -10,16 +10,16 @@ extern "C" {
 #endif
 
 #include "Sensor_config.h"
-#include <stdio.h>
-#include <stdarg.h>
+
+#include "stdarg.h"
 #include "take_snapsync.h"
 #include "Logger.h"
 
 // ====== VARIABLES DEFINITION ======
-#if defined(sensor_config_SYNC_USING)
+#if defined(sensor_config_SYNC_USING) /* Neu muon dung bien dong bo duoc khai bao tai file Sensor_config.h (deprecated) */
 
-__attribute__((unused))volatile uint32_t global_sample_id = 0;
-__attribute__((unused))volatile TickType_t global_timestamp = 0;
+__attribute__((deprecated))volatile uint32_t global_sample_id = 0;
+__attribute__((deprecated))volatile TickType_t global_timestamp = 0;
 
 #endif // sensor_config_SYNC_USING
 
@@ -40,16 +40,14 @@ void SensorConfig_Init(void){
 	SERROR_CHECK(Logger_init_ver2());
 	uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
 #else // USING_UART_DMAPHORE
+	SERROR_CHECK(Logger_init());
+	uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
+#endif // USING_UART_DMAPHORE
 
 #ifdef SYNC_TO_LOGGER_MAIL_USING
 	SERROR_CHECK(Sync_init());
 	uart_printf(">> [SENCONF] SYNC init OK !\r\n");
 #endif // SYNC_TO_LOGGER_MAIL_USING
-
-	SERROR_CHECK(Logger_init());
-	uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
-
-#endif // USING_UART_DMAPHORE
 
 	//Check sau khi tao semaphore va queue
 	HeapCheck();

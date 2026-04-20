@@ -10,12 +10,20 @@ extern "C" {
 #endif //__cplusplus
 
 #include "inmp441_config.h" // Chua struct Forward Declaration
-#include "stdio.h"
+
+#include "string.h"
 #include "stdlib.h"
 #include "math.h"
+
 #include "FIR_Filter.h"
 #include "Sensor_config.h"  // Dinh nghia struct cho inmp441_config.h
 #include "take_snapsync.h"  // Dinh nghia struct cho inmp441_config.h
+
+#if defined(SYNC_TO_LOGGER_MAIL_USING)
+/**/
+#else
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#endif // Not using SYNC_TO_LOGGER_MAIL_USING
 
 // ====== VARIABLES DEFINITION ======
 
@@ -125,7 +133,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 					for(uint8_t j = 0; j < DOWNSAMPLE_FACTOR; j++){ //Thuc hien xu ly voi 8 mau 1 lan
 						sum += (buffer32[i + j] >> 8); //Dich ve 24-bit co nghia
 					}
-					block.mic[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
+					block.pcg[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
 				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
 
 				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
@@ -173,7 +181,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 					for(uint8_t j = 0; j < DOWNSAMPLE_FACTOR; j++){ //Thuc hien xu ly voi 8 mau 1 lan
 						sum += (buffer32[i + j] >> 8); //Dich ve 24-bit co nghia
 					}
-					block.mic[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
+					block.pcg[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
 				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
 
 				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
@@ -260,7 +268,7 @@ __attribute__((always_inline)) static inline void Inmp441_downsample_process(sen
 		if(decimation_index == 0){ //Cu moi 8 mau thi chi luu 1 mau
 			if(idx_out < DOWNSAMPLE_SAMPLE_COUNT){
 				// Toi dang de mic la int32_t
-				block->mic[idx_out++] = (int32_t)lroundf(filtered); //32 samples sau khi downsample
+				block->pcg[idx_out++] = (int32_t)lroundf(filtered); //32 samples sau khi downsample
 			}
 		}
 		// Tang chi so Decimation va quay vong (Modulo) bat ke co luu sample hay khong
@@ -515,7 +523,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 				float filtered = FIR_process_convolution(&fir, (float)(src[i])); //Data 32-bit nen dich lay 24-bits co nghia
 				if(i >= (FIR_TAP_NUM - 1)){
 					if((i - FIR_TAP_NUM - 1) % DOWNSAMPLE_FACTOR == 0){
-						block.mic[idx_out++] = (int16_t)filtered;
+						block.pcg[idx_out++] = (int16_t)filtered;
 					}
 				}
 			}
@@ -577,7 +585,7 @@ __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
 				float filtered = FIR_process_convolution(&fir, (float)(src[i])); //Data 32-bit nen dich lay 24-bits co nghia
 				if(i >= (FIR_TAP_NUM - 1)){
 					if((i - FIR_TAP_NUM - 1) % DOWNSAMPLE_FACTOR == 0){
-						block.mic[idx_out++] = (int16_t)filtered;
+						block.pcg[idx_out++] = (int16_t)filtered;
 					}
 				}
 			}

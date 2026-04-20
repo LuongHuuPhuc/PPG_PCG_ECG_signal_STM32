@@ -15,23 +15,23 @@ extern "C" {
 #include "stdlib.h"
 #include "string.h"
 
-HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
-{
-    uint8_t *payload = (uint8_t *)malloc((buflen + 1) * sizeof(uint8_t));
-    *payload = reg;
+HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen){
+	if(obj == NULL || obj->_ui2c == NULL) return HAL_ERROR;
+
+	uint8_t payload[MAX30102_SAMPLE_LEN_MAX + 1];
+	payload[0] = reg;
+
     if (buf != NULL && buflen != 0)
-        memcpy(payload + 1, buf, buflen);
-    if(HAL_I2C_Master_Transmit(obj->_ui2c, MAX30102_I2C_ADDR << 1, payload, buflen + 1, MAX30102_I2C_TIMEOUT) != HAL_OK){
+        memcpy(&payload[1], buf, buflen);
+
+    if(HAL_I2C_Master_Transmit(obj->_ui2c, MAX30102_I2C_ADDR << 1, payload, (uint16_t)buflen + 1, MAX30102_I2C_TIMEOUT) != HAL_OK){
     	uart_printf("[ERROR] max30102_write failed at Transmit at reg 0x%02x, HAL error: 0x%lx!\r\n", *payload, obj->_ui2c->ErrorCode);
-    	free(payload);
     	return HAL_ERROR;
     }
-    free(payload);
     return HAL_OK;
 }
 
-HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen)
-{
+HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen){
     uint8_t reg_addr = reg;
     HAL_StatusTypeDef status;
 

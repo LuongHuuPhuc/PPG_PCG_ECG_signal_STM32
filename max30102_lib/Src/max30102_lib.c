@@ -12,15 +12,13 @@ extern "C"
 {
 #endif
 
-__attribute__((weak)) void max30102_plot(uint32_t ir_sample, uint32_t red_sample)
-{
+__attribute__((weak)) void max30102_plot(uint32_t ir_sample, uint32_t red_sample){
     UNUSED(ir_sample);
     UNUSED(red_sample);
 }
 
 
-void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c)
-{
+void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c){
     obj->_ui2c = hi2c;
     obj->_interrupt_flag = 0;
     memset(obj->_ir_samples, 0, MAX30102_SAMPLE_LEN_MAX * sizeof(uint32_t));
@@ -28,14 +26,12 @@ void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c)
 }
 
 
-void max30102_reset(max30102_t *obj)
-{
+void max30102_reset(max30102_t *obj){
     uint8_t val = 0x40;
     max30102_write(obj, MAX30102_MODE_CONFIG, &val, 1);
 }
 
-void max30102_set_a_full(max30102_t *obj, uint8_t enable)
-{
+void max30102_set_a_full(max30102_t *obj, uint8_t enable){
     uint8_t reg = 0;
     max30102_read(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
     reg &= ~(0x01 << MAX30102_INTERRUPT_A_FULL);
@@ -43,8 +39,7 @@ void max30102_set_a_full(max30102_t *obj, uint8_t enable)
     max30102_write(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
 }
 
-void max30102_set_ppg_rdy(max30102_t *obj, uint8_t enable)
-{
+void max30102_set_ppg_rdy(max30102_t *obj, uint8_t enable){
     uint8_t reg = 0;
     max30102_read(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
     reg &= ~(0x01 << MAX30102_INTERRUPT_PPG_RDY);
@@ -52,8 +47,7 @@ void max30102_set_ppg_rdy(max30102_t *obj, uint8_t enable)
     max30102_write(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
 }
 
-void max30102_set_alc_ovf(max30102_t *obj, uint8_t enable)
-{
+void max30102_set_alc_ovf(max30102_t *obj, uint8_t enable){
     uint8_t reg = 0;
     max30102_read(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
     reg &= ~(0x01 << MAX30102_INTERRUPT_ALC_OVF);
@@ -61,34 +55,29 @@ void max30102_set_alc_ovf(max30102_t *obj, uint8_t enable)
     max30102_write(obj, MAX30102_INTERRUPT_ENABLE_1, &reg, 1);
 }
 
-void max30102_set_die_temp_rdy(max30102_t *obj, uint8_t enable)
-{
+void max30102_set_die_temp_rdy(max30102_t *obj, uint8_t enable){
     uint8_t reg = (enable & 0x01) << MAX30102_INTERRUPT_DIE_TEMP_RDY;
     max30102_write(obj, MAX30102_INTERRUPT_ENABLE_2, &reg, 1);
 }
 
 
-void max30102_set_die_temp_en(max30102_t *obj, uint8_t enable)
-{
+void max30102_set_die_temp_en(max30102_t *obj, uint8_t enable){
     uint8_t reg = (enable & 0x01) << MAX30102_DIE_TEMP_EN;
     max30102_write(obj, MAX30102_DIE_TEMP_CONFIG, &reg, 1);
 }
 
 
-void max30102_on_interrupt(max30102_t *obj)
-{
+void max30102_on_interrupt(max30102_t *obj){
     obj->_interrupt_flag = 1;
 }
 
 
-uint8_t max30102_has_interrupt(max30102_t *obj)
-{
+uint8_t max30102_has_interrupt(max30102_t *obj){
     return obj->_interrupt_flag;
 }
 
 
-void max30102_interrupt_handler(max30102_t *obj)
-{
+void max30102_interrupt_handler(max30102_t *obj){
     uint8_t reg[2] = {0x00};
     // Interrupt flag in registers 0x00 and 0x01 are cleared on read
     max30102_read(obj, MAX30102_INTERRUPT_STATUS_1, reg, 2);
@@ -122,8 +111,7 @@ void max30102_interrupt_handler(max30102_t *obj)
     obj->_interrupt_flag = 0;
 }
 
-void max30102_shutdown(max30102_t *obj, uint8_t shdn)
-{
+void max30102_shutdown(max30102_t *obj, uint8_t shdn){
     uint8_t config;
     max30102_read(obj, MAX30102_MODE_CONFIG, &config, 1);
     config = (config & 0x7f) | (shdn << MAX30102_MODE_SHDN);
@@ -131,8 +119,7 @@ void max30102_shutdown(max30102_t *obj, uint8_t shdn)
 }
 
 
-void max30102_set_led_mode(max30102_t *obj, max30102_record *record, max30102_mode_t mode)
-{
+void max30102_set_led_mode(max30102_t *obj, max30102_record *record, max30102_mode_t mode){
     uint8_t config;
     if(mode == max30102_spo2){
     	record->activeLeds = 2; //Chi dung RED va IR
@@ -148,8 +135,7 @@ void max30102_set_led_mode(max30102_t *obj, max30102_record *record, max30102_mo
 	max30102_clear_fifo(obj);
 }
 
-void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr)
-{
+void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr){
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
 
@@ -162,8 +148,7 @@ void max30102_set_sampling_rate(max30102_t *obj, max30102_sr_t sr)
 }
 
 
-void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw)
-{
+void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw){
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
 
@@ -176,8 +161,7 @@ void max30102_set_led_pulse_width(max30102_t *obj, max30102_led_pw_t pw)
 }
 
 
-void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc)
-{
+void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc){
     uint8_t config;
     max30102_read(obj, MAX30102_SPO2_CONFIG, &config, 1);
 
@@ -190,8 +174,7 @@ void max30102_set_adc_resolution(max30102_t *obj, max30102_adc_t adc)
 }
 
 
-void max30102_set_led_current_ir(max30102_t *obj, float ma)
-{
+void max30102_set_led_current_ir(max30102_t *obj, float ma){
 	if(ma < 0) ma = 0;
 	if(ma > 51.0f) ma = 51.0f;
 
@@ -200,8 +183,7 @@ void max30102_set_led_current_ir(max30102_t *obj, float ma)
 }
 
 
-void max30102_set_led_current_red(max30102_t *obj, float ma)
-{
+void max30102_set_led_current_red(max30102_t *obj, float ma){
 	if(ma < 0) ma = 0;
 	if(ma > 51.0f) ma = 51.0f;
 
@@ -210,29 +192,25 @@ void max30102_set_led_current_red(max30102_t *obj, float ma)
 }
 
 
-void max30102_set_multi_led_slot_1_2(max30102_t *obj, max30102_multi_led_ctrl_t slot1, max30102_multi_led_ctrl_t slot2)
-{
+void max30102_set_multi_led_slot_1_2(max30102_t *obj, max30102_multi_led_ctrl_t slot1, max30102_multi_led_ctrl_t slot2){
     uint8_t val = 0;
     val |= ((slot1 << MAX30102_MULTI_LED_CTRL_SLOT1) | (slot2 << MAX30102_MULTI_LED_CTRL_SLOT2));
     max30102_write(obj, MAX30102_MULTI_LED_CTRL_1, &val, 1);
 }
 
 
-void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t slot3, max30102_multi_led_ctrl_t slot4)
-{
+void max30102_set_multi_led_slot_3_4(max30102_t *obj, max30102_multi_led_ctrl_t slot3, max30102_multi_led_ctrl_t slot4){
     uint8_t val = 0;
     val |= ((slot3 << MAX30102_MULTI_LED_CTRL_SLOT3) | (slot4 << MAX30102_MULTI_LED_CTRL_SLOT4));
     max30102_write(obj, MAX30102_MULTI_LED_CTRL_2, &val, 1);
 }
 
-void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac)
-{
+void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac){
     max30102_read(obj, MAX30102_DIE_TINT, (uint8_t *)temp_int, 1);
     max30102_read(obj, MAX30102_DIE_TFRAC, temp_frac, 1);
 }
 
-void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full)
-{
+void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full){
     uint8_t config = 0x00;
 
     // Ghi gia tri moi vao
@@ -248,8 +226,7 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
 }
 
 
-HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj)
-{
+HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj){
     uint8_t val = 0x00;
     max30102_write(obj, MAX30102_FIFO_WR_PTR, &val, 3);
     max30102_write(obj, MAX30102_FIFO_RD_PTR, &val, 3);
@@ -259,8 +236,7 @@ HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj)
 }
 
 
-void max30102_read_fifo_ver1(max30102_t *obj)
-{
+void max30102_read_fifo_ver1(max30102_t *obj){
     // First transaction: Get the FIFO_WR_PTR
     uint8_t wr_ptr = 0, rd_ptr = 0;
     max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);

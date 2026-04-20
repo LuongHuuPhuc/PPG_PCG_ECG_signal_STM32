@@ -21,6 +21,7 @@ extern "C" {
 
 #include "stdio.h"
 #include "cmsis_os.h"
+
 #include "ad8232_config.h"
 #include "max30102_config.h"
 #include "inmp441_config.h"
@@ -51,28 +52,28 @@ extern "C" {
 
 #define PLACE_IN_SECTION(__x__)   __attribute__(section(__x__))
 
-typedef enum{
+typedef enum SENSOR_TAG{
 	SENSOR_ECG,
 	SENSOR_PPG,
 	SENSOR_PCG
 } sensor_type_t;
 
-/* STRUCT luu data chinh tu Sensor Task */
+/* STRUCT luu data chinh truc tiep tu Sensor Task */
 typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forward declaration
-	sensor_type_t type;
-	uint16_t count; 		// So luong mau trong mang
 	uint32_t sample_id; 	// Dung de dong bo du lieu
 	TickType_t timestamp;	// Danh dau thoi gian dong bo
+	sensor_type_t type;
+	uint16_t count; 		// So luong mau trong mang
 
 	union { // Cac bien nay chia se chung bo nho
-		volatile int16_t ecg[ECG_DMA_BUFFER]; // ECG
+		volatile int32_t pcg[DOWNSAMPLE_SAMPLE_COUNT];
 
 		struct { //PPG
 			volatile uint32_t ir[MAX_FIFO_SAMPLE];
 			volatile uint32_t red[MAX_FIFO_SAMPLE];
 		} ppg;
 
-		volatile int32_t mic[DOWNSAMPLE_SAMPLE_COUNT];
+		volatile int16_t ecg[ECG_DMA_BUFFER]; // ECG
 	};
 } sensor_block_t;
 
@@ -84,7 +85,7 @@ extern ADC_HandleTypeDef hadc1;
 extern I2S_HandleTypeDef hi2s2;
 
 // Other externs
-#if defined(sensor_config_SYNC_USING)
+#if defined(sensor_config_SYNC_USING) /* Neu muon dung bien dong bo duoc khai bao tai file Sensor_config.h (deprecated) */
 
 extern volatile uint32_t global_sample_id;
 extern volatile TickType_t global_timestamp;

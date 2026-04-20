@@ -17,15 +17,15 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include "stdbool.h"
-#include "stdarg.h"
+
 #include "take_snapsync.h" // Lay struct block tu Sync de in ra man hinh
 #include "Sensor_config.h"
 
 //Kiem tra trang thai du lieu da san sang hay chua
 typedef struct {
 	bool ecg_ready;
-	bool max_ready;
-	bool mic_ready;
+	bool ppg_ready;
+	bool pcg_ready;
 } __attribute__((unused)) sensor_check_t;
 
 // Task & RTOS
@@ -44,9 +44,11 @@ extern UART_HandleTypeDef huart2; //Duoc dinh nghia cho khac, chi muon dung o da
 
 #if defined(CMSIS_API_USING)
 
-// CMSIS dung con tro de lay data, khong copy truc tiep data nhu FREERTOS API (Hieu nang + toc do cap hon)
-// Data se nam yen trong RAM -> Tre thap hon
-// Dung Mail vi Mail moi truyen duoc struct, Message thi khong
+/**
+ * CMSIS dung con tro de lay data, khong copy truc tiep data nhu FREERTOS API (Hieu nang + toc do cap hon)
+ * Data se nam yen trong RAM -> Tre thap hon
+ * Dung Mail vi Mail moi truyen duoc struct, Message thi khong
+ */
 extern osMailQId logger_queueId; // Sync Task -> Logger task
 extern osMutexId logger_mutexId; // Mutex cho UART printf
 extern osThreadId logger_taskId; // Task Logger
@@ -66,8 +68,9 @@ extern TaskHandle_t logger_task;
 #define LOGGER_QUEUE_LENGTH 	 40 // Tang chieu dai queue de chong tran
 #define UART_TX_BUFFER_SIZE      1024
 
-#if defined(FREERTOS_API_USING)
+#define LOGGER_FILE_NAME		 "DEMO1.TXT" // SD Card
 
+#if defined(FREERTOS_API_USING)
 #define QUEUE_SEND_FROM_TASK(data_ptr) do { \
 	if(xQueueSend(logger_queue, (data_ptr), portMAX_DELAY) != pdTRUE){ \
 		uart_printf("[LOGGER] Logger queue full!\r\n"); \
@@ -81,12 +84,13 @@ extern TaskHandle_t logger_task;
 } while(0) // Dung khi muon send queue trong cac ham HAL_callback
 
 #elif defined(CMSIS_API_USING)
-
-#ifdef SYNC_TO_LOGGER_MAIL_USING
+#ifdef SYNC_TO_LOGGER_MAIL_USING /* Su dung sync task lam trung gian*/
 
 static inline osStatus logger_mail_send(sensor_sync_block_t *block){
 	sensor_sync_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
 	if(mail == NULL){
+		/* Kha nang bi Bottleneck do UART printf cham */
+		uart_printf("[LOGGER] Logger queue memory alloc failed!\r\n");
 		return osErrorNoMemory;
 	}
 
@@ -103,12 +107,12 @@ static inline osStatus logger_mail_send(sensor_sync_block_t *block){
 /* Macro de Sync Task gui den Logger Task */
 #define MAIL_SEND_FROM_SYNC(block) do { \
 	if(logger_mail_send(&(block)) != osOK){ \
-		/* Neu Logger UART xu ly cham hoac tran heap thi se bi di vao day */ \
+		/* Neu Logger UART xu ly cham hoac tran heap (kha nang cao se bi cai nay) thi se bi di vao day */ \
 		uart_printf("[LOGGER] Mail sent from SYNC error !\r\n"); \
 	} \
 } while(0)
 
-#else
+#else /* Truyen truc tiep data block tu sensor task den logger luon */
 
 static inline osStatus logger_mail_send(sensor_block_t *block){
 	sensor_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
@@ -125,7 +129,8 @@ static inline osStatus logger_mail_send(sensor_block_t *block){
 	return ret;
 }
 
-/* Macro de Sensor Task gui truc tiep den Logger Task */
+/* Macro de Sensor Task gui thang truc tiep den Logger Task
+ * @note: Dung khi KHONG muon dung sync task */
 #define MAIL_SEND_FROM_TASK(block) do { \
 	logger_mail_send(&(block)); \
 } while(0)
@@ -153,6 +158,12 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
  */
 HAL_StatusTypeDef Logger_init(void);
 
+/**
+ * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
+ * @note Nhan truc tiep 3 block data tu Sensor task va in ra man hinh (khong thong qua sync task)
+ */
+__attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
+
 #ifdef SYNC_TO_LOGGER_MAIL_USING
 /**
  * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
@@ -163,19 +174,21 @@ void Logger_three_task_ver2(void const *pvParameter);
 #endif // SYNC_TO_LOGGER_MAIL_USING
 
 /**
- * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
- */
-__attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
-
-/**
  * @brief Ham in ra 2 kenh du lieu dong thoi
+ * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay (do can tinh min cua 2 block)
  */
 __attribute__((unused)) void Logger_two_task(void const *pvParameter);
 
 /**
  * @brief Ham in ra 1 kenh du lieu
+ * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay
  */
 __attribute__((unused)) void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
+
+/**
+ * @brief Ham ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
+ */
+__attribute__((unused)) void Logger_write_data_to_SD(void const *pvParameter);
 
 #ifdef FREERTOS_API_USING
 /**
@@ -238,7 +251,7 @@ __attribute__((weak)) void uart_printf(const char *fmt,...);
  * => Tom lai phai dam bao rang cac ISR cua ban luon luon nam trong vung uu tien thap de chung khong lam gian doan co che
  * bao ve cua Kernel khi chung goi cac API RTOS
  */
-__attribute__((weak)) void uart_printf_safe(const char *fmt,...);
+__attribute__((weak, unused)) void uart_printf_safe(const char *fmt,...);
 
 /* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
 #ifdef USING_UART_DMAPHORE
