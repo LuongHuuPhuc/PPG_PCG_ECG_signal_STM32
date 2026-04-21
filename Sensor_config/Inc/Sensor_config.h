@@ -20,37 +20,19 @@ extern "C" {
 #endif
 
 #include "stdio.h"
+#include "main.h"
 #include "cmsis_os.h"
 
-#include "ad8232_config.h"
-#include "max30102_config.h"
-#include "inmp441_config.h"
+extern void uart_printf(const char *fmt,...);
 
-#define SERROR_CHECK(expr) do {\
+#define SERROR_CHECK(expr) do { \
 	/* expr la bieu thuc ban muon truyen vao */ \
 	if((expr) != HAL_OK){ \
 		uart_printf(" [SENCONF] Fail HAL at line %d: %s\r\n", __LINE__, #expr);\
-		HAL_Delay(100);\
+		HAL_Delay(100); \
 		Error_Handler(); \
-	}\
+	} \
 } while(0)
-
-#ifdef FREERTOS_API_USING
-
-#define TASK_ERR_CHECK(func, name, stack, param, prio, handle) do { \
-	if(xTaskCreate((void*)func, name, stack, param, prio, handle) != pdPASS){ \
-		uart_printf("[SENCONF] Failed to create task: %s\r\n", name); \
-		Error_Handler(); \
-	}\
-} while(0) //Dung khi muon kiem tra loi task
-
-#endif // FREERTOS_API_USING
-
-#ifndef MIC_WARN_OVERWRITTEN
-#define MIC_WARN_OVERWRITTEN 1
-#endif
-
-#define PLACE_IN_SECTION(__x__)   __attribute__(section(__x__))
 
 typedef enum SENSOR_TAG{
 	SENSOR_ECG,
@@ -66,14 +48,14 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 	uint16_t count; 		// So luong mau trong mang
 
 	union { // Cac bien nay chia se chung bo nho
-		volatile int32_t pcg[DOWNSAMPLE_SAMPLE_COUNT];
+		volatile int32_t pcg[32];
 
 		struct { //PPG
-			volatile uint32_t ir[MAX_FIFO_SAMPLE];
-			volatile uint32_t red[MAX_FIFO_SAMPLE];
+			volatile uint32_t ir[32];
+			volatile uint32_t red[32];
 		} ppg;
 
-		volatile int16_t ecg[ECG_DMA_BUFFER]; // ECG
+		volatile int16_t ecg[32]; // ECG
 	};
 } sensor_block_t;
 
@@ -84,20 +66,12 @@ extern I2C_HandleTypeDef hi2c1;
 extern ADC_HandleTypeDef hadc1;
 extern I2S_HandleTypeDef hi2s2;
 
-// Other externs
-#if defined(sensor_config_SYNC_USING) /* Neu muon dung bien dong bo duoc khai bao tai file Sensor_config.h (deprecated) */
-
-extern volatile uint32_t global_sample_id;
-extern volatile TickType_t global_timestamp;
-
-#endif // sensor_config_SYNC_USING
-
 // ==== FUNCTION PROTOTYPE ====
 
 /**
  * @brief Ham khoi tao cam bien (Semaphore, Queue,...)
  *
- * @note Khoi tao MAX30102 - AD8232 - INMP441 - Logger UART
+ * @note Ham chi dung de gom cac ham khoi tao MAX30102 - AD8232 - INMP441
  */
 void SensorConfig_Init(void);
 

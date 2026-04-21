@@ -14,29 +14,27 @@ extern "C" {
 #include "string.h"
 #include "stdarg.h"
 
-#include "cmsis_os.h"
-#include "MicroSD_config.h" // Thay vi in ra man hinh thi ghi vao the SD (neu dung)
+#ifdef SENSOR_TO_LOGGER_MAIL_USING
+#include "Sensor_config.h"
+#endif // SENSOR_TO_LOGGER_MAIL_USING
 
 #ifdef USING_UART_DMAPHORE
-
 #if defined(FREERTOS_API_USING)
 SemaphoreHandle_t loggerDMA_sem = NULL;
 #elif defined(CMSIS_API_USING)
 osSemaphoreId loggerDMA_semId = NULL;
-#endif // CMSIS_API_USING
+#endif // CMSIS or FreeRTOS API using
 
 static char uart_buf_dma[UART_TX_BUFFER_SIZE]; // Buffer cho uart_print dung DMA + Semaphore
 
 #endif // USING_UART_DMAPHORE
 
-#if defined(FREERTOS_API_USING)
-
+#ifdef FREERTOS_API_USING
 SemaphoreHandle_t logger_mutex = NULL;
 TaskHandle_t logger_task = NULL;
 QueueHandle_t logger_queue = NULL;
 
 #elif defined(CMSIS_API_USING)
-
 osMailQId logger_queueId = NULL;
 osMutexId logger_mutexId = NULL;
 osThreadId logger_taskId = NULL;
@@ -48,40 +46,37 @@ osThreadId logger_taskId = NULL;
 HAL_StatusTypeDef Logger_init(void){
 	HAL_StatusTypeDef ret = HAL_OK;
 
-#if defined (CMSIS_API_USING)
+#if defined(CMSIS_API_USING)
+	/* Tao Mutex cho UART printf transmit qua UART */
+	osMutexDef(loggerMutexName);
+	logger_mutexId = osMutexCreate(osMutex(loggerMutexName));
+	if(logger_mutexId == NULL){
+		uart_printf("[LOGGER] Failed to create logger_mutexId !\r\n");
+		ret |= HAL_ERROR;
+	}
 
 #ifdef SYNC_TO_LOGGER_MAIL_USING
-
 	// Tao Queue cho Logger de nhan block tu Sync
 	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_sync_block_t);
 	logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
 	if(logger_queueId == NULL){
-		uart_printf("[LOGGER] Failed to create logger_queue !\r\n");
+		uart_printf("[LOGGER] Failed to create logger_queueId !\r\n");
+		ret |= HAL_ERROR;
+	}
+#elif SENSOR_TO_LOGGER_MAIL_USING
+	// Tao Queue cho Logger de nhan block truc tiep tu Sensor task
+	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_block_t);
+	logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
+	if(logger_queueId == NULL){
+		uart_printf("[LOGGER] Failed to create logger_queueId !\r\n");
 		ret |= HAL_ERROR;
 	}
 
 #else
-
-	// Tao Queue cho Logger de nhan block truc tiep tu Sensor task
-//	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_block_t);
-//		logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
-//		if(logger_queueId == NULL){
-//			uart_printf("[LOGGER] Failed to create logger_queue !\r\n");
-//			ret |= HAL_ERROR;
-//		}
-
-#endif // SYNC_TO_LOGGER_MAIL_USING
-
-	// Tao Mutex cho UART printf
-	osMutexDef(loggerMutexName);
-	logger_mutexId = osMutexCreate(osMutex(loggerMutexName));
-	if(logger_mutexId == NULL){
-		uart_printf("[LOGGER] Failed to create Semaphores Mutex !\r\n");
-		ret |= HAL_ERROR;
-	}
+	/* Do nothing */
+#endif // LOGGER_MAIL_USING
 
 #elif defined(FREERTOS_API_USING)
-
 	// Tao Queue cho Logger
 	logger_queue = xQueueCreate(LOGGER_QUEUE_LENGTH, sizeof(sensor_block_t));
 	if(logger_queue == NULL){
@@ -95,7 +90,6 @@ HAL_StatusTypeDef Logger_init(void){
 		uart_printf("[LOGGER] Failed to create Semaphores Mutex !\r\n");
 		ret |= HAL_ERROR;
 	}
-
 #endif // CMSIS_API_USING
 
 	return ret;
@@ -112,7 +106,6 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c){
 		// Ham tren se di qua tung dia chi mot de xem xem co dia chi nao tra ve HAL_OK khong
 		// Moi vong for gia tri cua result se thay doi lien tuc tuy theo address -> Nen dat lam bien cuc bo
 		// De result thanh global thi gia tri cua no se bi ghi de lien tuc -> Anh huong neu co nhieu task goi ham nay
-
 		if(result == HAL_OK){
 			uart_printf("[LOGGER] I2C device found at address: 0x%02X\r\n", address); // Chi luu gia tri address phat hien duoc
 		}
@@ -121,8 +114,8 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c){
 }
 
 /*-----------------------------------------------------------*/
-#ifdef FREERTOS_API_USING
 
+#ifdef FREERTOS_API_USING
 void isQueueFree(const QueueHandle_t queue, const char *name){
 	UBaseType_t used = uxQueueMessagesWaiting(queue);
 	UBaseType_t free = uxQueueSpacesAvailable(queue);
@@ -133,7 +126,6 @@ void isQueueFree(const QueueHandle_t queue, const char *name){
 		uart_printf("[WARN] Queue %s almost FULL ! Used: %lu, Free: %lu", name, used, free);
 	}
 }
-
 #endif // FREERTOS_API_USING
 
 /*-----------------------------------------------------------*/
@@ -145,7 +137,7 @@ static inline bool uart_printf_in_isr(void){
 
 /*-----------------------------------------------------------*/
 
-__attribute__((weak)) void uart_printf(const char *fmt,...){
+void uart_printf(const char *fmt,...){
 	// Giam stack usage
 	static char uart_buf[UART_TX_BUFFER_SIZE];  // Buffer cho uart_printf thuong
 	va_list args;
@@ -166,7 +158,6 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 		return;
 	}
 #if defined(CMSIS_API_USING)
-
 	// Phai vao RTOS xong, khi Scheduler chay thi Semaphore moi chay
 	// Neu Semaphore da khoi tao xong va Scheduler dang chay (vao RTOS)
 	if((logger_mutexId != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
@@ -180,8 +171,7 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 		}
 	}
 
-#elif defined (FREERTOS_API_USING)
-
+#elif defined(FREERTOS_API_USING)
 	// Phai vao RTOS xong, khi Scheduler chay thi Semaphore moi chay
 	// Neu Semaphore da khoi tao xong va Scheduler dang chay (vao RTOS)
 	if((logger_mutex != NULL) && (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)){
@@ -194,7 +184,6 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 			xSemaphoreGive(logger_mutex);
 		}
 	}
-
 #endif // CMSIS_API_USING
 
 	else{
@@ -205,73 +194,7 @@ __attribute__((weak)) void uart_printf(const char *fmt,...){
 
 /*-----------------------------------------------------------*/
 
-// Tinh chenh lech thoi gian so voi time hien tai cua Logger
-__attribute__((unused)) static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_block, sensor_block_t *pcg_block){
-	TickType_t logger_timestamp = xTaskGetTickCount(); //Lay tick de so sanh do tre voi cac task khac
-
-	uart_printf("[SYNC] ECG_tick: %lu, PPG_tick: %lu, PCG_tick: %lu, Logger_tick: %lu | delECG: %ld, delPPG: %ld, delPCG: %ld\r\n",
-			ecg_block->timestamp,
-			ppg_block->timestamp,
-			pcg_block->timestamp,
-			logger_timestamp,
-			(int32_t)(logger_timestamp - ecg_block->timestamp),
-			(int32_t)(logger_timestamp - ppg_block->timestamp),
-			(int32_t)(logger_timestamp - pcg_block->timestamp));
-}
-/*-----------------------------------------------------------*/
-
-//Reset trang thai flag ready cua sensor
-__attribute__((unused)) static inline void ResetSensor_flag(sensor_check_t *check){
-	check->ecg_ready = false;
-	check->pcg_ready = false;
-	check->ppg_ready = false;
-}
-
-/*-----------------------------------------------------------*/
-
-void Logger_write_data_to_SD(void const *pvParameter){
-	(void)(pvParameter);
-	sd_status_t ret;
-	uint8_t count = 0;
-	uart_printf("Logger task started !\r\n");
-
-	ret = MicroSD_Init();
-	if(ret != SD_OK){
-		uart_printf("[LOGGER] MircoSD_Init failed: %d\r\n", ret);
-		for(;;) osDelay(1000);
-	}
-	uart_printf("[LOGGER] MicroSD_Init OK!\r\n");
-
-	ret = MicroSD_Open(LOGGER_FILE_NAME, true);
-	if(ret != SD_OK){
-		uart_printf("[LOGGER] MircoSD_Open failed: %d\r\n", ret);
-		for(;;) osDelay(1000);
-	}
-	uart_printf("[LOGGER] File %s opened!\r\n", LOGGER_FILE_NAME);
-
-	while(count < 20){
-		// Thu chi ghi 1 lan roi close luon xem sao
-		ret = MicroSD_WriteLine("Lan %d: Demo ghi SD card bang FatFS\r\n", count + 1);
-		if (ret == SD_OK) uart_printf("[LOGGER] Ghi thanh cong!\r\n");
-		else uart_printf("[LOGGER] MircoSD_WriteLine failed: %d\r\n", ret);
-
-		ret = MicroSD_Flush();
-		if(ret == SD_OK) uart_printf("[LOGGER] MircoSD_Flush OK!\r\n");
-		else uart_printf("[LOGGER] MicroSD_Flush failed!: %d\r\n", ret);
-
-		count++;
-		osDelay(1000);
-	}
-	ret = MicroSD_Close();
-	if(ret == SD_OK) uart_printf("[LOGGER] MircoSD_Close OK!\r\n");
-	else uart_printf("[LOGGER] MicroSD_Close failed!: %d\r\n", ret);
-
-	for(;;)osDelay(1000);
-}
-
-/*-----------------------------------------------------------*/
-
-#ifdef SYNC_TO_LOGGER_MAIL_USING
+#ifdef SYNC_TO_LOGGER_MAIL_USING /* NOTE: Ham cho viec nhan block tu Sync task -> Logger task nay (trung gian) va in ra man hinh qua UART */
 void Logger_three_task_ver2(void const *pvParameter){
 	(void)(pvParameter);
 	uart_printf("LOGGER task started !\r\n");
@@ -320,6 +243,33 @@ void Logger_three_task_ver2(void const *pvParameter){
 
 /*-----------------------------------------------------------*/
 
+#ifdef SENSOR_TO_LOGGER_MAIL_USING /* NOTE: Cac ham cho viec gui block truc tiep tu Sensor task -> Logger task (khong trung gian) */
+
+// Tinh chenh lech thoi gian so voi time hien tai cua Logger
+__attribute__((unused)) static inline void debugSYNC(sensor_block_t *ecg_block, sensor_block_t *ppg_block, sensor_block_t *pcg_block){
+	TickType_t logger_timestamp = xTaskGetTickCount(); //Lay tick de so sanh do tre voi cac task khac
+
+	uart_printf("[SYNC] ECG_tick: %lu, PPG_tick: %lu, PCG_tick: %lu, Logger_tick: %lu | delECG: %ld, delPPG: %ld, delPCG: %ld\r\n",
+			ecg_block->timestamp,
+			ppg_block->timestamp,
+			pcg_block->timestamp,
+			logger_timestamp,
+			(int32_t)(logger_timestamp - ecg_block->timestamp),
+			(int32_t)(logger_timestamp - ppg_block->timestamp),
+			(int32_t)(logger_timestamp - pcg_block->timestamp));
+}
+
+/*-----------------------------------------------------------*/
+
+//Reset trang thai flag ready cua sensor
+__attribute__((unused)) static inline void ResetSensor_flag(sensor_check_t *check){
+	check->ecg_ready = false;
+	check->pcg_ready = false;
+	check->ppg_ready = false;
+}
+
+/*-----------------------------------------------------------*/
+
 __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 	(void)(pvParameter);
 	uart_printf("LOGGER task started !\r\n");
@@ -341,7 +291,6 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 	while(1){
 
 #ifdef CMSIS_API_USING
-
 		evt = osMailGet(logger_queueId, 200);
 		if(evt.status == osEventMail){
 			block = evt.value.p;
@@ -392,31 +341,32 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 						//Reset flag
 						ResetSensor_flag(&sensor_check);
 
-					}else{
+					}
+					else{
 						uart_printf("[LOGGER] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 								ecg_block.sample_id, ppg_block.sample_id, pcg_block.sample_id);
 
 						//Reset de sync lai vong sau
 						ResetSensor_flag(&sensor_check);
 					}
-				}else{
+				}
+				else{
 					uart_printf("[LOGGER] Timestamp mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 							ecg_block.timestamp, ppg_block.timestamp, pcg_block.timestamp);
 
 					ResetSensor_flag(&sensor_check);
 				}
 
-			}else{
+			}
+			else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
 //						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 
-		}else if(evt.status != osEventTimeout){ // Neu ticks != 0 thi se tra ve timeout
-			uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);
 		}
+		else if(evt.status != osEventTimeout) uart_printf("[LOGGER] Mail error: %d\r\n", evt.status); // Neu ticks != 0 thi se tra ve timeout
 
 #elif defined(FREERTOS_API_USING)
-
 		memset(&block, 0, sizeof(sensor_block_t));
 		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(200)) == pdTRUE){
 			switch(block.type){
@@ -466,32 +416,33 @@ __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter){
 						//Reset flag
 						ResetSensor_flag(&sensor_check);
 
-					}else{
+					}
+					else{
 						uart_printf("[LOGGER] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 								ecg_block.sample_id, ppg_block.sample_id, pcg_block.sample_id);
 
 						//Reset de sync lai vong sau
 						ResetSensor_flag(&sensor_check);
 					}
-				}else{
+				}
+				else{
 					uart_printf("[LOGGER] Timestamp mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 							ecg_block.timestamp, ppg_block.timestamp, pcg_block.timestamp);
 
 					ResetSensor_flag(&sensor_check);
 				}
 
-			}else{
+			}
+			else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
 //						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
-		}else{
-			uart_printf("[LOGGER] Logger queue timeout !\r\n");
 		}
-
+		else uart_printf("[LOGGER] Logger queue timeout !\r\n");
 #endif // CMSIS_API_USING
-
 	}
 }
+
 /*-----------------------------------------------------------*/
 
 __attribute__((unused)) void Logger_two_task(void const *pvParameter){
@@ -518,7 +469,6 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 	while(1){
 
 #if defined(CMSIS_API_USING)
-
 		evt = osMailGet(logger_queueId, 150);
 		if(evt.status == osEventMail){
 			block = evt.value.p;
@@ -554,18 +504,12 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 																  || (ppg_block.sample_id == pcg_block.sample_id)){
 
 #if defined(AD8232_ONLY_LOGGER) && defined(MAX30102_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
 						uint16_t min_count = MIN(ecg_block.count, ppg_block.count);
 
 #elif defined(AD8232_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
 						uint16_t min_count = MIN(ecg_block.count, pcg_block.count);
 
 #elif defined(MAX30102_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
 						uint16_t min_count = MIN(ppg_block.count, pcg_block.count);
 #else
 						uint16_t min_count = MAX_COUNT; // default
@@ -585,30 +529,32 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 						//Reset flag
 						ResetSensor_flag(&sensor_check);
 
-					}else{
+					}
+					else{
 						uart_printf("[LOGGER] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 								ecg_block.sample_id, ppg_block.sample_id, pcg_block.sample_id);
 
 						//Reset de sync lai vong sau
 						ResetSensor_flag(&sensor_check);
 					}
-				}else{
+				}
+				else{
 					uart_printf("[LOGGER] Timestamp mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 							ecg_block.timestamp, ppg_block.timestamp, pcg_block.timestamp);
 
 					ResetSensor_flag(&sensor_check);
 				}
 
-			}else{
+			}
+			else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
 //						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
-		}else if(evt.status != osEventTimeout){ // Neu ticks != 0 thi se tra ve timeout
-			uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);
 		}
+		else if(evt.status != osEventTimeout) uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);  // Neu ticks != 0 thi se tra ve timeout
 
-#elif deifned (FREERTOS_API_USING)
 
+#elif deifned(FREERTOS_API_USING)
 		memset(&block, 0, sizeof(sensor_block_t));
 		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(150)) == pdTRUE){
 			switch(block.type){
@@ -639,19 +585,13 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 					if((ecg_block.sample_id == ppg_block.sample_id) || (ecg_block.sample_id == pcg_block.sample_id)
 																  || (ppg_block.sample_id == pcg_block.sample_id)){
 
-#if defined(AD8232_ONLY_LOGGER) && defined(MAX30102_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
+#if defined(AD8232_ONLY_LOGGER) && defined(MAX30102_ONLY_LOGGER) /* Lay min cua ECG & PPG */
 						uint16_t min_count = MIN(ecg_block.count, ppg_block.count);
 
-#elif defined(AD8232_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
+#elif defined(AD8232_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER) /* Lay min cua ECG & PCG */
 						uint16_t min_count = MIN(ecg_block.count, pcg_block.count);
 
-#elif defined(MAX30102_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER)
-
-						// Lay so sample be nhat trong 3 kenh thu duoc
+#elif defined(MAX30102_ONLY_LOGGER) && defined(INMP441_ONLY_LOGGER) /* Lay min cua PPG & PCG */
 						uint16_t min_count = MIN(ppg_block.count, pcg_block.count);
 #else
 						uint16_t min_count = MAX_COUNT; // default
@@ -674,30 +614,31 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter){
 						//Reset flag
 						ResetSensor_flag(&sensor_check);
 
-					}else{
+					}
+					else{
 						uart_printf("[LOGGER] Sample_id mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 								ecg_block.sample_id, ppg_block.sample_id, pcg_block.sample_id);
 
 						//Reset de sync lai vong sau
 						ResetSensor_flag(&sensor_check);
 					}
-				}else{
+				}
+				else{
 					uart_printf("[LOGGER] Timestamp mismatch ! ECG: %lu, PPG: %lu, PCG: %lu\r\n",
 							ecg_block.timestamp, ppg_block.timestamp, pcg_block.timestamp);
 
 					ResetSensor_flag(&sensor_check);
 				}
 
-			}else{
+			}
+			else{
 //				uart_printf("[LOGGER] Some data is not ready ! ECG: %d, PPG: %d, PCG: %d\r\n",
 //						sensor_check.ecg_ready, sensor_check.ppg_ready, sensor_check.pcg_ready);
 			}
 
-		}else{
-			uart_printf("[LOGGER] Logger queue timeout !\r\n");
 		}
+		else uart_printf("[LOGGER] Logger queue timeout !\r\n");
 #endif // CMSIS_API_USING
-
 	}
 }
 /*-----------------------------------------------------------*/
@@ -726,7 +667,6 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 	while(1){
 
 #if defined(CMSIS_API_USING)
-
 		evt = osMailGet(logger_queueId, 100);
 		if(evt.status == osEventMail){
 			block = evt.value.p;  // Data o day
@@ -750,8 +690,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 
 			if(sensor_check.ecg_ready || sensor_check.ppg_ready || sensor_check.pcg_ready){
 
-#if defined(MAX30102_ONLY_LOGGER)
-
+#if defined(MAX30102_ONLY_LOGGER) /* Chi muon log moi PPG */
 //				uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", ppg_block.sample_id, ppg_block.count, ppg_block.timestamp);
 
 				for(uint16_t i = 0; i < ppg_block.count; i++){
@@ -759,9 +698,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 				}
 
 				ResetSensor_flag(&sensor_check);
-
-#elif defined(AD8232_ONLY_LOGGER)
-
+#elif defined(AD8232_ONLY_LOGGER) /* Chi muon log moi ECG */
 //				uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %ld\r\n", ecg_block.sample_id, ecg_block.count, ecg_block.timestamp);
 
 				for(uint16_t i = 0; i < ecg_block.count; i++){
@@ -769,9 +706,7 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 				}
 
 				ResetSensor_flag(&sensor_check);
-
-#elif defined(INMP441_ONLY_LOGGER)
-
+#elif defined(INMP441_ONLY_LOGGER) /* Chi muon log moi PCG */
 //				uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
 
 				for(uint16_t i = 0; i < pcg_block.count; i++){
@@ -779,16 +714,13 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 				}
 
 				ResetSensor_flag(&sensor_check);
-
 #endif // SENSOR_MACROS
-
 			}
-		}else if(evt.status != osEventTimeout){ // Neu ticks != 0 thi se tra ve timeout
-			uart_printf("[LOGGER] Mail error: %d\r\n", evt.status);
 		}
+		else if(evt.status != osEventTimeout) uart_printf("[LOGGER] Mail error: %d\r\n", evt.status); // Neu ticks != 0 thi se tra ve timeout
+
 
 #elif defined(FREERTOS_API_USING)
-
 		memset(&block, 0, sizeof(sensor_block_t));
 		if(xQueueReceive(logger_queue, &block, pdMS_TO_TICKS(100)) == pdTRUE){
 			switch(block.type){
@@ -808,44 +740,31 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 
 			if(sensor_check.ecg_ready || sensor_check.ppg_ready || sensor_check.pcg_ready){
 
-#if defined(MAX30102_ONLY_LOGGER)
-
+#if defined(MAX30102_ONLY_LOGGER) /* Chi muon log moi PPG */
 				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ppg_block.sample_id, ppg_block.count, ppg_block.timestamp);
 
 				for(uint16_t i = 0; i < ppg_block.count; i++){
 					uart_printf("%lu\r\n", ppg_block.ppg.ir[i]);
 				}
-
 				isQueueFree(logger_queue, "LOGGER");
-
 				ResetSensor_flag(&sensor_check);
-
-#elif defined(AD8232_ONLY_LOGGER)
-
+#elif defined(AD8232_ONLY_LOGGER) /* Chi muon log moi ECG */
 //				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", ecg_block.sample_id, ecg_block.count, ecg_block.timestamp);
 
 				for(uint16_t i = 0; i < ecg_block.count; i++){
 					uart_printf("%d\r\n", ecg_block.ecg[i]);
 				}
-
 				isQueueFree(logger_queue, "LOGGER");
-
 				ResetSensor_flag(&sensor_check);
-
-#elif defined(INMP441_ONLY_LOGGER)
-
+#elif defined(INMP441_ONLY_LOGGER) /* Chi muon log moi PCG */
 //				uart_printf("[LOGGER] ID: %u | COUNT: %u | TIME: %lu\r\n", pcg_block.sample_id, pcg_block.count, pcg_block.timestamp);
 
 				for(uint16_t i = 0; i < pcg_block.count; i++){
 					uart_printf("%ld\r\n", pcg_block.pcg[i]);
 				}
-
 				isQueueFree(logger_queue, "LOGGER");
-
 				ResetSensor_flag(&sensor_check);
-
 #endif // SENSOR_MACROS
-
 			}
 		}else{
 			uart_printf("[LOGGER] Logger queue timeout ! \r\n");
@@ -854,12 +773,12 @@ __attribute__((unused)) void Logger_one_task(void const *pvParameter){
 
 	}
 }
+#endif // SENSOR_TO_LOGGER_MAIL_USING
 
 /*-----------------------------------------------------------*/
 /* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
 
 #ifdef USING_UART_DMAPHORE /* Non-blocking mode */
-
 HAL_StatusTypeDef Logger_init_ver2(void){
 	HAL_StatusTypeDef ret = HAL_OK;
 
@@ -1074,6 +993,7 @@ void __attribute__((unused)) Logger_two_task_dmaphore(void const *pvParameter){
 }
 
 #endif // USING_UART_DMAPHORE
+
 /*-----------------------------------------------------------*/
 
 #ifdef __cplusplus

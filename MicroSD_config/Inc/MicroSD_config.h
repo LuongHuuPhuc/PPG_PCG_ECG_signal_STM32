@@ -56,6 +56,12 @@ extern "C" {
 #define MICROSD_MAX_LINE_LEN    256U /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 #endif // MICRO_MAX_LINE_LEN
 
+#define SD_EVENT_START			(1 << 0)
+#define SD_EVENT_STOP			(1 << 1)
+
+#define TXT_FILE_NAME		 	 "DEMO1.TXT"
+#define CSV_FILE_NAME			 "TEST.CSV"
+
 typedef enum __SD_STATUS_t {
 	SD_OK = 0,
 	SD_ERR,
@@ -175,6 +181,11 @@ sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols);
  * @param[in] num_cols So cot muon ghi
  */
 sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols);
+
+/**
+ * @brief Ham ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
+ */
+void MicroSD_write_data_to_SD(void const *pvParameter);
 
 #ifdef __cplusplus
 }

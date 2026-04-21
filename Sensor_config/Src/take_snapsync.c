@@ -12,15 +12,13 @@ extern "C" {
 #include "take_snapsync.h"
 
 #include "string.h"
-#include "Logger.h" // Lay macro de gui block cam bien
+#include "Logger.h" // Lay macro `MAIL_SEND_FROM_SYNC` de gui block cam bien
 
 #ifdef SYNC_TO_LOGGER_MAIL_USING
 
 #ifdef CMSIS_API_USING
-
 osThreadId sync_taskId = NULL;
 osMailQId sync_queueId = NULL;
-
 #endif // CMSIS_API_USING
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
@@ -159,7 +157,6 @@ void SyncTask(void const *pvParameter){
 #ifdef SYNC_BLOCK_COUNT_DEBUG
 				g_sync_block_per_sec++; /* Dem so block duoc gui di */
 #endif // SYNC_BLOCK_COUNT_DEBUG
-
 
 				// Tiep tuc reset 3 frame neu moi thu deu on
 				sync_slot_reset(&slot);

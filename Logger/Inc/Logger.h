@@ -17,16 +17,11 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include "stdbool.h"
+#include "cmsis_os.h"
 
-#include "take_snapsync.h" // Lay struct block tu Sync de in ra man hinh
-#include "Sensor_config.h"
-
-//Kiem tra trang thai du lieu da san sang hay chua
-typedef struct {
-	bool ecg_ready;
-	bool ppg_ready;
-	bool pcg_ready;
-} __attribute__((unused)) sensor_check_t;
+#if defined(SYNC_TO_LOGGER_MAIL_USING) || defined(SENSOR_TO_LOGGER_MAIL_USING)
+#include "take_snapsync.h" // Lay struct `sensor_sync_block_t`
+#endif
 
 // Task & RTOS
 #ifdef USING_UART_DMAPHORE
@@ -43,7 +38,6 @@ extern osSemaphoreId loggerDMA_semId;
 extern UART_HandleTypeDef huart2; //Duoc dinh nghia cho khac, chi muon dung o day thoi ti dung extern !
 
 #if defined(CMSIS_API_USING)
-
 /**
  * CMSIS dung con tro de lay data, khong copy truc tiep data nhu FREERTOS API (Hieu nang + toc do cap hon)
  * Data se nam yen trong RAM -> Tre thap hon
@@ -54,7 +48,6 @@ extern osMutexId logger_mutexId; // Mutex cho UART printf
 extern osThreadId logger_taskId; // Task Logger
 
 #elif defined(FREERTOS_API_USING)
-
 extern SemaphoreHandle_t logger_mutex; // Mutex de bao ve thao tac UART (UART khong bi tranh chap, chi 1 task dung UART)
 extern QueueHandle_t logger_queue;
 extern TaskHandle_t logger_task;
@@ -68,24 +61,41 @@ extern TaskHandle_t logger_task;
 #define LOGGER_QUEUE_LENGTH 	 40 // Tang chieu dai queue de chong tran
 #define UART_TX_BUFFER_SIZE      1024
 
-#define LOGGER_FILE_NAME		 "DEMO1.TXT" // SD Card
+// ==== FUNCTION PROTOTYPE ====
 
-#if defined(FREERTOS_API_USING)
-#define QUEUE_SEND_FROM_TASK(data_ptr) do { \
-	if(xQueueSend(logger_queue, (data_ptr), portMAX_DELAY) != pdTRUE){ \
-		uart_printf("[LOGGER] Logger queue full!\r\n"); \
-	} \
-} while(0)
+/**
+* @brief Ham thay the cho printf su dung UART
+*
+* @note Su dung truyen UART theo Blocking Mode + Mutex de bao ve UART
+*
+* @warning Khong duoc goi ham nay ben trong cac ham ISR (Interrupt Service Routine) nhu may ham callback
+* vi Semaphore o day khong co hau to `FromISR`
+* => Nhu the no se duoc xem la ham non-safe ISR
+* => Co nguy co gay block task
+*
+* Cac ham Non-ISR safe duoc thiet ke de goi tu Task Context (ngu canh cua 1 task thong thuong)
+* boi vi cac ham nay thuong goi ngam cac ham nhu `taskENTER_CRITICAL()` hoac `vPortEnterCritical()`
+* de bao ve du lieu Kernel khoi bi task khac gian doan
+*
+* Khi goi tu task context, cac ham do se hoat dong bang cach vo hieu hoa tat cac Interrurpt (co uu tien thap hon nguong an toan)
+* bang cach goi cac ham Critical Section khong an toan. Neu goi no tu ISR, no se kich hoat loi Assert
+* vi no vi pham quy tac: Khong duoc phep vo hieu hoa ngat khi CPU dang phuc vu 1 ngat
+*/
+void uart_printf(const char *fmt,...);
 
-#define QUEUE_SEND_FROM_ISR(data_ptr) do { \
-	if(xQueueSendFromISR(logger_queue, (data_ptr), pxHigherPriorityTaskWoken) != pdTRUE){\
-		uart_printf("[LOGGER] Logger queue full from ISR! \r\n "); \
-	} \
-} while(0) // Dung khi muon send queue trong cac ham HAL_callback
+/**
+ * @brief Ham khoi tao Queue de log du lieu theo hang doi.
+ *
+ * @note Do UART tai nguyen chung nen su dung Semaphore Mutex de uu tien 1 thread UART Logger chay
+ * \note - Co che Lock/Unlock (Quyen so huu): chi 1 thread lock va unlock duoc no
+ * \note - Co che Priority Inheritane (Uu tien): Chi 1 thread chay duoc trong 1 thoi diem
+ * \note - Mutex khong dung duoc trong ISR
+ * \note - Mutex tuong duong voi 1 Binary Semaphore
+ */
+HAL_StatusTypeDef Logger_init(void);
 
-#elif defined(CMSIS_API_USING)
-#ifdef SYNC_TO_LOGGER_MAIL_USING /* Su dung sync task lam trung gian*/
-
+#ifdef CMSIS_API_USING
+#ifdef SYNC_TO_LOGGER_MAIL_USING /* Only 1 function !!! */
 static inline osStatus logger_mail_send(sensor_sync_block_t *block){
 	sensor_sync_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
 	if(mail == NULL){
@@ -112,7 +122,22 @@ static inline osStatus logger_mail_send(sensor_sync_block_t *block){
 	} \
 } while(0)
 
-#else /* Truyen truc tiep data block tu sensor task den logger luon */
+/**
+ * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
+ * Sau khi nhan Mail tu task Sync dong bo (giam ganh nang CPU cho Logger)
+ * Thi moi in ra man hinh thong qua UART (chap nhan tre in)
+ */
+void Logger_three_task_ver2(void const *pvParameter);
+#endif // SYNC_TO_LOGGER_MAIL_USING
+
+#ifdef SENSOR_TO_LOGGER_MAIL_USING /* NOTE: Cac ham cho viec gui block truc tiep tu Sensor task -> Logger task (khong trung gian) */
+
+//Kiem tra trang thai du lieu da san sang hay chua
+typedef struct {
+	bool ecg_ready;
+	bool ppg_ready;
+	bool pcg_ready;
+} __attribute__((unused)) sensor_check_t;
 
 static inline osStatus logger_mail_send(sensor_block_t *block){
 	sensor_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
@@ -129,49 +154,17 @@ static inline osStatus logger_mail_send(sensor_block_t *block){
 	return ret;
 }
 
-/* Macro de Sensor Task gui thang truc tiep den Logger Task
+/* Macro nay se de Sensor Task gui thang truc tiep den Logger Task
  * @note: Dung khi KHONG muon dung sync task */
 #define MAIL_SEND_FROM_TASK(block) do { \
 	logger_mail_send(&(block)); \
 } while(0)
-
-#endif // SYNC_TO_LOGGER_MAIL_USING
-#endif // CMSIS_API_USING
-
-// ==== FUNCTION PROTOTYPE ====
-
-/**
- * @brief Ham scan cac bus I2C de xem co dang ton tai dia chi nao khong
- *
- * @param hi2c Con tro den struct cau hinh I2C
- */
-void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
-
-/**
- * @brief Ham khoi tao Queue de log du lieu theo hang doi.
- *
- * @note Do UART tai nguyen chung nen su dung Semaphore Mutex de uu tien 1 thread UART Logger chay
- * \note - Co che Lock/Unlock (Quyen so huu): chi 1 thread lock va unlock duoc no
- * \note - Co che Priority Inheritane (Uu tien): Chi 1 thread chay duoc trong 1 thoi diem
- * \note - Mutex khong dung duoc trong ISR
- * \note - Mutex tuong duong voi 1 Binary Semaphore
- */
-HAL_StatusTypeDef Logger_init(void);
 
 /**
  * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
  * @note Nhan truc tiep 3 block data tu Sensor task va in ra man hinh (khong thong qua sync task)
  */
 __attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
-
-#ifdef SYNC_TO_LOGGER_MAIL_USING
-/**
- * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
- * Sau khi nhan Mail tu task Sync dong bo (giam ganh nang CPU cho Logger)
- * Thi moi in ra man hinh thong qua UART (chap nhan tre in)
- */
-void Logger_three_task_ver2(void const *pvParameter);
-#endif // SYNC_TO_LOGGER_MAIL_USING
 
 /**
  * @brief Ham in ra 2 kenh du lieu dong thoi
@@ -184,39 +177,28 @@ __attribute__((unused)) void Logger_two_task(void const *pvParameter);
  * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay
  */
 __attribute__((unused)) void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
-
-/**
- * @brief Ham ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
- */
-__attribute__((unused)) void Logger_write_data_to_SD(void const *pvParameter);
+#endif // SENSOR_TO_LOGGER_MAIL_USING
+#endif // CMSIS_API_USING
 
 #ifdef FREERTOS_API_USING
+#define QUEUE_SEND_FROM_TASK(data_ptr) do { \
+	if(xQueueSend(logger_queue, (data_ptr), portMAX_DELAY) != pdTRUE){ \
+		uart_printf("[LOGGER] Logger queue full!\r\n"); \
+	} \
+} while(0)
+
+#define QUEUE_SEND_FROM_ISR(data_ptr) do { \
+	if(xQueueSendFromISR(logger_queue, (data_ptr), pxHigherPriorityTaskWoken) != pdTRUE){\
+		uart_printf("[LOGGER] Logger queue full from ISR! \r\n "); \
+	} \
+} while(0) // Dung khi muon send queue trong cac ham HAL_callback
+
 /**
  * @brief Ham kiem tra xem hang doi con free khong
  * @note Neu khong con trong -> Chuong trinh se dung lai
  */
 void isQueueFree(const QueueHandle_t queue, const char *name);
-#endif //CMSIS_API_USING
-
-/**
-* @brief Ham thay the cho printf su dung UART
-*
-* @note Su dung truyen UART theo Blocking Mode + Mutex de bao ve UART
-*
-* @warning Khong duoc goi ham nay ben trong cac ham ISR (Interrupt Service Routine) nhu may ham callback
-* vi Semaphore o day khong co hau to `FromISR`
-* => Nhu the no se duoc xem la ham non-safe ISR
-* => Co nguy co gay block task
-*
-* Cac ham Non-ISR safe duoc thiet ke de goi tu Task Context (ngu canh cua 1 task thong thuong)
-* boi vi cac ham nay thuong goi ngam cac ham nhu `taskENTER_CRITICAL()` hoac `vPortEnterCritical()`
-* de bao ve du lieu Kernel khoi bi task khac gian doan
-*
-* Khi goi tu task context, cac ham do se hoat dong bang cach vo hieu hoa tat cac Interrurpt (co uu tien thap hon nguong an toan)
-* bang cach goi cac ham Critical Section khong an toan. Neu goi no tu ISR, no se kich hoat loi Assert
-* vi no vi pham quy tac: Khong duoc phep vo hieu hoa ngat khi CPU dang phuc vu 1 ngat
-*/
-__attribute__((weak)) void uart_printf(const char *fmt,...);
+#endif // FREERTOS_API_USING
 
 /**
  * @brief Ham dung de log debug neu muon su dung tu ISR
@@ -253,6 +235,12 @@ __attribute__((weak)) void uart_printf(const char *fmt,...);
  */
 __attribute__((weak, unused)) void uart_printf_safe(const char *fmt,...);
 
+/**
+ * @brief Ham scan cac bus I2C de xem co dang ton tai dia chi nao khong
+ * @param hi2c Con tro den struct cau hinh I2C
+ */
+void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
+
 /* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
 #ifdef USING_UART_DMAPHORE
 /**
@@ -280,6 +268,18 @@ __attribute__((unused)) void Logger_two_task_dmaphore(void const *pvParameter);
 __attribute__((weak, unused)) void uart_printf_dmaphore(const char *buffer, uint16_t buflen);
 
 #endif // USING_UART_DMAPHORE
+
+#ifndef MAIL_SEND_FROM_TASK /* Neu chua enable gi ca */
+#define MAIL_SEND_FROM_TASK(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
+#endif // MAIL_SEND_FROM_TASK
+
+#ifndef MAIL_SEND_FROM_SYNC
+#define MAIL_SEND_FROM_SYNC(block) do {} while(0) /* Dummy macros fucntion tu Sync -> Logger de tranh bi loi */
+#endif // MAIL_SEND_FROM_SYNC
+
+#ifdef QUEUE_SEND_FROM_TASK
+#define QUEUE_SEND_FROM_TASK(data_ptr) do {} while(0)
+#endif // QUEUE_SEND_FROM_TASK
 
 #ifdef __cplusplus
 }

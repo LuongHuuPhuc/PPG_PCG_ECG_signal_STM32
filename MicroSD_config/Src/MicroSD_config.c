@@ -409,7 +409,7 @@ sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols){
 										     (unsigned long long)data[i]);
 		if(st != SD_OK) return st;
 	}
-	return MicroSD_WriteLine(g_line_buffer);
+	return MicroSD_WriteLine("%s", g_line_buffer);
 }
 
 /*-----------------------------------------------------------*/
@@ -430,7 +430,7 @@ sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols){
 											 (long long)data[i]);
 		if(st != SD_OK) return st;
 	}
-	return MicroSD_WriteLine(g_line_buffer);
+	return MicroSD_WriteLine("%s", g_line_buffer);
 }
 
 /*-----------------------------------------------------------*/
@@ -451,7 +451,52 @@ sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols){
 										   cols[i]);
 		if(st != SD_OK) return st;
 	}
-	return MicroSD_WriteLine(g_line_buffer);
+	return MicroSD_WriteLine("%s", g_line_buffer);
+}
+
+/*-----------------------------------------------------------*/
+
+void MicroSD_write_data_to_SD(void const *pvParameter){
+	(void)(pvParameter);
+	sd_status_t ret;
+	uint8_t count = 0;
+	uart_printf("MicroSD task started !\r\n");
+
+	ret = MicroSD_Init();
+	if(ret != SD_OK){
+		uart_printf("[MICRO_SD] MircoSD_Init failed: %d\r\n", ret);
+		for(;;) osDelay(1000);
+	}
+	uart_printf("[MICRO_SD] MicroSD_Init OK!\r\n");
+
+	/* Line */
+	ret = MicroSD_Open(TXT_FILE_NAME, true);
+	if(ret != SD_OK){
+		uart_printf("[MICRO_SD] MircoSD_Open failed: %d\r\n", ret);
+		for(;;) osDelay(1000);
+	}
+	uart_printf("[MICRO_SD] MicroSD_Open file %s OK!\r\n", TXT_FILE_NAME);
+
+	while(count < 20){
+		// Thu chi ghi 1 lan roi close luon xem sao
+		ret = MicroSD_WriteLine("Lan %d: Demo ghi SD card bang FatFS\r\n", count + 1);
+		if (ret == SD_OK) uart_printf("[MICRO_SD] Ghi thanh cong!\r\n");
+		else uart_printf("[MICRO_SD] MircoSD_WriteLine failed: %d\r\n", ret);
+
+		ret = MicroSD_Flush();
+		if(ret == SD_OK) uart_printf("[MICRO_SD] MircoSD_Flush OK!\r\n");
+		else uart_printf("[MICRO_SD] MicroSD_Flush failed!: %d\r\n", ret);
+
+		count++;
+		osDelay(1000);
+	}
+	ret = MicroSD_Close();
+	if(ret == SD_OK) uart_printf("[MICRO_SD] MircoSD_Close file %s OK!\r\n", TXT_FILE_NAME);
+	else uart_printf("[MICRO_SD] MicroSD_Close failed!: %d\r\n", ret);
+
+	/* */
+	ret = MicroSD_Open(CSV_FILE_NAME, true);
+	for(;;)osDelay(1000);
 }
 
 #ifdef __cplusplus

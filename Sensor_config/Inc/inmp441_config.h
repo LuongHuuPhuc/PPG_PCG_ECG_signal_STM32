@@ -49,6 +49,7 @@ extern "C" {
 #define I2S_DMA_FRAME_COUNT			(I2S_SAMPLE_COUNT * 2u) // DMA data (dung de ghep 2 frame HALF-WORD) = So lan DMA transfer
 #define I2S_HALF_SAMPLE_COUNT 		(I2S_SAMPLE_COUNT / 2u)
 #define DOWNSAMPLE_SAMPLE_COUNT		(I2S_SAMPLE_COUNT / DOWNSAMPLE_FACTOR) // 32 samples (mat mau do ep du lieu xuong 32)
+//#define PING_PONG_DMA_USING			1
 
 // Extern protocol variable cho function trong .c
 extern I2S_HandleTypeDef hi2s2;
@@ -56,12 +57,10 @@ extern DMA_HandleTypeDef hdma_spi2_rx;
 
 // Task & RTOS
 #if defined(FREERTOS_API_USING)
-
 extern TaskHandle_t inmp441_task;
 extern SemaphoreHandle_t inmp441_sem;
 
 #elif defined(CMSIS_API_USING)
-
 extern osSemaphoreId inmp441_semId;
 extern osThreadId inmp441_taskId;
 
@@ -70,6 +69,8 @@ extern osThreadId inmp441_taskId;
 // INMP441
 extern volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT]; // Buffer cho DMA ghi data HALF-WORD vao (Khong chua sample hoan chinh)
 extern volatile int32_t __attribute__((unused)) buffer32[I2S_SAMPLE_COUNT]; // Buffer de luu sample that (da ghep framw LOW + HIGH)
+
+#ifdef PING_PONG_DMA_USING
 extern volatile bool __attribute__((unused)) mic_half_ready;
 extern volatile bool __attribute__((unused)) mic_full_ready;
 
@@ -80,6 +81,7 @@ extern volatile bool __attribute__((unused)) mic_pong_ready;
 // 2 buffer ping/pong (DMA se tu ghi luan phien)
 extern volatile int16_t __attribute__((unused)) mic_ping[I2S_SAMPLE_COUNT];
 extern volatile int16_t __attribute__((unused)) mic_pong[I2S_SAMPLE_COUNT];
+#endif // PING_PONG_DMA_USING
 
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
@@ -168,6 +170,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter);
  */
 void Inmp441_task_ver2(void const *pvParameter);
 
+#ifdef PING_PONG_DMA_USING
 /**
  * @brief Ham thuc thi va xu ly `ver3`
  *
@@ -176,6 +179,7 @@ void Inmp441_task_ver2(void const *pvParameter);
  * @remark Ham prototype, chua hoat dong duoc
  */
 __attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter);
+#endif // PING_PONG_DMA_USING
 
 #ifdef __cplusplus
 }

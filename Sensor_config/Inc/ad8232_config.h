@@ -45,10 +45,8 @@ extern osThreadId ad8232_taskId;
 extern osSemaphoreId ad8232_semId;
 
 #elif defined (FREERTOS_API_USING)
-
 extern TaskHandle_t ad8232_task;
 extern SemaphoreHandle_t ad8232_sem;
-
 #endif // CMSIS_API_USING
 
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern

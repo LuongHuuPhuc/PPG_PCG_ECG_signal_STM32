@@ -38,18 +38,16 @@ extern I2C_HandleTypeDef hi2c1;
 
 // Task & RTOS
 #if defined(FREERTOS_API_USING)
-
 extern TaskHandle_t max30102_task;
 extern SemaphoreHandle_t max30102_sem;
 
 #elif defined(CMSIS_API_USING)
-
 extern osSemaphoreId max30102_semId;
 extern osThreadId max30102_taskId;
 
 #endif // CMSIS_API_USING
 
-// Logger.h - muon dung ham do thi khai bao extern
+// From Logger.h - muon dung ham do thi khai bao extern
 extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 extern void uart_printf(const char *fmt,...);
 
@@ -57,9 +55,7 @@ extern void uart_printf(const char *fmt,...);
 
 /**
  * @brief Ham khoi tao & cau hinh cam bien `ver1`
- *
  * @param i2c Con tro den struct dinh nghia cau hinh I2C
- *
  * @note Ham khoi tao su dung ngat ngoai (external interrupt)
  */
 __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c);

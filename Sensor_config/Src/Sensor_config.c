@@ -10,21 +10,14 @@ extern "C" {
 #endif
 
 #include "Sensor_config.h"
-
 #include "stdarg.h"
-#include "take_snapsync.h"
-#include "Logger.h"
 
-// ====== VARIABLES DEFINITION ======
-#if defined(sensor_config_SYNC_USING) /* Neu muon dung bien dong bo duoc khai bao tai file Sensor_config.h (deprecated) */
-
-__attribute__((deprecated))volatile uint32_t global_sample_id = 0;
-__attribute__((deprecated))volatile TickType_t global_timestamp = 0;
-
-#endif // sensor_config_SYNC_USING
-
-// ==== FUNCTION DEFINITIONS ====
+// ====== FUNCTION DEFINITIONS ======
 /*-----------------------------------------------------------*/
+
+extern HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc);
+extern HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s);
+extern HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
 
 void SensorConfig_Init(void){
 	SERROR_CHECK(Ad8232_init(&hadc1));
@@ -35,19 +28,6 @@ void SensorConfig_Init(void){
 
 	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> [SENCONF] MAX30102 init OK !\r\n");
-
-#ifdef USING_UART_DMAPHORE
-	SERROR_CHECK(Logger_init_ver2());
-	uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
-#else // USING_UART_DMAPHORE
-	SERROR_CHECK(Logger_init());
-	uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
-#endif // USING_UART_DMAPHORE
-
-#ifdef SYNC_TO_LOGGER_MAIL_USING
-	SERROR_CHECK(Sync_init());
-	uart_printf(">> [SENCONF] SYNC init OK !\r\n");
-#endif // SYNC_TO_LOGGER_MAIL_USING
 
 	//Check sau khi tao semaphore va queue
 	HeapCheck();
@@ -79,7 +59,7 @@ void __attribute__((unused)) HeapCheck(void){
  */
 void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName){
 	taskENTER_CRITICAL();
-	uart_printf_safe(" [SENCONF] Stack overflow in %s!\r\n", pcTaskName);
+	uart_printf(" [SENCONF] Stack overflow in %s!\r\n", pcTaskName);
 	Error_Handler();
 	taskEXIT_CRITICAL();
 }
@@ -99,12 +79,12 @@ void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName){
 void vApplicationMallocFailedHook(void){
 	taskENABLE_INTERRUPTS(); // Ngan context switch
 	/* Neu UART con song thi in ra debug */
-	uart_printf_safe("[SENCONF] Malloc failed ! Heap exhausted or fragmented !\r\n");
+	uart_printf("[SENCONF] Malloc failed ! Heap exhausted or fragmented !\r\n");
 
 	size_t heap_free = xPortGetFreeHeapSize(); //Dung luong bo nho con lai
 	size_t heap_min_ever = xPortGetMinimumEverFreeHeapSize();
 
-	uart_printf_safe("[SENCONF] Free Heap: %u bytes | Minimum Ever Free Heap: %u bytes\r\n",
+	uart_printf("[SENCONF] Free Heap: %u bytes | Minimum Ever Free Heap: %u bytes\r\n",
 				(unsigned int)heap_free,
 				(unsigned int)heap_min_ever);
 	Error_Handler();

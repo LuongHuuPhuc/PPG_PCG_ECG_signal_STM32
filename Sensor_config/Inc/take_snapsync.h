@@ -14,14 +14,43 @@
 extern "C" {
 #endif //__cplusplus
 
-#include "main.h"
 #include "stdio.h"
-#include "cmsis_os.h"
-#include "Sensor_config.h"
+#include "stdbool.h"
 
-// Slot de gom & dong bo du lieu trong SYNC
+#include "main.h"
+#include "cmsis_os.h"
+#include "Sensor_config.h" // Lay block data tu struct `sensor_block_t
+
+// Snapshot cho dong bo (Dung neu define `sensor_config_SYNC_USING`)
+typedef struct SNAPSHOT_SYNC_t {
+	volatile TickType_t timestamp;
+	volatile uint32_t sample_id;
+} __attribute__((unused)) snapshot_sync_t;
+
+#ifdef SYNC_TO_LOGGER_MAIL_USING /* Su dung sync task lam trung gian*/
+#define SYNC_QUEUE_LENGTH		35
+
+/* Macro de Sensor Task gui den Sync Task (duoc dinh nghia trong take_snapsync)
+ * Cung ten Macro voi Macro o Logger (nhung Macro do cho phep Sensor Task gui truc tiep den Logger luon)
+ * Dung khi khong muon dong bo voi sync task */
+#define MAIL_SEND_FROM_TASK(block) do { \
+	if(sync_mail_send(&(block)) != osOK){ \
+		/* Neu Sync Task xu ly hoac tran heap cham (kha nang cao se bi cai nay) thi se bi di vao day */ \
+		uart_printf("[SYNC] Mail sent from TASK error !\r\n"); \
+	} \
+} while(0)
+
+#ifdef CMSIS_API_USING
+extern osThreadId sync_taskId;	   // Sync task ID
+extern osMailQId sync_queueId;     // Sensor task -> Sync task
+#endif // CMSIS_API_USING
+
+/* NOTE: Bien nay duoc dinh nghia ben trong ham main.c, extern ra de cac file sensor khac co the dung */
+extern volatile snapshot_sync_t global_sync_snapshot;
+
+/* Slot de gom & dong bo du lieu trong SYNC */
 typedef struct {
-	/* Block trung gian de luu data dau vao tu Sensor Task cua 3 cam bien */
+	/* Block trung gian de luu data tu dau vao Sensor Task cua 3 cam bien */
 	sensor_block_t ecg;
 	sensor_block_t ppg;
 	sensor_block_t pcg;
@@ -32,7 +61,7 @@ typedef struct {
 	bool pcg_ready;
 } sync_slot_t;
 
-// Struct cho data output de gui den LOGGER (khong the dung sensor_block_t vi bien volatile)
+/* Struct cho data output de tu Sync Task gui den Logger Task (khong the dung sensor_block_t vi bien volatile) */
 typedef struct {
 	uint32_t sample_id_sync; 	// Dung de dong bo du lieu
 	TickType_t timestamp_sync;	// Danh dau thoi gian dong bo
@@ -42,29 +71,6 @@ typedef struct {
 	int32_t pcg_sync[32];
 	int16_t ecg_sync[32];
 } sensor_sync_block_t ;
-
-// Snapshot cho dong bo (Dung neu define `sensor_config_SYNC_USING`)
-typedef struct SNAPSHOT_SYNC_t {
-	volatile TickType_t timestamp;
-	volatile uint32_t sample_id;
-} __attribute__((unused)) snapshot_sync_t;
-
-// Bien dong bo - SYNC PARAMETERS
-#if defined(sensor_config_SYNC_USING) /* Neu muon dung bien dong bo duoc khai bao tai file Sensor_config.h (deprecated) */
-extern volatile uint32_t global_sample_id;
-extern volatile TickType_t global_timestamp;
-#else
-extern volatile snapshot_sync_t global_snapshot; // Bien nay duoc dinh nghia ben ngoai (External), nam trong ham main.c
-extern volatile uint32_t g_sync_block_per_sec;
-#endif // sensor_config_SYNC_USING
-
-#ifdef SYNC_TO_LOGGER_MAIL_USING /* Su dung sync task lam trung gian*/
-#ifdef CMSIS_API_USING
-
-extern osThreadId sync_taskId;	   // Sync task ID
-extern osMailQId sync_queueId;     // Sensor task -> Sync task
-
-#endif // CMSIS_API_USING
 
 static inline osStatus sync_mail_send(sensor_block_t *block){
 	sensor_block_t *mail = osMailAlloc(sync_queueId, 0); // Cap phat dong
@@ -80,24 +86,8 @@ static inline osStatus sync_mail_send(sensor_block_t *block){
 	return ret;
 }
 
-#define SYNC_QUEUE_LENGTH		35
-
-/* Macro de Sensor Task gui den Sync Task (duoc dinh nghia trong take_snapsync)
- * Cung ten Macro voi Macro o Logger (nhung Macro do cho phep Sensor Task gui truc tiep den Logger luon)
- * Dung khi khong muon dong bo voi sync task */
-#define MAIL_SEND_FROM_TASK(block) do { \
-	if(sync_mail_send(&(block)) != osOK){ \
-		/* Neu Sync Task xu ly hoac tran heap cham (kha nang cao se bi cai nay) thi se bi di vao day */ \
-		uart_printf("[SYNC] Mail sent from TASK error !\r\n");\
-	}\
-} while(0)
-
 // ==== FUNCTION PROTOTYPE ====
 
-/**
- * @brief
- * @retval
- */
 HAL_StatusTypeDef Sync_init(void);
 
 /**
@@ -117,20 +107,12 @@ void SyncTask(void const *pvParameter);
  * @note Tranh xung dot hay bi ghi de
  */
 __attribute__((unused)) static inline void take_snapshotSYNC(snapshot_sync_t *snap){
-	taskENTER_CRITICAL(); //Chan ISR tam thoi de tranh bi TIM ISR chen
 
-#if defined(sensor_config_SYNC_USING)
-
-	snap->sample_id = global_sample_id;
-	snap->timestamp = global_timestamp;
-
-#else
+#ifdef SYNC_TO_LOGGER_MAIL_USING
 	/* Dong bo tham so */
-	*snap = global_snapshot;
-
-#endif // sensor_config_SYNC_USING
-
-	taskEXIT_CRITICAL();
+	snap->sample_id = global_sync_snapshot.sample_id;
+	snap->timestamp = global_sync_snapshot.timestamp;
+#endif // SYNC_TO_LOGGER_MAIL_USING
 }
 
 #ifdef __cplusplus
