@@ -1,8 +1,12 @@
 /*
- * Logger.h
+ * @file Logger.h
  *
- *  Created on: Jun 17, 2025
- *  @Author Luong Huu Phuc
+ * @note
+ * File co nhiem vu thuc hien in data ra man hinh monitor
+ * thong qua UART cung nhu cac task lien quan den UART
+ *
+ * @date Jun 17, 2025
+ * @Author Luong Huu Phuc
  */
 
 #ifndef INC_LOGGER_H_
@@ -17,45 +21,17 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include "stdbool.h"
+
 #include "cmsis_os.h"
 
-#if defined(SYNC_TO_LOGGER_MAIL_USING) || defined(SENSOR_TO_LOGGER_MAIL_USING)
-#include "take_snapsync.h" // Lay struct `sensor_sync_block_t`
-#endif
-
-// Task & RTOS
-#ifdef USING_UART_DMAPHORE
-
-#if defined(FREERTOS_API_USING)
-extern SemaphoreHandle_t loggerDMA_sem; // Binary de bao trang thai DMA cua UART (tranh ghi de buffer)
-#elif defined(CMSIS_API_USING)
-extern osSemaphoreId loggerDMA_semId;
-#endif // CMSIS_API_USING
-
-#endif // USING_UART_DMAPHORE
-
-// Extern variables
-extern UART_HandleTypeDef huart2; //Duoc dinh nghia cho khac, chi muon dung o day thoi ti dung extern !
-
-#if defined(CMSIS_API_USING)
 /**
  * CMSIS dung con tro de lay data, khong copy truc tiep data nhu FREERTOS API (Hieu nang + toc do cap hon)
  * Data se nam yen trong RAM -> Tre thap hon
  * Dung Mail vi Mail moi truyen duoc struct, Message thi khong
  */
-extern osMailQId logger_queueId; // Sync Task -> Logger task
-extern osMutexId logger_mutexId; // Mutex cho UART printf
-extern osThreadId logger_taskId; // Task Logger
-
-#elif defined(FREERTOS_API_USING)
-extern SemaphoreHandle_t logger_mutex; // Mutex de bao ve thao tac UART (UART khong bi tranh chap, chi 1 task dung UART)
-extern QueueHandle_t logger_queue;
-extern TaskHandle_t logger_task;
-
-#endif // CMSIS_API_USING
+extern osThreadId logger_taskId;
 
 // ==== MACROS　====
-#define MIN(a, b) 				 ((a) < (b) ? (a) : (b))
 #define MAX_COUNT 				 32
 #define MAX_RETRY_SCANNER 		 2
 #define LOGGER_QUEUE_LENGTH 	 40 // Tang chieu dai queue de chong tran
@@ -93,112 +69,6 @@ void uart_printf(const char *fmt,...);
  * \note - Mutex tuong duong voi 1 Binary Semaphore
  */
 HAL_StatusTypeDef Logger_init(void);
-
-#ifdef CMSIS_API_USING
-#ifdef SYNC_TO_LOGGER_MAIL_USING /* Only 1 function !!! */
-static inline osStatus logger_mail_send(sensor_sync_block_t *block){
-	sensor_sync_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
-	if(mail == NULL){
-		/* Kha nang bi Bottleneck do UART printf cham */
-		uart_printf("[LOGGER] Logger queue memory alloc failed!\r\n");
-		return osErrorNoMemory;
-	}
-
-	*mail = *block; // Copy
-	osStatus ret = osMailPut(logger_queueId, mail);
-	if(ret != osOK){
-		uart_printf("[LOGGER] Logger queue full!\r\n");
-		osMailFree(logger_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
-	}
-	return ret;
-
-}
-
-/* Macro de Sync Task gui den Logger Task */
-#define MAIL_SEND_FROM_SYNC(block) do { \
-	if(logger_mail_send(&(block)) != osOK){ \
-		/* Neu Logger UART xu ly cham hoac tran heap (kha nang cao se bi cai nay) thi se bi di vao day */ \
-		uart_printf("[LOGGER] Mail sent from SYNC error !\r\n"); \
-	} \
-} while(0)
-
-/**
- * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
- * Sau khi nhan Mail tu task Sync dong bo (giam ganh nang CPU cho Logger)
- * Thi moi in ra man hinh thong qua UART (chap nhan tre in)
- */
-void Logger_three_task_ver2(void const *pvParameter);
-#endif // SYNC_TO_LOGGER_MAIL_USING
-
-#ifdef SENSOR_TO_LOGGER_MAIL_USING /* NOTE: Cac ham cho viec gui block truc tiep tu Sensor task -> Logger task (khong trung gian) */
-
-//Kiem tra trang thai du lieu da san sang hay chua
-typedef struct {
-	bool ecg_ready;
-	bool ppg_ready;
-	bool pcg_ready;
-} __attribute__((unused)) sensor_check_t;
-
-static inline osStatus logger_mail_send(sensor_block_t *block){
-	sensor_block_t *mail = osMailAlloc(logger_queueId, 0); // Cap phat dong
-	if(mail == NULL){
-		return osErrorNoMemory;
-	}
-
-	*mail = *block; // Copy
-	osStatus ret = osMailPut(logger_queueId, mail);
-	if(ret != osOK){
-		uart_printf("[LOGGER] Logger queue full!\r\n");
-		osMailFree(logger_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
-	}
-	return ret;
-}
-
-/* Macro nay se de Sensor Task gui thang truc tiep den Logger Task
- * @note: Dung khi KHONG muon dung sync task */
-#define MAIL_SEND_FROM_TASK(block) do { \
-	logger_mail_send(&(block)); \
-} while(0)
-
-/**
- * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
- * @note Nhan truc tiep 3 block data tu Sensor task va in ra man hinh (khong thong qua sync task)
- */
-__attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
-
-/**
- * @brief Ham in ra 2 kenh du lieu dong thoi
- * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay (do can tinh min cua 2 block)
- */
-__attribute__((unused)) void Logger_two_task(void const *pvParameter);
-
-/**
- * @brief Ham in ra 1 kenh du lieu
- * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay
- */
-__attribute__((unused)) void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
-#endif // SENSOR_TO_LOGGER_MAIL_USING
-#endif // CMSIS_API_USING
-
-#ifdef FREERTOS_API_USING
-#define QUEUE_SEND_FROM_TASK(data_ptr) do { \
-	if(xQueueSend(logger_queue, (data_ptr), portMAX_DELAY) != pdTRUE){ \
-		uart_printf("[LOGGER] Logger queue full!\r\n"); \
-	} \
-} while(0)
-
-#define QUEUE_SEND_FROM_ISR(data_ptr) do { \
-	if(xQueueSendFromISR(logger_queue, (data_ptr), pxHigherPriorityTaskWoken) != pdTRUE){\
-		uart_printf("[LOGGER] Logger queue full from ISR! \r\n "); \
-	} \
-} while(0) // Dung khi muon send queue trong cac ham HAL_callback
-
-/**
- * @brief Ham kiem tra xem hang doi con free khong
- * @note Neu khong con trong -> Chuong trinh se dung lai
- */
-void isQueueFree(const QueueHandle_t queue, const char *name);
-#endif // FREERTOS_API_USING
 
 /**
  * @brief Ham dung de log debug neu muon su dung tu ISR
@@ -241,6 +111,67 @@ __attribute__((weak, unused)) void uart_printf_safe(const char *fmt,...);
  */
 void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 
+#ifdef SYNC_INTERMEDIARY_USING
+/**
+ * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
+ * Sau khi nhan Mail tu task Sync dong bo (giam ganh nang CPU cho Logger)
+ * Thi moi in ra man hinh thong qua UART (chap nhan tre in)
+ */
+void Logger_three_task_ver2(void const *pvParameter);
+
+typedef struct __sensor_sync_block sensor_sync_block_t;
+/* Callback function goi boi Sync Task de gui data den Logger Task thong qua data dispatcher */
+void Logger_dispatch(sensor_sync_block_t *block);
+#endif // SYNC_INTERMEDIARY_USING
+
+#ifdef SENSOR_SEND_DIRECT_USING /* NOTE: Cac ham cho viec gui block truc tiep tu Sensor task -> Logger task (khong trung gian) */
+//Kiem tra trang thai du lieu da san sang hay chua
+
+/* Forward Declare cho struct sensor_block_t */
+typedef struct SENSOR_BLOCK_t sensor_block_t;
+
+typedef struct {
+	bool ecg_ready;
+	bool ppg_ready;
+	bool pcg_ready;
+} __attribute__((unused)) sensor_check_t;
+
+/**
+ * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
+ * @note Nhan truc tiep 3 block data tu Sensor task va in ra man hinh (khong thong qua sync task)
+ */
+__attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
+
+/**
+ * @brief Ham in ra 2 kenh du lieu dong thoi
+ * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay (do can tinh min cua 2 block)
+ */
+__attribute__((unused)) void Logger_two_task(void const *pvParameter);
+
+/**
+ * @brief Ham in ra 1 kenh du lieu
+ * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay
+ */
+__attribute__((unused)) void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
+
+osStatus Logger_mail_send(sensor_block_t *block);
+
+/* Macro nay se de Sensor Task gui thang truc tiep den Logger Task
+ * @note: Dung khi KHONG muon dung sync task */
+#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do { \
+	Logger_mail_send(&(block)); \
+} while(0)
+
+#endif // SENSOR_SEND_DIRECT_USING
+
+#ifdef QUEUE_FREE_CHECK /* FreeRTOS API */
+/**
+ * @brief Ham kiem tra xem hang doi con free khong
+ * @note Neu khong con trong -> Chuong trinh se dung lai
+ */
+void isQueueFree(const QueueHandle_t queue, const char *name);
+#endif // QUEUE_FREE_CHECK
+
 /* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
 #ifdef USING_UART_DMAPHORE
 /**
@@ -269,17 +200,9 @@ __attribute__((weak, unused)) void uart_printf_dmaphore(const char *buffer, uint
 
 #endif // USING_UART_DMAPHORE
 
-#ifndef MAIL_SEND_FROM_TASK /* Neu chua enable gi ca */
-#define MAIL_SEND_FROM_TASK(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
-#endif // MAIL_SEND_FROM_TASK
-
-#ifndef MAIL_SEND_FROM_SYNC
-#define MAIL_SEND_FROM_SYNC(block) do {} while(0) /* Dummy macros fucntion tu Sync -> Logger de tranh bi loi */
-#endif // MAIL_SEND_FROM_SYNC
-
-#ifdef QUEUE_SEND_FROM_TASK
-#define QUEUE_SEND_FROM_TASK(data_ptr) do {} while(0)
-#endif // QUEUE_SEND_FROM_TASK
+#ifndef MAIL_SEND_FROM_TASK_DIRECT_LOGGER /* Neu chua enable gi ca */
+#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
+#endif // MAIL_SEND_FROM_TASK_DIRECT_LOGGER
 
 #ifdef __cplusplus
 }

@@ -13,15 +13,15 @@ extern "C" {
 
 #include "stdint.h"
 #include "string.h"
+#include "stdarg.h"
 #include "ff.h"
 
-#include "cmsis_os.h"
+#include "take_snapsync.h" // Lay struct `sensor_sync_block_t`
 
 /* Dung object do CubeMX sinh ra trong FATFS/App/fatfs.c */
 
 extern FATFS USERFatFS;
 extern char USERPath[4];
-extern void uart_printf(const char *fmt,...);
 
 //====== VARIABLES DEFINITION ======
 
@@ -33,8 +33,10 @@ static bool is_Opened = false;
 
 char g_line_buffer[MICROSD_MAX_LINE_LEN];  /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 
-/* Them mutex de bao ve tranh truong hop race condition */
-osMutexId microsd_mutexId = NULL;
+/* Them mutex de bao ve API tranh truong hop race condition */
+osThreadId microsd_taskId = NULL;
+static osMutexId microsd_mutexId = NULL;
+static osMailQId microsd_queueId = NULL;
 
 /* ===================== HELPER FUCNTION DEFINITION ===================== */
 
@@ -456,7 +458,7 @@ sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols){
 
 /*-----------------------------------------------------------*/
 
-void MicroSD_write_data_to_SD(void const *pvParameter){
+void MicroSD_demo_test(void const *pvParameter){
 	(void)(pvParameter);
 	sd_status_t ret;
 	uint8_t count = 0;
@@ -469,7 +471,7 @@ void MicroSD_write_data_to_SD(void const *pvParameter){
 	}
 	uart_printf("[MICRO_SD] MicroSD_Init OK!\r\n");
 
-	/* Line */
+	/* Demo Line */
 	ret = MicroSD_Open(TXT_FILE_NAME, true);
 	if(ret != SD_OK){
 		uart_printf("[MICRO_SD] MircoSD_Open failed: %d\r\n", ret);
@@ -494,10 +496,44 @@ void MicroSD_write_data_to_SD(void const *pvParameter){
 	if(ret == SD_OK) uart_printf("[MICRO_SD] MircoSD_Close file %s OK!\r\n", TXT_FILE_NAME);
 	else uart_printf("[MICRO_SD] MicroSD_Close failed!: %d\r\n", ret);
 
-	/* */
+	/* Demo CSV format */
 	ret = MicroSD_Open(CSV_FILE_NAME, true);
 	for(;;)osDelay(1000);
 }
+
+/*-----------------------------------------------------------*/
+
+#ifdef SYNC_INTERMEDIARY_USING
+static inline osStatus MicroSD_mail_send(sensor_sync_block_t *block){
+	sensor_sync_block_t *mail = osMailAlloc(microsd_queueId, 0);
+	if(mail == NULL){
+		uart_printf("[MICRO_SD] MicroSD queue memory alloc failed!\r\n");
+		return osErrorNoMemory;
+	}
+
+	*mail = *block; // Copy
+	osStatus ret = osMailPut(microsd_queueId, mail);
+	if(ret != osOK){
+		uart_printf("[MICRO_SD] MicroSD queue full!\r\n");
+		osMailFree(microsd_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
+	}
+	return ret;
+}
+
+/*-----------------------------------------------------------*/
+
+void SD_dispatch(sensor_sync_block_t *block){
+	if(MicroSD_mail_send(block) != osOK){
+		uart_printf("[MICRO_SD] Mail sent from SYNC error !\r\n");
+	}
+}
+
+/*-----------------------------------------------------------*/
+
+void MicroSD_task(void const *pvParameter){
+
+}
+#endif // SYNC_INTERMEDIARY_USING
 
 #ifdef __cplusplus
 }

@@ -26,12 +26,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
 #include "MicroSD_config.h"
+#include "data_dispatcher.h"
 
 #include "ad8232_config.h"
 #include "max30102_config.h"
@@ -88,9 +88,9 @@ void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
-#ifdef SYNC_TO_LOGGER_MAIL_USING
+#ifdef SYNC_INTERMEDIARY_USING
 volatile snapshot_sync_t global_sync_snapshot = {0};
-#endif // SYNC_TO_LOGGER_MAIL_USING
+#endif // SYNC_INTERMEDIARY_USING
 
 /* USER CODE END PFP */
 
@@ -138,7 +138,13 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
-//  SensorConfig_Init();
+  /* Khoi tao cam bien */
+  SensorConfig_Init();
+
+#ifdef SYNC_INTERMEDIARY_USING
+	SERROR_CHECK(Sync_init());
+	uart_printf(">> [APP] SYNC init OK !\r\n");
+#endif // SYNC_INTERMEDIARY_USING
 
 #ifdef USING_UART_DMAPHORE
 	SERROR_CHECK(Logger_init_ver2());
@@ -148,13 +154,10 @@ int main(void)
 	uart_printf(">> [APP] LOGGER init OK !\r\n");
 #endif // USING_UART_DMAPHORE
 
-#ifdef SYNC_TO_LOGGER_MAIL_USING
-	SERROR_CHECK(Sync_init());
-	uart_printf(">> [APP] SYNC init OK !\r\n");
-#endif // SYNC_TO_LOGGER_MAIL_USING
+  DataDispatcher_Init();
+  uart_printf(">> [APP] Dispatcher init OK !\r\n");
 
   uart_printf("[APP] Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
-
   HAL_TIM_Base_Start_IT(&htim3); // Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
   /* USER CODE END 2 */
@@ -182,44 +185,37 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 
-#if defined(CMSIS_API_USING)
-//  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
-//  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
-//  configASSERT(ad8232_taskId);
-
-//  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-//  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
-//  configASSERT(inmp441_taskId);
-
-  // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
-//  osThreadDef(max30102TaskName, Max30102_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
-//  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
-//  configASSERT(max30102_taskId);
-
-//  osThreadDef(syncTaskName, SyncTask, osPriorityNormal, 0, 1024);
-//  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
-//  configASSERT(sync_taskId);
-
   /**
    * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
    * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
    */
-  osThreadDef(microSDTaskName, MicroSD_write_data_to_SD, osPriorityLow, 0, 1024 * 3);
-  logger_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
+  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+  configASSERT(ad8232_taskId);
+
+  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
+  configASSERT(inmp441_taskId);
+
+  // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
+  osThreadDef(max30102TaskName, Max30102_task, osPriorityAboveNormal, 0, 1024 * 2);
+  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+  configASSERT(max30102_taskId);
+
+  osThreadDef(syncTaskName, Sync_Task, osPriorityNormal, 0, 1024);
+  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
+  configASSERT(sync_taskId);
+
+  osThreadDef(LoggerTaskName, Logger_three_task_ver2, osPriorityLow, 0, 1024 * 2);
+  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
   configASSERT(logger_taskId);
+
+//  osThreadDef(microSDTaskName, MicroSD_demo_test, osPriorityLow, 0, 1024 * 3);
+//  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
+//  configASSERT(microsd_taskId);
 
   //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 
-#elif defined(FREERTOS_API_USING)
-  TASK_ERR_CHECK(Inmp441_task_ver2, "INMP441", 1024 * 3, NULL, tskIDLE_PRIORITY + 4, &inmp441_task);
-  TASK_ERR_CHECK(Ad8232_task_ver3, "AD8232", 1024 * 3, NULL, tskIDLE_PRIORITY + 3, &ad8232_task);
-  TASK_ERR_CHECK(Max30102_task_ver2, "MAX30102", 1024 * 2, NULL, tskIDLE_PRIORITY + 4, &max30102_task);
-  TASK_ERR_CHECK(Logger_one_task, "LOGGER", 1024 * 2, NULL, tskIDLE_PRIORITY + 3, &logger_task);
-#else
-  uart_printf("[APP] You must define CMSIS_API_USING or FREERTOS_API !");
-#endif // CMSIS_API_USING
-
-  //Check sau khi tao task
   StackCheck();
   HeapCheck();
   uart_printf("[APP] Starting Tasks...! \r\n");
@@ -652,29 +648,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
 
-#ifdef CMSIS_API_USING
-#ifdef SYNC_TO_LOGGER_MAIL_USING
+#ifdef SYNC_INTERMEDIARY_USING
 		  global_sync_snapshot.sample_id++;
 		  global_sync_snapshot.timestamp = osKernelSysTick();
-#endif // SYNC_TO_LOGGER_MAIL_USING
+#endif // SYNC_INTERMEDIARY_USING
 
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-//		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
-//		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
-#endif // CMSIS_API_USING
+		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
+		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
 
-#ifdef FREERTOS_API_USING
-		  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-#ifdef defined(SYNC_TO_LOGGER_MAIL_USING)
-		  global_sync_snapshot.sample_id++;
-		  global_sync_snapshot.timestamp = xTaskGetTickCountFromISR();
-#endif // SYNC_TO_LOGGER_MAIL_USING
-
-	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-		  xSemaphoreGiveFromISR(max30102_sem, &xHigherPriorityTaskWoken); //Give Semaphore cho MAX30102 sau moi 32ms (32 x 1ms/sample)
-		  xSemaphoreGiveFromISR(ad8232_sem, &xHigherPriorityTaskWoken); //Give Semaphore cho AD8232 sau moi 32ms
-		  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-#endif // FREERTOS_API_USING
 	  }
   }
 

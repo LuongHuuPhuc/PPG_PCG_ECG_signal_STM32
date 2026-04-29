@@ -21,7 +21,8 @@ extern "C" {
 #include "main.h"
 #include "stdio.h"
 #include "stdbool.h"
-#include "stdarg.h"
+
+#include "cmsis_os.h"
 
 /**
  * @Flow thuc thi thuc te tu tang cao xuong tang thap:
@@ -56,9 +57,13 @@ extern "C" {
 #define MICROSD_MAX_LINE_LEN    256U /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 #endif // MICRO_MAX_LINE_LEN
 
+#define SD_CARD_QUEUE
+
+/* SD Card Button Event macros */
 #define SD_EVENT_START			(1 << 0)
 #define SD_EVENT_STOP			(1 << 1)
 
+/* Saved files */
 #define TXT_FILE_NAME		 	 "DEMO1.TXT"
 #define CSV_FILE_NAME			 "TEST.CSV"
 
@@ -77,7 +82,23 @@ typedef enum __SD_STATUS_t {
 	SD_BUFFER_OVERFLOW
 } sd_status_t;
 
+extern osThreadId microsd_taskId;
+extern void uart_printf(const char *fmt,...);
+
 // ==== FUCNTION PROTOTYPE ====
+
+#ifdef SYNC_INTERMEDIARY_USING
+/**
+ * @brief Ham nhan block data da dong bo cua Sensor task
+ * tu Sync task de ghi vao SD Card
+ */
+void MicroSD_task(void const *pvParameter);
+
+typedef struct __sensor_sync_block sensor_sync_block_t;
+/* Callback function goi boi Sync Task de gui data den MicroSD Task thong qua data dispatcher */
+void SD_dispatch(sensor_sync_block_t *block);
+
+#endif // SYNC_INTERMEDIARY_USING
 
 /**
  * @brief Ham khoi tao SD card
@@ -155,6 +176,10 @@ sd_status_t MicroSD_WriteLine(const char *fmt,...);
  *
  * @param[in] data Con tro den chuoi gia tri dau vao
  * @param[in] num_cols So cot mong muon ghi vao
+ *
+ * @warning
+ * Ham nay se gioi han so cot ghi 1 lan va su dung `sprintf` lien tuc
+ * gay ton CPU -> Cham hon
  */
 sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols);
 
@@ -183,9 +208,10 @@ sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols);
 sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols);
 
 /**
- * @brief Ham ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
+ * @brief Task demo ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
  */
-void MicroSD_write_data_to_SD(void const *pvParameter);
+__attribute__((unused)) void MicroSD_demo_test(void const *pvParameter);
+
 
 #ifdef __cplusplus
 }

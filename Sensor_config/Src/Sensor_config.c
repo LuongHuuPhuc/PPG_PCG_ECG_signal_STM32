@@ -17,7 +17,7 @@ extern "C" {
 
 extern HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc);
 extern HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s);
-extern HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
+extern HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
 
 void SensorConfig_Init(void){
 	SERROR_CHECK(Ad8232_init(&hadc1));
@@ -26,7 +26,7 @@ void SensorConfig_Init(void){
 	SERROR_CHECK(Inmp441_init(&hi2s2));
 	uart_printf(">> [SENCONF] INMP441 init OK !\r\n");
 
-	SERROR_CHECK(Max30102_init_ver2(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
+	SERROR_CHECK(Max30102_init(&hi2c1)); //Khoi tao cam bien PPG + no interrupt
 	uart_printf(">> [SENCONF] MAX30102 init OK !\r\n");
 
 	//Check sau khi tao semaphore va queue

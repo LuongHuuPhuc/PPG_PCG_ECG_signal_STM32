@@ -47,16 +47,15 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define CMSIS_API_USING    		1
-//#define FREERTOS_API_USING	1
-//#define USING_UART_DMAPHORE		1
+#define MIN(a, b) 				 ((a) < (b) ? (a) : (b))
 
+//#define USING_UART_DMAPHORE		1
 //#define AD8232_ONLY_LOGGER	1
 //#define MAX30102_ONLY_LOGGER	1
 //#define INMP441_ONLY_LOGGER	1
 
-//#define SYNC_TO_LOGGER_MAIL_USING	1 /* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
-//#define SENSOR_TO_LOGGER_MAIL_USING		1  /* Gui truc tiep tu sensor task -> Logger  */
+#define SYNC_INTERMEDIARY_USING	1 /* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
+//#define SENSOR_SEND_DIRECT_USING		1  /* Gui truc tiep tu sensor task -> Logger  */
 //#define SYNC_BLOCK_COUNT_DEBUG  1	/* Uncomment de su dung debug */
 
 /* USER CODE END EM */

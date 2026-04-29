@@ -23,45 +23,14 @@ extern "C" {
 #define MAX_FIFO_SAMPLE  32
 #define MAX_ACTIVE_LEDS  2
 
-// Foward Declaration (de giam tai cong viec cho compiler)
-typedef struct max30102_t max30102_t;
-typedef struct max30102_record max30102_record;
-
-// Extern variables
-extern max30102_t max30102_obj;
-extern max30102_record record;
-extern uint32_t ir_buffer[MAX_FIFO_SAMPLE];
-extern uint32_t red_buffer[MAX_FIFO_SAMPLE]; //Bien luu gia tri tu FIFO
-
-// Extern protocol variables
-extern I2C_HandleTypeDef hi2c1;
-
 // Task & RTOS
-#if defined(FREERTOS_API_USING)
-extern TaskHandle_t max30102_task;
-extern SemaphoreHandle_t max30102_sem;
-
-#elif defined(CMSIS_API_USING)
 extern osSemaphoreId max30102_semId;
 extern osThreadId max30102_taskId;
-
-#endif // CMSIS_API_USING
-
-// From Logger.h - muon dung ham do thi khai bao extern
-extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
-extern void uart_printf(const char *fmt,...);
 
 // ==== FUCNTION PROTOTYPE ====
 
 /**
- * @brief Ham khoi tao & cau hinh cam bien `ver1`
- * @param i2c Con tro den struct dinh nghia cau hinh I2C
- * @note Ham khoi tao su dung ngat ngoai (external interrupt)
- */
-__attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *i2c);
-
-/**
- * @brief Ham khoi tao & cau hinh cam bien `ver2`
+ * @brief Ham khoi tao & cau hinh cam bien
  *
  * @param i2c Con tro den struct dinh nghia cau hinh I2C
  *
@@ -70,22 +39,15 @@ __attribute__((unused)) HAL_StatusTypeDef Max30102_init_ver1(I2C_HandleTypeDef *
  * \note Dong bo giua cac task khac nhau khi co nhieu thread truy cap chung tai nguyen (vd Memory)
  * \note Semaphore khac voi Mutex o co che Lock/Unlock va Priority
  */
-HAL_StatusTypeDef Max30102_init_ver2(I2C_HandleTypeDef *i2c);
+HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
 
 /**
- * @brief Ham thuc thi luong xu ly `ver1`
- *
- * @note Task dung external interrupt de trigger moi khi co data moi
- */
-__attribute__((unused)) void Max30102_task_ver1(void const *pvParameter);
-
-/**
- * @brief Ham thuc thi luong xu ly `ver2`
+ * @brief Ham thuc thi luong xu ly
  *
  * @note Task khong dung interrupt ma dung TIMER de trigger
  * TIMER ban semaphore sau moi 32ms de task thuc hien xu ly
  */
-void Max30102_task_ver2(void const *pvParameter);
+void Max30102_task(void const *pvParameter);
 
 
 #ifdef __cplusplus

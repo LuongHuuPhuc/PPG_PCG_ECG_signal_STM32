@@ -28,11 +28,8 @@ extern "C" {
 /* ============================== INTERNAL GLOBAL STATE VAR ============================== */
 
 static bool g_sd_initialized = false; /* Flag danh dau the da khoi tao hay chua */
-
 static sd_card_type_t g_card_type = SD_CARD_UNKNOWN; /* Loai the da duoc gan nhan */
-
 static uint32_t g_sector_count = 0;  /* Tong so sector cua the */
-
 static uint32_t g_erase_block_size = 8U; /* Kich thuoc erase block (don vi sector) (Co the doc chinh xac hon bang lenh bo sung sau nay) */
 
 extern void uart_printf(const char *fmt,...); // Dung de debug loi

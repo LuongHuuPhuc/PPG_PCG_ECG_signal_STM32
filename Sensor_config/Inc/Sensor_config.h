@@ -1,13 +1,15 @@
 /*
- * Sensor_config.h
+ * @file Sensor_config.h
  *
- *  @date 2025/06/15
- *  @Author Luong Huu Phuc
+ * @date 2025/06/15
+ * @author Luong Huu Phuc
  *
- *  Su dung TIMER(TIM) de dong bo hoa 3 cam bien thay cho osTimer trong FreeRTOS
- *  MAX30102(PPG): FIFO polling + TIM3 Trigger
- *  INMP441(PCG): I2S with DMA + DOWNSAMPLE
- *  AD8232(ECG): ADC with DMA + TIM3 trigger
+ * @note
+ * Chua struct data chung cua 3 cam bien
+ * Su dung TIMER(TIM) de dong bo hoa 3 cam bien thay cho osTimer trong FreeRTOS
+ * - MAX30102(PPG): FIFO polling + TIM3 Trigger
+ * - INMP441(PCG): I2S with DMA + DOWNSAMPLE
+ * - AD8232(ECG): ADC with DMA + TIM3 trigger
  */
 
 #ifndef INC_SENSOR_CONFIG_H_

@@ -15,7 +15,6 @@ extern "C" {
 #endif //__cplusplus
 
 #include "main.h"
-
 #include "stdio.h"
 #include "stdbool.h"
 
@@ -35,21 +34,9 @@ extern int16_t ecg_buffer[ECG_DMA_BUFFER]; //Bien luu gia tri tu DMA
 extern __attribute__((unused)) volatile int16_t ecg_dma_value;
 extern __attribute__((unused)) volatile bool adc_full_ready;
 
-// Extern protocol variable cho function trong .c
-extern ADC_HandleTypeDef hadc1;
-
 // Task RTOS
-#if defined(CMSIS_API_USING)
-
 extern osThreadId ad8232_taskId;
 extern osSemaphoreId ad8232_semId;
-
-#elif defined (FREERTOS_API_USING)
-extern TaskHandle_t ad8232_task;
-extern SemaphoreHandle_t ad8232_sem;
-#endif // CMSIS_API_USING
-
-extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 //==== FUNCTION PROTOTYPE ====
 
