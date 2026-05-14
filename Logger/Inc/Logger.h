@@ -34,17 +34,18 @@ extern osThreadId logger_taskId;
 // ==== MACROS　====
 #define MAX_COUNT 				 32
 #define MAX_RETRY_SCANNER 		 2
-#define LOGGER_QUEUE_LENGTH 	 40 // Tang chieu dai queue de chong tran
-#define UART_TX_BUFFER_SIZE      1024
+#define LOGGER_QUEUE_LENGTH 	 40 	// Tang chieu dai queue de chong tran
 
 // ==== FUNCTION PROTOTYPE ====
 
 /**
-* @brief Ham thay the cho printf su dung UART
+* @brief Ham thay the cho printf su dung UART (just for Debugging log, not for printing data)
 *
-* @note Su dung truyen UART theo Blocking Mode + Mutex de bao ve UART
+* @note
+* Su dung truyen UART theo non-blocking mode (su dung DMA)
+* ket hop blocking mode de in log truoc khi osKernelRunning
 *
-* @warning Khong duoc goi ham nay ben trong cac ham ISR (Interrupt Service Routine) nhu may ham callback
+* @warning Khong duoc goi cac ham blocking ben trong cac ham ISR (Interrupt Service Routine) nhu may ham callback
 * vi Semaphore o day khong co hau to `FromISR`
 * => Nhu the no se duoc xem la ham non-safe ISR
 * => Co nguy co gay block task
@@ -55,7 +56,7 @@ extern osThreadId logger_taskId;
 *
 * Khi goi tu task context, cac ham do se hoat dong bang cach vo hieu hoa tat cac Interrurpt (co uu tien thap hon nguong an toan)
 * bang cach goi cac ham Critical Section khong an toan. Neu goi no tu ISR, no se kich hoat loi Assert
-* vi no vi pham quy tac: Khong duoc phep vo hieu hoa ngat khi CPU dang phuc vu 1 ngat
+* vi no vi pham quy tac: "Khong duoc phep vo hieu hoa ngat khi CPU dang phuc vu 1 ngat"
 */
 void uart_printf(const char *fmt,...);
 
@@ -120,6 +121,7 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 void Logger_three_task_ver2(void const *pvParameter);
 
 typedef struct __sensor_sync_block sensor_sync_block_t;
+
 /* Callback function goi boi Sync Task de gui data den Logger Task thong qua data dispatcher */
 void Logger_dispatch(sensor_sync_block_t *block);
 #endif // SYNC_INTERMEDIARY_USING
@@ -164,6 +166,10 @@ osStatus Logger_mail_send(sensor_block_t *block);
 
 #endif // SENSOR_SEND_DIRECT_USING
 
+#ifndef MAIL_SEND_FROM_TASK_DIRECT_LOGGER /* Neu chua enable gi ca */
+#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
+#endif // MAIL_SEND_FROM_TASK_DIRECT_LOGGER
+
 #ifdef QUEUE_FREE_CHECK /* FreeRTOS API */
 /**
  * @brief Ham kiem tra xem hang doi con free khong
@@ -171,38 +177,6 @@ osStatus Logger_mail_send(sensor_block_t *block);
  */
 void isQueueFree(const QueueHandle_t queue, const char *name);
 #endif // QUEUE_FREE_CHECK
-
-/* FIXME Doan code nay dang can duoc fix loi de su dung UART theo DMA (Hien tai chua dung duoc) */
-#ifdef USING_UART_DMAPHORE
-/**
- * @brief Ham khoi tao Queue de log du lieu theo hang doi.
- * Su dung DMA UART de tang toc do doc (non-blocking mode tranh chan CPU) thay cho UART thong thuong (blocking mode)
- *
- * @note Do UART tai nguyen chung nen su dung Semaphore Mutex de uu tien 1 thread UART Logger chay
- * \note - Co che Lock/Unlock (Quyen so huu): chi 1 thread lock va unlock duoc no
- * \note - Co che Priority Inheritane (Uu tien): Chi 1 thread chay duoc trong 1 thoi diem
- * \note - Mutex khong dung duoc trong ISR
- * \note - Mutex tuong duong voi 1 Binary Semaphore
- */
-HAL_StatusTypeDef Logger_init_ver2(void);
-
-/**
- * @brief Ham in ra 2 kenh du lieu dong thoi su dung DMA + Semaphore (Mutex, Binary)
- * @warning Loi khong chay duoc data nhu y muon (cac gia tri lap lai) => Khong dung duoc
- */
-__attribute__((unused)) void Logger_two_task_dmaphore(void const *pvParameter);
-
-/**
- * @brief Ham thay the cho printf su dung UART
- * @note Su dung DMA + Semaphore Mutex de quan ly tai nguyen UART tranh du lieu buffer bi ghi de
- */
-__attribute__((weak, unused)) void uart_printf_dmaphore(const char *buffer, uint16_t buflen);
-
-#endif // USING_UART_DMAPHORE
-
-#ifndef MAIL_SEND_FROM_TASK_DIRECT_LOGGER /* Neu chua enable gi ca */
-#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
-#endif // MAIL_SEND_FROM_TASK_DIRECT_LOGGER
 
 #ifdef __cplusplus
 }
