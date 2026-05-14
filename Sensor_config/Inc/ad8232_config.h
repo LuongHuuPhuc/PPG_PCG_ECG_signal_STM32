@@ -29,11 +29,6 @@ extern "C" {
 #define VIRTUAL_GND_VOL			ADC_REF_VOL / 2.0f // V
 #define ADC_VOL_LEVEL_12B		((1UL << 12) - 1.0f) // 12-bit ADC
 
-// Extern variable
-extern int16_t ecg_buffer[ECG_DMA_BUFFER]; //Bien luu gia tri tu DMA
-extern __attribute__((unused)) volatile int16_t ecg_dma_value;
-extern __attribute__((unused)) volatile bool adc_full_ready;
-
 // Task RTOS
 extern osThreadId ad8232_taskId;
 extern osSemaphoreId ad8232_semId;

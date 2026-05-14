@@ -23,55 +23,60 @@ extern "C" {
 
 #include "Sensor_config.h" // Lay block data tu struct `sensor_block_t
 
-// Snapshot cho dong bo (Dung neu define `sensor_config_SYNC_USING`)
+#ifdef SYNC_INTERMEDIARY_USING /* Su dung sync task lam trung gian */
+
+#define SYNC_QUEUE_LENGTH		35
+
+// Cau truc du lieu cho viec dong bo
 typedef struct SNAPSHOT_SYNC_t {
 	volatile TickType_t timestamp;
 	volatile uint32_t sample_id;
-} __attribute__((unused)) snapshot_sync_t;
-
-#ifdef SYNC_INTERMEDIARY_USING /* Su dung sync task lam trung gian*/
-#define SYNC_QUEUE_LENGTH		35
-
-extern osThreadId sync_taskId;	   // Sync task ID
-
-/* NOTE: Bien nay duoc dinh nghia ben trong ham main.c, extern ra de cac file sensor khac co the dung */
-extern volatile snapshot_sync_t global_sync_snapshot;
+} snapshot_sync_t;
 
 /* Struct cho data output de tu Sync Task gui den Logger Task (khong the dung sensor_block_t vi bien volatile) */
 typedef struct __sensor_sync_block{
-	uint32_t sample_id_sync; 	// Dung de dong bo du lieu
-	TickType_t timestamp_sync;	// Danh dau thoi gian dong bo
-	uint16_t count_sync; 		// So luong mau trong mang
+	uint32_t sample_id_sync; 	/* Dung de dong bo du lieu */
+	TickType_t timestamp_sync;	/* Danh dau thoi gian dong bo */
+	uint16_t count_sync; 		/* So luong mau trong mang */
 
-	uint32_t ppg_ir_sync[32];
-	int32_t pcg_sync[32];
-	int16_t ecg_sync[32];
+	uint32_t ppg_ir_sync[32];	/* Buffer luu data PPG sau khi da sync*/
+	int32_t pcg_sync[32];		/* Buffer luu data PCG sau khi da sync*/
+	int16_t ecg_sync[32];		/* Buffer luu data ECG sau khi da sync*/
 } sensor_sync_block_t;
+
+/**
+ * NOTE: Bien nay duoc dinh nghia ben trong ham main.c, extern ra de cac sensor task lay gia tri dong bo
+ * va de trong TIMER callback tai main.c de trigger counter
+ */
+extern volatile snapshot_sync_t global_sync_snapshot;
+
+extern osThreadId sync_taskId;	   // Sync task ID
 
 // ==== FUNCTION PROTOTYPE ====
 
 HAL_StatusTypeDef Sync_init(void);
 
 /**
- * @Note Tach viec sync frame block va cac logic kiem tra
- * ra khoi Logger de giam tai CPU => Giam latency de dong bo hieu qua hon
+ * @note
+ * Tach viec sync frame block va cac logic kiem tra
+ * ra khoi UART de giam tai CPU => Giam latency de dong bo hieu qua hon
  */
 void Sync_Task(void const *pvParameter);
+
+/**
+ * @brief Ham ho tro gui block data vao hang doi (queue) cua Sync
+ * truoc khi gui len Layer cao hon de xu ly
+ * @param[in] block Con tro chua block data can gui vao
+ */
 osStatus Sync_mail_send(sensor_block_t *block);
 
-/* Macro ho tro Sensor Task de gui data block den Sync Task cho viec dong bo data block */
+/* Macro duoc Sensor Task goi den de gui data block den Sync Task cho viec dong bo data block */
 #define MAIL_SEND_FROM_TASK_TO_SYNC(block) do { \
 	if(Sync_mail_send(&(block)) != osOK){ \
 		/* Neu Sync Task xu ly hoac tran heap cham (kha nang cao se bi cai nay) thi se bi di vao day */ \
 		uart_printf("[SYNC] Mail sent from TASK error !\r\n"); \
 	} \
 } while(0)
-
-#endif  // SYNC_INTERMEDIARY_USING
-
-#ifndef MAIL_SEND_FROM_TASK_TO_SYNC /* Neu chua enable gi ca */
-#define MAIL_SEND_FROM_TASK_TO_SYNC(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
-#endif // MAIL_SEND_FROM_TASK_TO_SYNC
 
 /**
  * @brief Ham de luu gia tri 2 bien toan cuc `global_sample_id` va `global_timestamp`
@@ -82,12 +87,15 @@ osStatus Sync_mail_send(sensor_block_t *block);
  */
 __attribute__((unused)) static inline void take_snapshotSYNC(snapshot_sync_t *snap){
 
-#ifdef SYNC_INTERMEDIARY_USING
 	/* Dong bo tham so */
 	snap->sample_id = global_sync_snapshot.sample_id;
 	snap->timestamp = global_sync_snapshot.timestamp;
 #endif // SYNC_INTERMEDIARY_USING
 }
+
+#ifndef MAIL_SEND_FROM_TASK_TO_SYNC /* Neu chua enable gi ca */
+#define MAIL_SEND_FROM_TASK_TO_SYNC(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
+#endif // MAIL_SEND_FROM_TASK_TO_SYNC
 
 #ifdef __cplusplus
 }

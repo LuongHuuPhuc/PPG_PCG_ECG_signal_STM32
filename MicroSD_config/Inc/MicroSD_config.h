@@ -96,7 +96,7 @@ void MicroSD_task(void const *pvParameter);
 
 typedef struct __sensor_sync_block sensor_sync_block_t;
 /* Callback function goi boi Sync Task de gui data den MicroSD Task thong qua data dispatcher */
-void SD_dispatch(sensor_sync_block_t *block);
+void MicroSD_dispatch(sensor_sync_block_t *block);
 
 #endif // SYNC_INTERMEDIARY_USING
 

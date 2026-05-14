@@ -14,12 +14,15 @@ extern "C" {
 #include "string.h"
 
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
-#include "take_snapsync.h" // Sensor task -> Sync task with macros & global_sync_snapshot
-#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
+
+#ifdef SENSOR_SEND_DIRECT_USING
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK_DIRECT_LOGGER cho Sensor Task -> Logger Task (khong dung sync_task)
+#endif // SENSOR_SEND_DIRECT_USING
 
 // ====== VARIABLES DEFINITION ======
 
-int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
+volatile int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
 
 osSemaphoreId ad8232_semId = NULL;
 osThreadId ad8232_taskId = NULL;
@@ -44,6 +47,7 @@ HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc){
 	}
 	return ret;
 }
+
 /*-----------------------------------------------------------*/
 
 // === VERSION 3 ===
@@ -65,10 +69,10 @@ void Ad8232_task_ver3(void const *pvParameter){
 			// Take notify khi DMA ghi data vao buffer hoan tat tu ham ConvCpltCallback
 			if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) == pdTRUE){
 
+				for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; // Copy gia tri sang bien ecg trong sensor_block_t
+
 				block.type = SENSOR_ECG;
 				block.count = ECG_DMA_BUFFER;
-
-				for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; // Copy gia tri sang bien ecg trong sensor_block_t
 
 #ifdef SYNC_INTERMEDIARY_USING /* Khong dung bien snap local ben ngoai de tranh cap nhat bi cham do phai dung inline function */
 				block.timestamp = global_sync_snapshot.timestamp;
@@ -77,7 +81,8 @@ void Ad8232_task_ver3(void const *pvParameter){
 				MAIL_SEND_FROM_TASK_TO_SYNC(block);
 #elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
 				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
-#endif
+#endif // SYNC_INTERMEDIARY_USING
+
 			}
 			else uart_printf("[AD8232] Timeout waiting for DMA done !\r\n");
 		}
@@ -104,20 +109,18 @@ __attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
 	while(1){
 		if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Doi notify DMA hoan tat tu ham ConvCpltCallback
 
+			for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_block_t
+
 			block.type = SENSOR_ECG;
 			block.count = ECG_DMA_BUFFER;
 
 #ifdef SYNC_INTERMEDIARY_USING
 			block.timestamp = global_sync_snapshot.timestamp;
 			block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-#endif // SYNC_INTERMEDIARY_USING
 
-			for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_block_t
-
-#ifdef SYNC_INTERMEDIARY_USING
-				MAIL_SEND_FROM_TASK_TO_SYNC(block); // Gui 32 sample vao den task tiep theo
+			MAIL_SEND_FROM_TASK_TO_SYNC(block); // Gui 32 sample vao den task tiep theo
 #elif defined(SENSOR_SEND_DIRECT_USING)
-				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
+			MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
 #endif
 		}
 		else uart_printf("[ADC8232] Timeout waiting for DMA done !\r\n");
@@ -151,6 +154,7 @@ __attribute__((unused)) void Ad8232_task_ver1(void const *pvParameter){
 		}
 	}
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -194,9 +198,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc){
 		// Gui thong bao cho task khi DMA ghi vao buffer hoan tat
 		vTaskNotifyGiveFromISR(ad8232_taskId, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
 	}
 }
+
 /*-----------------------------------------------------------*/
 
 #ifdef __cplusplus

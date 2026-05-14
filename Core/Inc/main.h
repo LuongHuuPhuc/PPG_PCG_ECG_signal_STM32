@@ -49,7 +49,6 @@ extern "C" {
 
 #define MIN(a, b) 				 ((a) < (b) ? (a) : (b))
 
-//#define USING_UART_DMAPHORE		1
 //#define AD8232_ONLY_LOGGER	1
 //#define MAX30102_ONLY_LOGGER	1
 //#define INMP441_ONLY_LOGGER	1
@@ -70,8 +69,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define CS_PIN_Pin GPIO_PIN_4
 #define CS_PIN_GPIO_Port GPIOA
-#define INT_Pin GPIO_PIN_9
-#define INT_GPIO_Port GPIOA
+#define LED_PIN_Pin GPIO_PIN_9
+#define LED_PIN_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

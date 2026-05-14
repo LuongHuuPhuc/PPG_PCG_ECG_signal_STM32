@@ -14,8 +14,11 @@ extern "C" {
 #include "max30102_lib.h" // max30102_record
 
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
-#include "take_snapsync.h" // Sensor task -> Sync task with macros & global_sync_snapshot
-#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
+
+#ifdef SENSOR_SEND_DIRECT_USING
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK_DIRECT_LOGGER cho Sensor Task -> Logger Task (khong dung sync_task)
+#endif // SENSOR_SEND_DIRECT_USING
 
 //====== VARIABLES DEFINITION ======
 
@@ -81,6 +84,7 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 	max30102_config_register_status_verbose(&max30102_obj);
 	return ret;
 }
+
 /*-----------------------------------------------------------*/
 
 void Max30102_task(void const *pvParameter){
@@ -116,21 +120,6 @@ void Max30102_task(void const *pvParameter){
 			else uart_printf("[MAX30102] Warining: FIFO is not enoungh 32 samples !\r\n"); // Neu khong du 32 samples 1 lan
 		}
 		else uart_printf("[MAX30102] Can not take semaphore !\r\n");
-	}
-}
-
-/*-----------------------------------------------------------*/
-
-/**
- * @note - Ham xu ly ngat (ISR) tu chan INT_Pin cua cam bien
- * \note - Ham callback duoc goi moi khi co ngat ngoài (EXTI) xay ra tren 1 chan GPIO
- * \note - Luc do chan GPIO ngat se duoc active-low de thuc thi ngat
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	if(GPIO_Pin == INT_Pin){
-		vTaskNotifyGiveFromISR(max30102_taskId, &xHigherPriorityTaskWoken); //Gui thong bao cho task max30102
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }
 

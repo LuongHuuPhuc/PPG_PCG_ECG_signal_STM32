@@ -33,6 +33,7 @@ void SensorConfig_Init(void){
 	HeapCheck();
 	StackCheck();
 }
+
 /*-----------------------------------------------------------*/
 
 // Kiem tra so luong bo nho stack con lai
@@ -52,6 +53,7 @@ void __attribute__((unused)) HeapCheck(void){
 				(unsigned int)heap_free,
 				(unsigned int)heap_min_ever);
 }
+
 /*-----------------------------------------------------------*/
 
 /**

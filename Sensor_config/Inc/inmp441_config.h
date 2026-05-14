@@ -49,7 +49,6 @@ extern "C" {
 #define I2S_DMA_FRAME_COUNT			(I2S_SAMPLE_COUNT * 2u) // DMA data (dung de ghep 2 frame HALF-WORD) = So lan DMA transfer
 #define I2S_HALF_SAMPLE_COUNT 		(I2S_SAMPLE_COUNT / 2u)
 #define DOWNSAMPLE_SAMPLE_COUNT		(I2S_SAMPLE_COUNT / DOWNSAMPLE_FACTOR) // 32 samples (mat mau do ep du lieu xuong 32)
-//#define PING_PONG_DMA_USING			1
 
 // Task & RTOS
 extern osSemaphoreId inmp441_semId;
@@ -139,17 +138,6 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter);
  * 		 - Sau do sample nay se duoc dua vao pipeline xu ly (downsample,...)
  */
 void Inmp441_task_ver2(void const *pvParameter);
-
-#ifdef PING_PONG_DMA_USING
-/**
- * @brief Ham thuc thi va xu ly `ver3`
- *
- * @note Do toc do lay mau nhanh va de tranh bi overwritten du lieu cu khi chua xu ly xong
- * => Su dung Double Buffer Ping-Pong
- * @remark Ham prototype, chua hoat dong duoc
- */
-__attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter);
-#endif // PING_PONG_DMA_USING
 
 #ifdef __cplusplus
 }

@@ -13,7 +13,7 @@ extern "C" {
 
 #include "stdbool.h"
 #include "string.h"
-#include "data_dispatcher.h" // Send to Dispatcher cho viec dieu huong sync block data
+#include "data_dispatcher.h" // Gui len Dispatcher de xu ly tiep block data da dong goi
 
 #ifdef SYNC_INTERMEDIARY_USING
 
@@ -27,18 +27,17 @@ volatile uint32_t g_sync_block_per_sec = 0;
 extern void uart_printf(const char *fmt,...);
 
 /* Slot de gom data & dong bo du lieu trong SYNC (chi dung noi bo trong file nay) */
-struct __sync_slot {
+typedef struct __sync_slot {
 	/* Block trung gian de luu data tu dau vao Sensor Task cua 3 cam bien */
 	sensor_block_t ecg;
 	sensor_block_t ppg;
 	sensor_block_t pcg;
 
-	/* Tach ra tu Logger.h */
+	/* Bien luu trang thai data san sang de dong bo */
 	bool ecg_ready;
 	bool ppg_ready;
 	bool pcg_ready;
-};
-typedef struct __sync_slot sync_slot_t;
+} sync_slot_t;
 
 /*-----------------------------------------------------------*/
 
@@ -82,7 +81,7 @@ __attribute__((always_inline)) static inline bool sync_slot_ready(sync_slot_t *s
 
 /*-----------------------------------------------------------*/
 
-/* Ham kiem tra dong bo */
+/* Ham thuc hien dong bo */
 static inline bool sync_match(sync_slot_t *slot){
 	// Ngan rui ro so sanh logic truc tiep thi se co task bi overwrite boi block moi (Context Switch)
 	// Gan ra 1 bien chung de dam bao tinh nguyen tu (atomic) - Nhat quan du lieu
@@ -98,6 +97,18 @@ static inline bool sync_match(sync_slot_t *slot){
 
 /*-----------------------------------------------------------*/
 
+HAL_StatusTypeDef Sync_init(void){
+	// Tao Queue cho Sync task
+	osMailQDef(syncQueueName, SYNC_QUEUE_LENGTH, sensor_block_t);
+	sync_queueId = osMailCreate(osMailQ(syncQueueName), NULL);
+	if(sync_queueId == NULL){
+		return HAL_ERROR;
+	}
+	return HAL_OK;
+}
+
+/*-----------------------------------------------------------*/
+
 osStatus Sync_mail_send(sensor_block_t *block){
 	sensor_block_t *mail = osMailAlloc(sync_queueId, 0); // Cap phat dong
 	if(mail == NULL){
@@ -105,24 +116,12 @@ osStatus Sync_mail_send(sensor_block_t *block){
 	}
 
 	*mail = *block; // Copy
-	osStatus ret = osMailPut(sync_queueId, mail);
+	osStatus ret = osMailPut(sync_queueId, mail); // Send mail
 	if(ret != osOK){
 		osMailFree(sync_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
 	}
-	return ret;
-}
 
-/*-----------------------------------------------------------*/
-
-HAL_StatusTypeDef Sync_init(void){
-	HAL_StatusTypeDef ret = HAL_OK;
-
-	// Tao Queue cho Sync task
-	osMailQDef(syncQueueName, SYNC_QUEUE_LENGTH, sensor_block_t);
-	sync_queueId = osMailCreate(osMailQ(syncQueueName), NULL);
-	if(sync_queueId == NULL){
-		ret |= HAL_ERROR;
-	}
+	/* Chi free sau khi block duoc xu ly xong tai Sync task */
 	return ret;
 }
 
@@ -133,8 +132,8 @@ void Sync_Task(void const *pvParameter){
 	uart_printf("SYNC task started !\r\n");
 
 	osEvent evt;
-	sensor_sync_block_t out; // Bien luu gia tri dau ra tu Sync Task
 	sensor_block_t *in; // Bien luu gia tri dau vao tu Sensor Task
+	sensor_sync_block_t out; // Bien luu gia tri dau ra tu Sync Task
 	sync_slot_t slot;   // Bien de dong bo tham so
 
 	sync_slot_reset(&slot);
@@ -166,9 +165,9 @@ void Sync_Task(void const *pvParameter){
 			break;
 		}
 
-		osMailFree(sync_queueId, in); // Giai phong bo nho heap ngay de cho block khac gui
+		osMailFree(sync_queueId, in); // Giai phong bo nho heap ngay de cho block khac gui den
 
-		// Neu du 3 block
+		// Neu ca 3 block data ready
 		if(sync_slot_ready(&slot)){
 
 			// Neu timestamp va sampleId match nhau
@@ -182,7 +181,7 @@ void Sync_Task(void const *pvParameter){
 				// Ep sang const cho dung voi memcpy (data gio da duoc snapshot roi)
 				memcpy(out.ecg_sync, (const int16_t*)slot.ecg.ecg, out.count_sync * sizeof(int16_t));
 				memcpy(out.ppg_ir_sync, (const uint32_t*)slot.ppg.ppg.ir, out.count_sync * sizeof(uint32_t));
-				memcpy(out.pcg_sync, (const uint32_t*)slot.pcg.pcg, out.count_sync * sizeof(int32_t));
+				memcpy(out.pcg_sync, (const int32_t*)slot.pcg.pcg, out.count_sync * sizeof(int32_t));
 
 				/* NOTE: Gui mail block data da sync den trung tam xu ly de DataDispatcher lo het phan con lai */
 				DataDispatcher_Send(&out);
@@ -195,16 +194,17 @@ void Sync_Task(void const *pvParameter){
 				sync_slot_reset(&slot);
 
 			}
+			// Neu mismatch
 			else{
 #ifdef SYNC_BLOCK_COUNT_DEBUG
 				uart_printf("[SYNC] Mismatch drop oldest ! ECG: %lu PPG: %lu PCG: %lu\r\n",
 							slot.ecg.sample_id, slot.ppg.sample_id, slot.pcg.sample_id);
 #endif // SYNC_BLOCK_COUNT_DEBUG
 
-				// Khong reset het - chi drop cai cu nhat roi cho cai moi
-				sync_drop_oldest(&slot);
+				sync_drop_oldest(&slot); // Khong reset het - chi drop cai cu nhat roi doi cai moi
 			}
 		}
+		// Neu ca 3 block chua ready
 		else{ /* Do nothing */}
 	}
 }

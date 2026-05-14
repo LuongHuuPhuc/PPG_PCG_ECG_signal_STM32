@@ -43,7 +43,7 @@ void DataDispatcher_SetTarget(dispatch_target_t target){
 __attribute__((weak)) void DataDispatcher_Init(void){
 	/* Co the khoi tao o noi khac */
 	DataDispatcher_RegisterCb(DISPATCH_TO_UART, Logger_dispatch);
-	DataDispatcher_RegisterCb(DISPATCH_TO_SD, SD_dispatch);
+	DataDispatcher_RegisterCb(DISPATCH_TO_SD, MicroSD_dispatch);
 
 	DataDispatcher_SetTarget(DISPATCH_TO_UART);
 }

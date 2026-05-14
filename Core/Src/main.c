@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "uart_dma_cfg.h"
 #include "Logger.h"
 #include "Sensor_config.h"
 #include "take_snapsync.h"
@@ -68,6 +69,7 @@ SPI_HandleTypeDef hspi1;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
@@ -138,6 +140,10 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Note: Phai khoi tao dau tien de co the log !*/
+  SERROR_CHECK(Logger_init());
+  uart_printf(">> [APP] LOGGER & UART DMA init OK !\r\n");
+
   /* Khoi tao cam bien */
   SensorConfig_Init();
 
@@ -146,18 +152,10 @@ int main(void)
 	uart_printf(">> [APP] SYNC init OK !\r\n");
 #endif // SYNC_INTERMEDIARY_USING
 
-#ifdef USING_UART_DMAPHORE
-	SERROR_CHECK(Logger_init_ver2());
-	uart_printf(">> [APP] LOGGER init OK !\r\n");
-#else
-	SERROR_CHECK(Logger_init());
-	uart_printf(">> [APP] LOGGER init OK !\r\n");
-#endif // USING_UART_DMAPHORE
-
+  /* Dang ky callback */
   DataDispatcher_Init();
   uart_printf(">> [APP] Dispatcher init OK !\r\n");
 
-  uart_printf("[APP] Size of sensor_data_t: %d bytes \r\n", sizeof(sensor_block_t));
   HAL_TIM_Base_Start_IT(&htim3); // Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
   /* USER CODE END 2 */
@@ -189,6 +187,10 @@ int main(void)
    * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
    * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
    */
+  osThreadDef(uartDMATaskName, uart_dma_task, osPriorityNormal, 0, 384);
+  uart_dma_taskId = osThreadCreate(osThread(uartDMATaskName), NULL);
+  configASSERT(uart_dma_taskId);
+
   osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
   ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
   configASSERT(ad8232_taskId);
@@ -206,7 +208,7 @@ int main(void)
   sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
   configASSERT(sync_taskId);
 
-  osThreadDef(LoggerTaskName, Logger_three_task_ver2, osPriorityLow, 0, 1024 * 2);
+  osThreadDef(LoggerTaskName, Logger_three_task_ver2, osPriorityBelowNormal, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
   configASSERT(logger_taskId);
 
@@ -541,6 +543,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
@@ -567,6 +572,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_PIN_GPIO_Port, LED_PIN_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pins : PC13 PC14 PC15 */
   GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -590,19 +598,20 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB10
                            PB14 PB3 PB4 PB5
-                           PB8 PB9 */
+                           PB6 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
                           |GPIO_PIN_14|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5
-                          |GPIO_PIN_8|GPIO_PIN_9;
+                          |GPIO_PIN_6|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : INT_Pin */
-  GPIO_InitStruct.Pin = INT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(INT_GPIO_Port, &GPIO_InitStruct);
+  /*Configure GPIO pin : LED_PIN_Pin */
+  GPIO_InitStruct.Pin = LED_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(LED_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
   /* USER CODE END MX_GPIO_Init_2 */
@@ -656,7 +665,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
 		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
 		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
-
 	  }
   }
 

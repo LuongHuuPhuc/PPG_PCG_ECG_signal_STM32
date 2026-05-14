@@ -17,28 +17,22 @@ extern "C" {
 
 #include "FIR_Filter.h" // Bo loc LPF cho downsample
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
-#include "take_snapsync.h" // Sensor task -> Sync task with macros & global_sync_snapshot
-#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK mode Sensor Task -> Logger Task (khong dung sync_task)
+#include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
+
+#ifdef SENSOR_SEND_DIRECT_USING
+#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK_DIRECT_LOGGER cho Sensor Task -> Logger Task (khong dung sync_task)
+#endif // SENSOR_SEND_DIRECT_USING
 
 // ====== VARIABLES DEFINITION ======
 
 osSemaphoreId inmp441_semId = NULL;
 osThreadId inmp441_taskId = NULL;
 
-// INMP441
 volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT] = {0};
 __attribute__((unused)) volatile int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
 
-#ifdef PING_PONG_DMA_USING
-__attribute__((unused)) volatile int16_t mic_ping[I2S_SAMPLE_COUNT] = {0};
-__attribute__((unused)) volatile int16_t mic_pong[I2S_SAMPLE_COUNT] = {0};
-__attribute__((unused)) volatile bool mic_ping_ready = false;
-__attribute__((unused)) volatile bool mic_pong_ready = false;
-#endif // PING_PONG_DMA_USING
-
 // Extern protocol variable cho function trong .c
 extern I2S_HandleTypeDef hi2s2;
-extern DMA_HandleTypeDef hdma_spi2_rx;
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 // ====== FUCNTION DEFINITION ======
@@ -62,7 +56,7 @@ HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 }
 
 /*-----------------------------------------------------------*/
-//==== VERSION 1: NORMAL BUFFER ====
+//==== VERSION 1: NORMAL MODE ====
 
 __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 	UNUSED(pvParameter);
@@ -81,14 +75,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 
 	while(1){
 		if(osSemaphoreWait(inmp441_semId, 100) == osOK){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
-
 			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Block task cho den khi DMA hoan tat (bao ve tu RxCpltCallback)
-
-				block.type = SENSOR_PCG;
-
-#ifdef SYNC_INTERMEDIARY_USING
-				block.timestamp = global_sync_snapshot.timestamp;
-				block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
 
 				for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i += DOWNSAMPLE_FACTOR){ //Thuc hien downsample 256 samples raw
 					sum = 0; //Reset sum sau moi vong
@@ -100,13 +87,18 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
 
 				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
+				block.type = SENSOR_PCG;
+
+#ifdef SYNC_INTERMEDIARY_USING
+				block.timestamp = global_sync_snapshot.timestamp;
+				block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
 
 				MAIL_SEND_FROM_TASK_TO_SYNC(block);
 #elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
 				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
 #endif // SYNC_INTERMEDIARY_USING
 
-				//DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
+				// DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
 				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
 					uart_printf("[INMP441] HAL_I2S_Receive_DMA end failed !\r\n");
 				}
@@ -119,7 +111,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 }
 
 /*-----------------------------------------------------------*/
-// ==== VERSION 2: CIRCULAR BUFFER ====
+// ==== VERSION 2: CIRCULAR MODE ====
 
 /**
  * @brief Ham xu ly va downsample du lieu khi full buffer
@@ -142,14 +134,6 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
 __attribute__((always_inline)) static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sync_t *snap){
 	uint16_t idx_out = 0; // Duy tri gia tri cho bien
 	uint16_t decimation_index = 0; // Chi so decimation de dem xem da du 8 mau de thuc hien decimate chua
-
-	block->type = SENSOR_PCG;
-
-#ifdef SYNC_INTERMEDIARY_USING
-	UNUSED(snap); // Con tro snap khong can dung vi da luu truc tiep bien dong bo
-	block->timestamp = global_sync_snapshot.timestamp;
-	block->sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-#endif // sensor_config_SYNC_USING
 
 	// Lay dung 32 sample sau khi downsample
 	// Nhung van can FIR chay qua tat 256 sample de state dung
@@ -184,11 +168,17 @@ __attribute__((always_inline)) static inline void Inmp441_downsample_process(sen
 	}
 
 	block->count = idx_out; //Ky vong 32 sample sau khi downsample tu 256
+	block->type = SENSOR_PCG;
 
-#ifdef SYNC_INTERMEDIARY_USING /* Gui block vao sync task */
-				MAIL_SEND_FROM_TASK_TO_SYNC(*block);
+#ifdef SYNC_INTERMEDIARY_USING
+	UNUSED(snap); // Con tro snap khong can dung vi da luu truc tiep bien dong bo
+	block->timestamp = global_sync_snapshot.timestamp;
+	block->sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
+
+	/* Gui block vao sync task */
+	MAIL_SEND_FROM_TASK_TO_SYNC(*block);
 #elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
-				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
+	MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
 #endif // SYNC_INTERMEDIARY_USING
 
 }
@@ -221,182 +211,6 @@ void Inmp441_task_ver2(void const *pvParameter){
 		else uart_printf("[INMP441] Can not take DMA callback !\r\n");
 	}
 }
-
-/*-----------------------------------------------------------*/
-
-/* FIXME INMP441 theo kieu Ping-Pong Buffer nhung hien tai dang chua can den nen khong sua tiep (chua chay duoc) */
-
-#ifdef PING_PONG_DMA_USING
-// === VERSION 3: DOUBLE BUFFER PING-PONG ===
-
-// Callback khi DMA buffer ping full
-__attribute__((unused)) static void Inmp441_DMA_M0CpltCallback(DMA_HandleTypeDef *hdma){
-	if(mic_ping_ready) uart_printf("[INMP441] mic_ping_ready OVERWRITTEN ! \r\n");
-	mic_ping_ready = true;
-}
-
-/*-----------------------------------------------------------*/
-
-// Callback khi DMA buffer pong full
-__attribute__((unused)) static void Inmp441_DMA_M1CpltCallback(DMA_HandleTypeDef *hdma){
-	if(mic_pong_ready) uart_printf("[INMP441] mic_pong_ready OVERWRITTEN ! \r\n");
-	mic_pong_ready = true;
-}
-
-/*-----------------------------------------------------------*/
-
-// Callback khi co loi DMA
-__attribute__((unused)) static void Inmp441_DMA_ErrorCallback(DMA_HandleTypeDef *hdma){
-	uart_printf("[INMP441] DMA callback error !\r\n");
-}
-
-/*-----------------------------------------------------------*/
-
-/**
- * @brief Ham doc giu lieu DMA su dung double buffer ping-pong
- * \brief chuc nang double buffer + DMA (giong HAL_I2S_Receive_DMA)
- *
- * @param hi2s Con tro tro den struct cau hinh protocol I2S
- * @param ping Con tro tro den mang chua data buffer ping (buffer 1)
- * @param pong Con tro tro den mang chua data buffer pong (buffer 2)
- * @param Size Kich thuoc so mau cua moi buffer
- *
- * @return HAL_status
- */
-__attribute__((unused)) static HAL_StatusTypeDef Inmp441_receive_DMA_pingpong(I2S_HandleTypeDef *hi2s, uint16_t *ping, uint16_t *pong, uint16_t Size){
-	// Bat double-buffer DMA cho I2S Rx
-	// DR Adress co the khac nhau tuy dong MCU; voi F4: &SPi2->DR
-
-	uint32_t tmpreg_cfgr;
-
-	if(hi2s->State != HAL_I2S_STATE_READY){
-		return HAL_BUSY;
-	}
-
-	// Process locked
-	__HAL_LOCK(hi2s);
-
-	hi2s->State = HAL_I2S_STATE_BUSY_RX;
-	hi2s->ErrorCode = HAL_I2S_ERROR_NONE;
-
-	tmpreg_cfgr = hi2s->Instance->I2SCFGR & (SPI_I2SCFGR_DATLEN | SPI_I2SCFGR_CHLEN);
-
-	if((tmpreg_cfgr == I2S_DATAFORMAT_24B) || (tmpreg_cfgr == I2S_DATAFORMAT_32B)){
-		//Vi set buffer mic_ping va mic_pong 16-bit & Data width = Half-word (16-bit) nen Size << 1U
-		hi2s->RxXferSize = Size << 1U;
-		hi2s->RxXferCount = Size << 1U;
-	}else{
-		hi2s->RxXferCount = Size;
-		hi2s->RxXferSize = Size;
-	}
-
-	//Gan callback cua inmp441 double buffer thay vi call back mac dinh cua HAL_I2S_Receive_DMA
-	hi2s->hdmarx->XferCpltCallback = Inmp441_DMA_M0CpltCallback;
-	hi2s->hdmarx->XferM1CpltCallback = Inmp441_DMA_M1CpltCallback;
-	hi2s->hdmarx->XferErrorCallback = Inmp441_DMA_ErrorCallback;
-
-	//Kiem tra neu Master Rx thi clear overrun flag
-	if((hi2s->Instance->I2SCFGR & SPI_I2SCFGR_I2SCFG) == I2S_MODE_MASTER_RX){
-		__HAL_I2S_CLEAR_OVRFLAG(hi2s);
-	}
-
-	//Start DMA o che do Multibuffer
-	if(HAL_DMAEx_MultiBufferStart_IT(hi2s->hdmarx,
-			(uint32_t)&hi2s->Instance->DR,
-			(uint32_t)ping,
-			(uint32_t)pong,
-			hi2s->RxXferSize) != HAL_OK)
-	{
-		uart_printf("DMAEx not initialized ! \r\n");
-
-		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
-		hi2s->State = HAL_I2S_STATE_READY;
-
-		__HAL_UNLOCK(hi2s);
-		return HAL_ERROR;
-	}
-
-	__HAL_UNLOCK(hi2s);
-
-	//Bat DMA request cho I2S Rx
-	if(HAL_IS_BIT_CLR(hi2s->Instance->CR2, SPI_CR2_RXDMAEN)){
-		SET_BIT(hi2s->Instance->CR2, SPI_CR2_RXDMAEN);
-	}
-
-	//Bat I2S Peripheral neu chua bat
-	if(HAL_IS_BIT_CLR(hi2s->Instance->I2SCFGR, SPI_I2SCFGR_I2SE)){
-		__HAL_I2S_ENABLE(hi2s);
-	}
-
-	uart_printf("DMAEx initialized OK ! \r\n");
-	return HAL_OK;
-}
-
-/*-----------------------------------------------------------*/
-
-__attribute__((unused)) void Inmp441_task_ver3(void const *pvParameter){
-	UNUSED(pvParameter);
-
-	sensor_block_t block;
-	int idx_out = 0;
-
-	uart_printf("INMP441 task started !\r\n");
-	memset(&block, 0, sizeof(block));
-
-	if(Inmp441_receive_DMA_pingpong(&hi2s2, (uint16_t*)mic_ping, (uint16_t*)mic_pong, I2S_SAMPLE_COUNT) != HAL_OK){
-		uart_printf("[INMP441] Inmp441_init_dma_doubleBuffer failed ! \r\n");
-	}
-
-	while(1){
-		// Cho semaphore tu TIM3 (moi 32ms) de dong bo voi PPG/ECG
-		if(osSemaphoreWait(inmp441_semId, 100) == osOK){
-
-			// Uu tien xu ly dung 1 block/32ms
-			// Truong hop ca ping va pong cung true (xu ly cham), xu ly 1 cai va clear cai con lai de khong backlog vo han
-			const volatile int16_t *src = NULL;
-
-			if(mic_ping_ready){
-				mic_ping_ready = false;
-
-				//Neu ca pong cung ready, co the quyet dinh drop pong de theo kip real-time
-				if(mic_pong_ready) mic_pong_ready = false; // Drop 1 nua de bat kip
-				src = mic_ping;
-			}else if(mic_pong_ready){
-				mic_pong_ready = false;
-				src = mic_pong;
-			}else{
-				uart_printf("[INMP441] Ping-Pong buffer not ready ! \r\n");
-				continue;
-			}
-
-			// Downsample 256 -> 32
-			block.type = SENSOR_PCG;
-
-#ifdef SYNC_INTERMEDIARY_USING
-			block.timestamp = global_sync_snapshot.timestamp;
-			block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-#endif // SYNC_INTERMEDIARY_USING
-
-			for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i++){
-				float filtered = FIR_process_convolution(&fir, (float)(src[i])); //Data 32-bit nen dich lay 24-bits co nghia
-
-				if(i >= (FIR_TAP_NUM - 1)){
-					if((i - FIR_TAP_NUM - 1) % DOWNSAMPLE_FACTOR == 0){
-						block.pcg[idx_out++] = (int16_t)filtered;
-					}
-				}
-			}
-			block.count = idx_out; // Mong doi gia tri bang I2S_SAMPLE_COUNT (32)
-
-			MAIL_SEND_FROM_TASK(block); // Gui 32 sample vao Sync Task
-
-		}else{
-			uart_printf("[INMP441] Can not take semaphore !\r\n");
-			continue;
-		}
-	}
-}
-#endif // PING_PONG_DMA_USING
 
 /*-----------------------------------------------------------*/
 

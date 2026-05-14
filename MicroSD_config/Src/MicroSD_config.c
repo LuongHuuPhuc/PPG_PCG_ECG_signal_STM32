@@ -522,7 +522,7 @@ static inline osStatus MicroSD_mail_send(sensor_sync_block_t *block){
 
 /*-----------------------------------------------------------*/
 
-void SD_dispatch(sensor_sync_block_t *block){
+void MicroSD_dispatch(sensor_sync_block_t *block){
 	if(MicroSD_mail_send(block) != osOK){
 		uart_printf("[MICRO_SD] Mail sent from SYNC error !\r\n");
 	}
