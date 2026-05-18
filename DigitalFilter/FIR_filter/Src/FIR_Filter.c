@@ -27,22 +27,27 @@ void fir_init(FIRFilter *filter){
 }
 
 float FIR_process_convolution(FIRFilter *filter, float input){
-	filter->buffer[filter->index] = input; //Ghi vao buffer truoc, xu ly index sau
+	filter->buffer[filter->index] = input; // Ghi vao buffer truoc, xu ly index sau
 	float output = 0.0f;
 	int32_t buf_idx = filter->index;
 
-	if(++filter->index >= FIR_TAP_NUM){ //Moi lan goi ham, filter->index se tang them 1 dvi
-		filter->index = 0; //Reset index buffer ve 0
-	}
-
-	//Can toi thieu 32 samples　input thi moi tao ra 1 output FIR chinh xac => Chap nhan mot vai mau dau bi sai
+	// Can toi thieu 32 samples　input thi moi tao ra 1 output FIR chinh xac => Chap nhan mot vai mau dau bi sai
 	for(uint16_t i = 0; i < FIR_TAP_NUM; i++){
-		if(buf_idx-- == 0){
+		//　Mau moi nhat se nhan voi he so h[0], mau cu nhat nhan voi he so cuoi cung h[N-1]
+		output += filter->buffer[buf_idx] * fir_coeffs_lowpass[i];
+
+		buf_idx--;
+		if(buf_idx < 0){
 			buf_idx = FIR_TAP_NUM - 1;
 		}
-		//Mau moi nhat se nhan voi he so h[0], mau cu nhat nhan voi he so cuoi cung h[N-1]
-		output += filter->buffer[buf_idx] * fir_coeffs_lowpass[i];
 	}
+
+	filter->index++;
+
+	if(filter->index >= FIR_TAP_NUM){ // Moi lan goi ham, filter->index se tang them 1 dvi
+		filter->index = 0; // Reset index buffer ve 0
+	}
+
 	return output;
 }
 

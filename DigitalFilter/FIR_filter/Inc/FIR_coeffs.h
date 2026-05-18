@@ -19,7 +19,7 @@
  * bang cach nhan gia tri dap ung xung ly tuong lowpass (sinc) voi cua so truot hamming
  * cho ra duoc gia tri cac gia tri dap xung xung tot nhat
  */
-const float fir_coeffs_lowpass[32] = {
+__attribute__((aligned(4))) const float fir_coeffs_lowpass[32] = {
        -0.001185691f,
        -0.001800525f,
        -0.002763760f,
