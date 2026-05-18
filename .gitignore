@@ -5,7 +5,7 @@
 *.cproject
 *.project
 *.mxproject
-
+*.a
 
 **/Drivers/
 **/Include/
