@@ -211,7 +211,8 @@ void Logger_three_task_ver2(void const *pvParameter){
 	static char stream_buf[UART_STREAM_BUFFER_SIZE]; // buffer dem de gom block data roi in 1 lan, giam blocking
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
-	static uint32_t last_count = 0;
+	static uint32_t last_ok_count = 0;
+	static uint32_t last_mismatch_count = 0;
 	static TickType_t last_tick = 0;
 #endif // SYNC_BLOCK_COUNT_DEBUG
 
@@ -226,6 +227,7 @@ void Logger_three_task_ver2(void const *pvParameter){
 		data = evt.value.p;
 		if(data == NULL) continue;
 
+		// Kiem tra cac tham so dong bo cua 1 BLOCK DATA (32 samples) duoc gui den
 //		uart_printf("[LOGGER] ID: %lu | COUNT: %u | TIME: %lu\r\n", data->sample_id_sync, data->count_sync, data->timestamp_sync);
 
 		char *p = stream_buf; // Pointer hien tai
@@ -234,7 +236,7 @@ void Logger_three_task_ver2(void const *pvParameter){
 		for(uint16_t i = 0; i < data->count_sync; i++){ // In theo so luong sample nho nhat trong 3 data
 
 			/* Neu khoang cach giua Pointer hien tai va con tro vi tri cuoi be hon 32 */
-			if((buf_end - p) < 32) break;
+			if((buf_end - p) < MAX_SAMPLE_STR_LEN) break; // Note: Neu break thi data khong duoc in ra nua ?
 
 			/* ECG 16-bit data */
 			p += fast_itoa(data->ecg_sync[i], p);
@@ -254,19 +256,31 @@ void Logger_three_task_ver2(void const *pvParameter){
 		uint16_t len = (uint16_t)(p - stream_buf);
 		if(len > 0){
 			/* Dung truc tiep luon cho toc do nhanh thay vi `uart_printf()` */
-			uart_tx_dma((uint8_t*)stream_buf, len);
+//			uart_tx_dma((uint8_t*)stream_buf, len);
 		}
 
 		osMailFree(logger_queueId, data); // Giai phong Mail
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
-		// Debug so block nhan duoc tu SyncTask de biet bottleneck xay ra the nao
+		// Debug so blocks nhan duoc tu SyncTask de biet bottleneck xay ra the nao
+		// KY VONG: 1s -> 32 blocks, 1 block = 32 samples ~32ms -> 1024 samples
 		TickType_t now = osKernelSysTick();
+
 		if(now - last_tick >= 1000){
-			uint32_t block_get = g_sync_block_per_sec;
-			uint32_t diff = block_get - last_count;
-			uart_printf("[LOGGER] Blocks get from SyncTask in 1s: %lu\r\n", diff);
-			last_count = block_get;
+			uint32_t blocks_get_now = Sync_block_ok_count(); // Tong so block da synced thanh cong den hien tai
+			uint32_t blocks_mismatch_now = Sync_mismatch_count();	// Tong so lan xay ra mismatch
+			uint32_t ok_per_sec = blocks_get_now - last_ok_count;
+			uint32_t mismatch_per_sec = blocks_mismatch_now - last_mismatch_count;
+
+			uart_printf("[LOGGER] Blocks from SyncTask in 1s: get= %lu (mismatch= %lu) | UART DMA trans: OK=%lu BUSY=%lu ERR=%lu\r\n",
+					ok_per_sec,
+					mismatch_per_sec,
+					uart_dma_get_ok_count(),
+					uart_dma_get_busy_count(),
+					uart_dma_get_error_count());
+
+			last_ok_count = blocks_get_now;
+			last_mismatch_count = blocks_mismatch_now;
 			last_tick = now;
 		}
 #endif // SYNC_BLOCK_COUNT_DEBUG

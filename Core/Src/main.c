@@ -99,6 +99,19 @@ volatile snapshot_sync_t global_sync_snapshot = {0};
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+#ifdef DWT_DEBUG
+/**
+ *  DWT - Data Watchdog & Trace (dung de do thoi gian thuc thi cua thuat toan)
+ *  DWT Cycle Counter (thanh ghi CYCCNT nam trong khoi DWT) la mot bo dem thoi gian
+ *  phan cung dem chinh xac so xung nhip clock cua bo xu ly
+ */
+static void DWT_Init(void){
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	DWT->CYCCNT = 0;
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+}
+#endif // DWT_DEBUG
+
 /* USER CODE END 0 */
 
 /**
@@ -125,6 +138,10 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
+#ifdef DWT_DEBUG
+  DWT_Init();
+#endif // DWT_DEBUG
 
   /* USER CODE END SysInit */
 
@@ -155,8 +172,6 @@ int main(void)
   /* Dang ky callback */
   DataDispatcher_Init();
   uart_printf(">> [APP] Dispatcher init OK !\r\n");
-
-  HAL_TIM_Base_Start_IT(&htim3); // Khoi dong TIM3 voi interrupt TIMER (1000Hz)
 
   /* USER CODE END 2 */
 
@@ -191,11 +206,11 @@ int main(void)
   uart_dma_taskId = osThreadCreate(osThread(uartDMATaskName), NULL);
   configASSERT(uart_dma_taskId);
 
-  osThreadDef(ad8232TaskName, Ad8232_task_ver3, osPriorityNormal, 0, 1024 * 2);
+  osThreadDef(ad8232TaskName, Ad8232_task, osPriorityNormal, 0, 1024 * 2);
   ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
   configASSERT(ad8232_taskId);
 
-  osThreadDef(inmp441TaskName, Inmp441_task_ver2, osPriorityAboveNormal, 0, 1024 * 2);
+  osThreadDef(inmp441TaskName, Inmp441_task, osPriorityAboveNormal, 0, 1024 * 2);
   inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
   configASSERT(inmp441_taskId);
 
@@ -222,8 +237,11 @@ int main(void)
   HeapCheck();
   uart_printf("[APP] Starting Tasks...! \r\n");
 
-  // Set gia tri dem ban dau cua TIMER ve 0
+  /* Reset gia tri dem ban dau cua TIMER ve 0 */
   __HAL_TIM_SET_COUNTER(&htim3, 0);
+
+  /* Khoi dong TIM3 voi interrupt TIMER (1000Hz) */
+  HAL_TIM_Base_Start_IT(&htim3);
 
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -654,6 +672,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim->Instance == TIM3){
 
 	  // TIMER trigger moi 1ms -> Period count du 32 lan (~32ms) thi Give Semaphore (Trigger Data theo block 32 samples)
+	  // Semaphore dong vai tro tao khoang thoi gian chinh xac cho sensor task xu ly theo chu ky 32ms
+	  // 1 block (32 samples) se ung voi 1 sample_id va 1 timestamp rieng
 	  if(++counter_sync >= 32){
 		  counter_sync = 0;
 
@@ -663,8 +683,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 #endif // SYNC_INTERMEDIARY_USING
 
 	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
-		  osSemaphoreRelease(ad8232_semId); //Give Semaphore cho AD8232 sau moi 32ms
-		  osSemaphoreRelease(max30102_semId); //Give Semaphore cho MAX30102 sau moi 32ms
+		  osSemaphoreRelease(ad8232_semId); // Give Semaphore cho AD8232 sau moi 32ms
+		  osSemaphoreRelease(max30102_semId); // Give Semaphore cho MAX30102 sau moi 32ms
 	  }
   }
 

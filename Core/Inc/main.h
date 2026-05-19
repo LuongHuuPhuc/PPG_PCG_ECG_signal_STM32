@@ -53,9 +53,10 @@ extern "C" {
 //#define MAX30102_ONLY_LOGGER	1
 //#define INMP441_ONLY_LOGGER	1
 
-#define SYNC_INTERMEDIARY_USING	1 /* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
-//#define SENSOR_SEND_DIRECT_USING		1  /* Gui truc tiep tu sensor task -> Logger  */
-//#define SYNC_BLOCK_COUNT_DEBUG  1	/* Uncomment de su dung debug */
+#define SYNC_INTERMEDIARY_USING		1 /* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
+//#define SENSOR_SEND_DIRECT_USING	1  /* Gui truc tiep tu sensor task -> Logger  */
+//#define SYNC_BLOCK_COUNT_DEBUG  	1	/* Uncomment de su dung debug */
+//#define DWT_DEBUG					1  /* Data Watchdog & Trace */
 
 /* USER CODE END EM */
 

@@ -32,9 +32,10 @@ extern "C" {
 extern osThreadId logger_taskId;
 
 // ==== MACROS　====
-#define MAX_COUNT 				 32
-#define MAX_RETRY_SCANNER 		 2
-#define LOGGER_QUEUE_LENGTH 	 40 	// Tang chieu dai queue de chong tran
+#define MAX_COUNT 				32
+#define MAX_RETRY_SCANNER 		2
+#define LOGGER_QUEUE_LENGTH 	40 	// Tang chieu dai queue de chong tran
+#define MAX_SAMPLE_STR_LEN		24
 
 // ==== FUNCTION PROTOTYPE ====
 

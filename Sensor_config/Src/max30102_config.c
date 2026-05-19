@@ -22,8 +22,8 @@ extern "C" {
 
 //====== VARIABLES DEFINITION ======
 
-uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
-uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
+volatile uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
+volatile uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 max30102_t max30102_obj;
 max30102_record record;
 
@@ -95,9 +95,17 @@ void Max30102_task(void const *pvParameter){
 	memset(&block, 0, sizeof(sensor_block_t));
 
 	while(1){
-		if(osSemaphoreWait(max30102_semId, 100) == osOK){ //Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
-			uint8_t num_samples = (uint8_t)max30102_read_fifo_ver2_2(&max30102_obj, &record, ir_buffer, red_buffer, MAX_FIFO_SAMPLE);
+		if(osSemaphoreWait(max30102_semId, 100) == osOK){ // Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
+			/* Doc data tu FIFO roi dua no vao buffer qua I2C */
+			uint8_t num_samples = (uint8_t)max30102_read_fifo_ver2_2(
+					&max30102_obj,
+					&record,
+					(uint32_t*)ir_buffer,
+					(uint32_t*)red_buffer,
+					MAX_FIFO_SAMPLE);
+
+			/* Copy vao block buffer */
 			if(num_samples > 0){
 				for(uint8_t i = 0; i < num_samples; i++){
 					block.ppg.ir[i] = ir_buffer[i];

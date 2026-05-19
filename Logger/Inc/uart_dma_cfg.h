@@ -75,9 +75,9 @@ HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len);
 void uart_dma_task(void const *pvParameters);
 
 /* Debug Counter */
-uint32_t uart_dma_get_ok_count(void);
-uint32_t uart_dma_get_busy_count(void);
-uint32_t uart_dma_get_error_count(void);
+uint32_t uart_dma_get_ok_count(void);   	/* Tra ve so lan UART transaction thanh cong */
+uint32_t uart_dma_get_busy_count(void); 	/* Tra ve so lan UART transaction bi ban */
+uint32_t uart_dma_get_error_count(void);	/* Tra ve so lan UART transaction bi loi */
 
 #ifdef __cplusplus
 }

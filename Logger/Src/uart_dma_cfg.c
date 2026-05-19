@@ -13,14 +13,17 @@ extern "C" {
 
 /**
  * @note
+ * Quy trinh DMA Transmit cua UART DMA (Truyen du lieu)
+ * Chieu du lieu: RAM -> Ngoai vi
+ *
  * -> Ban dau CPU co nvu ghi data vao RAM buffer (truoc khi DMA truyen)
  * sau do cau hinh DMA (bao cho DMA biet "truyen cai gi" va "truyen di dau"):
- * 		- source = dia chi RAM buffer
- * 		- destination = UART->DR
+ * 		- source = dia chi RAM buffer chua data
+ * 		- destination = thanh ghi ngoai vi UART->DR
  * 		- length = so byte
  *
  * Sau khi DMA duoc enable:
- * 		-> DMA tu dong doc tung byte data tu RAM
+ * 		-> DMA tu dong doc tung byte data tu RAM buffer
  * 		-> DMA ghi data da doc vao thanh ghi UART->DR (tuy ngoai vi)
  * 		-> UART tu dong shift data ra chan TX
  *
@@ -37,7 +40,7 @@ extern "C" {
 static UART_HandleTypeDef *uart_dma_handle = NULL;
 
 static osMailQId uart_dma_queueId = NULL;
-static osSemaphoreId uart_dma_semId = NULL;
+//static osSemaphoreId uart_dma_semId = NULL;
 osThreadId uart_dma_taskId = NULL;
 
 /* Current DMA packet pointer - con tro tro den packet hien tai */
@@ -65,9 +68,9 @@ HAL_StatusTypeDef uart_dma_init(UART_HandleTypeDef *huart){
 	if(uart_dma_queueId == NULL) return HAL_ERROR;
 
 	/* Khoi tao semaphore de DMA complete */
-	osSemaphoreDef(uartDMASemaphoreName);
-	uart_dma_semId = osSemaphoreCreate(osSemaphore(uartDMASemaphoreName), 1);
-	if(uart_dma_semId == NULL) return HAL_ERROR;
+//	osSemaphoreDef(uartDMASemaphoreName);
+//	uart_dma_semId = osSemaphoreCreate(osSemaphore(uartDMASemaphoreName), 1);
+//	if(uart_dma_semId == NULL) return HAL_ERROR;
 
 	return HAL_OK;
 }
@@ -123,6 +126,7 @@ __attribute__((unused)) static void uart_dma_kick_tx(void){
 
 	HAL_StatusTypeDef ret = HAL_UART_Transmit_DMA(uart_dma_handle, current_tx_packet->data, current_tx_packet->len);
 	if(ret == HAL_OK) uart_ok_count++; // Truyen thanh cong data tu DMA se tang
+	else if(ret == HAL_BUSY) uart_busy_count++;
 	else{
 		uart_dma_busy = false;
 		uart_error_count++;
@@ -189,10 +193,13 @@ void uart_dma_task(void const *pvParameters){
 
 		HAL_StatusTypeDef ret = HAL_UART_Transmit_DMA(uart_dma_handle, packet->data, packet->len);
 		if(ret == HAL_OK){
-			osSemaphoreWait(uart_dma_semId, osWaitForever); // Wait Forerver cho callback nha Semaphore ve
+//			osSemaphoreWait(uart_dma_semId, osWaitForever); // Wait Forerver cho callback nha Semaphore ve
+			ulTaskNotifyTake(pdTRUE, portMAX_DELAY); // Nhe & cho toc do cao hon 45% so voi semaphore
 			uart_ok_count++;
 		}
-		osMailFree(uart_dma_queueId, packet); /* Data DMA transmit complete thi free luon */
+		else if(ret == HAL_BUSY) uart_busy_count++;
+		else uart_error_count++;
+		osMailFree(uart_dma_queueId, packet); /* Callback Data DMA transmit complete thi free luon */
 	}
 }
 
@@ -234,7 +241,14 @@ __attribute__((unused)) void uart_dma_tx_complete_callback_ver1(UART_HandleTypeD
  */
 void uart_dma_tx_complete_callback_ver2(UART_HandleTypeDef *huart){
 	if(huart != uart_dma_handle) return;
-	osSemaphoreRelease(uart_dma_semId);
+
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+	// 1 ISR -> 1 task thi dung TaskNotify ngon luon
+	vTaskNotifyGiveFromISR(uart_dma_taskId, &xHigherPriorityTaskWoken);
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
+	//	osSemaphoreRelease(uart_dma_semId);
 }
 
 /*-----------------------------------------------------------*/

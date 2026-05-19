@@ -78,6 +78,11 @@ osStatus Sync_mail_send(sensor_block_t *block);
 	} \
 } while(0)
 
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+uint32_t Sync_block_ok_count(void);   	/* return: So data block da sync thanh cong */
+uint32_t Sync_mismatch_count(void);		/* return: So lan xay ra mismatch */
+#endif // SYNC_BLOCK_COUNT_DEBUG
+
 /**
  * @brief Ham de luu gia tri 2 bien toan cuc `global_sample_id` va `global_timestamp`
  * Gan gia tri cua 2 bien toan cuc vao noi bo de gui vao task

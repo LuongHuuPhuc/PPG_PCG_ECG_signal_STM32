@@ -44,11 +44,14 @@ extern "C" {
 #define TARGET_SAMPLE_RATE			1000 // 1000Hz (desired)
 #define DOWNSAMPLE_FACTOR			(PCG_SAMPLE_RATE / TARGET_SAMPLE_RATE) // 8
 
-#define PCG_DMA_BUFFER   			1024u //bytes (8000Hz trong 32ms)
+#define PCG_DMA_BUFFER   			1024u // Tong so bytes (Ly do: 8000Hz (1 sample = 0.125ms) trong 32ms thi se duoc 256 samples)
 #define I2S_SAMPLE_COUNT 			(PCG_DMA_BUFFER / sizeof(int32_t)) // Desired 256 samples (Sample that)
 #define I2S_DMA_FRAME_COUNT			(I2S_SAMPLE_COUNT * 2u) // DMA data (dung de ghep 2 frame HALF-WORD) = So lan DMA transfer
 #define I2S_HALF_SAMPLE_COUNT 		(I2S_SAMPLE_COUNT / 2u)
 #define DOWNSAMPLE_SAMPLE_COUNT		(I2S_SAMPLE_COUNT / DOWNSAMPLE_FACTOR) // 32 samples (mat mau do ep du lieu xuong 32)
+
+/* Data Memory Barrier */
+#define DMB()						__asm volatile("dmb" ::: "memory")
 
 // Task & RTOS
 extern osSemaphoreId inmp441_semId;
@@ -68,18 +71,7 @@ extern osThreadId inmp441_taskId;
 HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s);
 
 /**
- * @brief Ham thuc thi va xu ly `ver1`
- *
- * @note Task nay xu ly du lieu su dung DMA (Normal mode)
- *
- * @remark Ham nay su dung co che Normal DMA - tuc la sau khi thu duoc N sample thi can phai
- * goi lai ham. Su dung Timer de trigger Semaphore dong bo 32ms ket hop DMA callback
- * Data thuc hien dich bit  va lay trung binh mau. Rui ro van bi mat mau va do tre giua Timer va DMA callback
- */
-__attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter);
-
-/**
- * @brief Ham thuc thi va xu ly `ver2`
+ * @brief Ham thuc thi va xu ly
  * Task nay xu ly du lieu su dung DMA (Circular mode)
  *
  * @remark Bat dau doc data duoc ghi vao DMA va luu vao buffer16 voi chieu dai I2S_DMA_FRAME_COUNT (do inmp441 set 8000Hz)
@@ -137,7 +129,7 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter);
  *
  * 		 - Sau do sample nay se duoc dua vao pipeline xu ly (downsample,...)
  */
-void Inmp441_task_ver2(void const *pvParameter);
+void Inmp441_task(void const *pvParameter);
 
 #ifdef __cplusplus
 }

@@ -49,15 +49,34 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 	sensor_type_t type;
 	uint16_t count; 		// So luong mau trong mang
 
-	union { // Cac bien nay chia se chung bo nho
-		volatile int32_t pcg[32];
+	/**
+	 * Cac bien nay chia se chung bo nho nhung khong dung volatile
+	 * vi cac buffer nay chi la chua data da thu duoc, khong bi anh
+	 * huong boi hardware/DMA/ISR sua truc tiep trong RAM
+	 *
+	 * @note
+	 * `Volatile` chi dung khi bien do co nguy co bi thay doi
+	 * dot ngot boi cac yeu to ngoai luong kiem soat truc tiep cua code
+	 * (phan cung, ngat,...). Muc tieu chinh cua tu khoa nay la
+	 * chan compiler thuc hien toi uu hoa bien do va cho bien doc/ghi truc tiep vao RAM
+	 *
+	 * 		- Compiler rat thong minh, thong thuong neu thay 1 bien duoc
+	 * 		doc nhieu lan ma khong bi thay doi boi cac dong code lien ke,
+	 * 		no se toi uu bang cach luu gia tri do vao Register cua CPU de
+	 * 		truy xuat nhanh hon, thay vi doc lai tu RAM
+	 *
+	 * 		- Neu bien do bi bat ngo thay doi tu RAM, chuong trinh ma van doc
+	 * 		gia tri cu trong thanh ghi, dan den sai sot. Tu khoa `volatile` ep
+	 * 		chuong trinh luon doc va ghi du lieu truc tiep vao RAM
+	 */
+	union {
+		int32_t pcg[32]; // PCG
+		int16_t ecg[32]; // ECG
 
 		struct { //PPG
-			volatile uint32_t ir[32];
-			volatile uint32_t red[32];
+			uint32_t ir[32];
+			uint32_t red[32];
 		} ppg;
-
-		volatile int16_t ecg[32]; // ECG
 	};
 } sensor_block_t;
 

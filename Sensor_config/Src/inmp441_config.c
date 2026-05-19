@@ -13,9 +13,12 @@ extern "C" {
 
 #include "string.h"
 #include "stdlib.h"
-#include "math.h"
 
-#include "FIR_Filter.h" // Bo loc LPF cho downsample
+/* Su dung thu vien CMSIS-DSP ho tro xu ly tin hieu so cho ARM-Cortex */
+#include "arm_math.h"
+#include "arm_const_structs.h"
+
+#include "FIR_Filter.h" // Bo loc LPF cho downsample (tu lam)
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
 #include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
 
@@ -23,6 +26,22 @@ extern "C" {
 #include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK_DIRECT_LOGGER cho Sensor Task -> Logger Task (khong dung sync_task)
 #endif // SENSOR_SEND_DIRECT_USING
 
+/**
+ * @note
+ * Quy trinh DMA Receive tu Peripheral (Nhan du lieu)
+ * Chieu du lieu: Ngoai vi -> RAM
+ *
+ * Quy trinh hoat dong:
+ * 		- CPU chuan bi san sang 1 vung nho trong trong RAM (Rx buffer) de chua du lieu
+ * 		- CPU cau hinh DMA:
+ * 			- Tro dia chi nguon (Source) den thanh ghi du lieu cua ngoai vi
+ * 			- Tro dia chi dich (Destination) den vung nho trong trong DMA
+ * 		- CPU bat kich hoat qua trinh nhan DMA va thiet bi ngoai vi
+ * 		- Khi ngoai vi nhan duoc du lieu tu ben ngoai (vi du co byte du lieu bay den cong I2S), ngoai vi se bao cho DNA
+ * 		- DMA tu dong lay du lieu tu thanh ghi ngoai vi roi de thang vao RAM ma khong can CPU can thiep
+ * 		- Khi vung nho nhan day hoac dat so luong byte da cau hinh, DMA se phat ra 1 interrupt de CPU
+ * 		den lay data di xu ly
+ */
 // ====== VARIABLES DEFINITION ======
 
 osSemaphoreId inmp441_semId = NULL;
@@ -31,12 +50,31 @@ osThreadId inmp441_taskId = NULL;
 volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT] = {0};
 __attribute__((unused)) volatile int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
 
-// Extern protocol variable cho function trong .c
+static int32_t pcg_temp[DOWNSAMPLE_SAMPLE_COUNT]; /* Khong can ghi/doc truc tiep tu RAM nen khong can volatile */
+static bool pcg_block_ready = false; /* note: Khong co task access, khong ISR -> khong can volatile */
+
 extern I2S_HandleTypeDef hi2s2;
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
+/* Buffer index */
+typedef enum{
+	PCG_BUFFER_HALF,
+	PCG_BUFFER_FULL,
+} pcg_dma_part_t;
+
+typedef struct {
+
+#ifdef DWT_DEBUG
+	uint32_t cycle; /* Debug do tre ISR->Done */
+#endif // DWT_DEBUG
+
+	TickType_t timestamp;
+	uint32_t sample_id;
+	pcg_dma_part_t part;
+} pcg_dma_event_t;
+static volatile pcg_dma_event_t pcg_dma_event;
+
 // ====== FUCNTION DEFINITION ======
-/*-----------------------------------------------------------*/
 
 HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 	uart_printf("[INMP441] initializing....");
@@ -56,62 +94,6 @@ HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 }
 
 /*-----------------------------------------------------------*/
-//==== VERSION 1: NORMAL MODE ====
-
-__attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
-	UNUSED(pvParameter);
-
-	sensor_block_t block;
-	int idx_out = 0;
-	int32_t sum;
-
-	uart_printf("INMP441 task started !\r\n");
-	memset(&block, 0, sizeof(sensor_block_t));
-
-	//Bat dau DMA de thu 256 sample raw (do inmp441 set 8000Hz)
-	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer32, I2S_SAMPLE_COUNT * 2) != HAL_OK){
-		uart_printf("[INMP441] HAL_I2S_Receive_DMA begin failed !\r\n");
-	}
-
-	while(1){
-		if(osSemaphoreWait(inmp441_semId, 100) == osOK){ //Duoc Trigger boi TIMER (1000Hz) sau 32ms
-			if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Block task cho den khi DMA hoan tat (bao ve tu RxCpltCallback)
-
-				for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i += DOWNSAMPLE_FACTOR){ //Thuc hien downsample 256 samples raw
-					sum = 0; //Reset sum sau moi vong
-
-					for(uint8_t j = 0; j < DOWNSAMPLE_FACTOR; j++){ //Thuc hien xu ly voi 8 mau 1 lan
-						sum += (buffer32[i + j] >> 8); //Dich ve 24-bit co nghia
-					}
-					block.pcg[idx_out++] = (int16_t)(sum / DOWNSAMPLE_FACTOR); //Lay trung binh 8 samples roi day vao buffer
-				} //Moi vong lap i lai tang them 8 (8 sample 1 lan)
-
-				block.count = idx_out; //So luong mau sau khi da downsample (Nen la so mau thuc te)
-				block.type = SENSOR_PCG;
-
-#ifdef SYNC_INTERMEDIARY_USING
-				block.timestamp = global_sync_snapshot.timestamp;
-				block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-
-				MAIL_SEND_FROM_TASK_TO_SYNC(block);
-#elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
-				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
-#endif // SYNC_INTERMEDIARY_USING
-
-				// DMA che do normal nen can goi lai ham nay sau moi lan doc DMA
-				if(HAL_I2S_Receive_DMA(&hi2s2, (void*)buffer32, I2S_SAMPLE_COUNT) != HAL_OK){
-					uart_printf("[INMP441] HAL_I2S_Receive_DMA end failed !\r\n");
-				}
-
-			}
-			else uart_printf("[INMP441] Timeout waiting for DMA done !\r\n");
-		}
-		else uart_printf("[INMP441] Can not take semaphore !\r\n");
-	}
-}
-
-/*-----------------------------------------------------------*/
-// ==== VERSION 2: CIRCULAR MODE ====
 
 /**
  * @brief Ham xu ly va downsample du lieu khi full buffer
@@ -131,13 +113,34 @@ __attribute__((unused)) void Inmp441_task_ver1(void const *pvParameter){
  * Du 2 lan DMA -> co duoc 1 sample frame 32-bit. No duoc can chinh vao 24-bit cao (bit[31:8] cua thanh ghi Memory do (32-bits).
  * De dam bao du lieu 24-bit xuat ra la so co dau, ta can mo rong dau (sign extension) sample tu 24-bit len 32-bit
  */
-__attribute__((always_inline)) static inline void Inmp441_downsample_process(sensor_block_t *block, snapshot_sync_t *snap){
-	uint16_t idx_out = 0; // Duy tri gia tri cho bien
-	uint16_t decimation_index = 0; // Chi so decimation de dem xem da du 8 mau de thuc hien decimate chua
+__attribute__((always_inline))
+static inline void Inmp441_downsample_process(uint16_t out_offset, pcg_dma_part_t part){
+    static bool decimation_synced = false; /* Them vao de tranh loi alignment tiem an khi startup */
+	static uint16_t decimation_index = 0; // Chi so decimation de dem xem da du 8 mau de thuc hien decimate chua
+	uint16_t idx_out = out_offset; // Duy tri gia tri cho bien
+	uint16_t start_sample, end_sample;
+
+	/* Dong bo phase decimation dung 1 lan tai block dau tien, ep sample dau tien cua stream luon co phase = 0 */
+    if(!decimation_synced && part == PCG_BUFFER_HALF){
+        decimation_index  = 0;
+        decimation_synced = true;
+    }
+
+	/* Dung Half-buffer thi so mau output chi con 1 nua (16 samples) nhung van can phai du 32 samples thi moi duoc */
+	if(part == PCG_BUFFER_HALF){
+		/* 0 -> 127 */
+		start_sample = 0;
+		end_sample = I2S_SAMPLE_COUNT / 2;
+	}
+	else{
+		/* 128 -> 256 */
+		start_sample = I2S_SAMPLE_COUNT / 2;
+		end_sample = I2S_SAMPLE_COUNT;
+	}
 
 	// Lay dung 32 sample sau khi downsample
 	// Nhung van can FIR chay qua tat 256 sample de state dung
-	for(uint16_t i = 0; i < I2S_SAMPLE_COUNT; i++){
+	for(uint16_t i = start_sample; i < end_sample; i++){
 
 		// 1. Doc buffer16[] (buffer luu data DMA) tu Memory de ghep 2 frame LOW va HIGH lai thanh 1 sample 32-bit dung nghia
 		// Hai gia tri lien tiep tu buffer16[] se ra duoc sample co nghia -> Lam den khi nao du I2S_SAMPLE_COUNT sample
@@ -157,47 +160,44 @@ __attribute__((always_inline)) static inline void Inmp441_downsample_process(sen
 		float filtered = FIR_process_convolution(&fir, (float)sample24bit);
 
 		// 5. Decimation (Giam mau 8:1)
-		if(decimation_index == 0){ //Cu moi 8 mau thi chi luu 1 mau
+		if(decimation_index == 0){ // Cu moi 8 mau thi chi luu 1 mau
 			if(idx_out < DOWNSAMPLE_SAMPLE_COUNT){
 				// Toi dang de mic la int32_t
-				block->pcg[idx_out++] = (int32_t)lroundf(filtered); //32 samples sau khi downsample
+				pcg_temp[idx_out++] = (int32_t)filtered; //32 samples sau khi downsample (khong dung lroundf())
 			}
 		}
 		// Tang chi so Decimation va quay vong (Modulo) bat ke co luu sample hay khong
-		decimation_index = (decimation_index + 1) % DOWNSAMPLE_FACTOR;
+//		decimation_index = (decimation_index + 1) % DOWNSAMPLE_FACTOR; // Dung modulo cost cao nen can toi uu
+		if(++decimation_index >= DOWNSAMPLE_FACTOR) decimation_index = 0;
 	}
 
-	block->count = idx_out; //Ky vong 32 sample sau khi downsample tu 256
-	block->type = SENSOR_PCG;
-
-#ifdef SYNC_INTERMEDIARY_USING
-	UNUSED(snap); // Con tro snap khong can dung vi da luu truc tiep bien dong bo
-	block->timestamp = global_sync_snapshot.timestamp;
-	block->sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-
-	/* Gui block vao sync task */
-	MAIL_SEND_FROM_TASK_TO_SYNC(*block);
-#elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
-	MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
-#endif // SYNC_INTERMEDIARY_USING
-
+	/* Chi reset ready khi xong FULL, dam bao du 32 samples */
+	if(part == PCG_BUFFER_FULL) pcg_block_ready = true;
 }
 
 /*-----------------------------------------------------------*/
 
-void Inmp441_task_ver2(void const *pvParameter){
+void Inmp441_task(void const *pvParameter){
 	UNUSED(pvParameter);
-
 	sensor_block_t block;
-	__attribute__((unused)) snapshot_sync_t snap;
 
 	uart_printf("INMP441 task started !\r\n");
 	memset(&block, 0, sizeof(block));
 
-	// buffer16: Buffer chua frame data HALF-WORD tu register SPI->DR truyen vao Memory (kich thuoc phai bang so lan DMA transfer)
-	// I2S_DMA_FRAME_COUNT: So lan DMA transfer tu register
-	// Tuy nhien trong ham HAL_I2S_Receive_DMA da xu ly luon viec nhan doi Size (hi2s->RxXferSize = Size << 1U)
-	// neu frame > 16-bit (24/32-bit) roi nen chi can truyen vao Size = I2S_SAMPLE_COUNT la duoc roi (so sample count)
+	/**
+	 * NOTE:
+	 * - buffer16[I2S_DMA_FRAME_COUNT]: Buffer chua frame data HALF-WORD tu register SPI->DR truyen vao Memory (kich thuoc phai bang so lan DMA transfer)
+	 * - I2S_DMA_FRAME_COUNT: So lan DMA transfer tu register (thanh ghi SPI->DR chi dai 16-bit)
+	 * - I2S_SAMPLE_COUNT: So sample that
+	 * Tuy nhien trong ham HAL_I2S_Receive_DMA da xu ly luon viec nhan doi Size (hi2s->RxXferSize = Size << 1U)
+	 * neu frame > 16-bit (24/32-bit) roi nen chi can truyen vao Size = I2S_SAMPLE_COUNT la duoc roi (so sample count)
+	 * Day la so lan DMA halfword tranfer (transaction) thuc te de thu duoc 1 sample 32-bit hoan chinh tuc la voi sample mong muon
+	 * la 256 thi thuc te no se phai transaction 256 * 2 = 512 lan
+	 * Khi chay, no se tu dong ghi lien tiep 2 sample HIGH-LOW vao buffer16 co kich thuoc I2S_SAMPLE_COUNT * 2
+	 * luc do can parse data de thu duoc 32-bit data hoan chinh
+	 * Tuy voi 512 lan DMA halfword cho 256 samples voi Fs = 8000Hz -> Ton 32ms de buffer day (Day la timing phan cung)
+	 * -> Khong ton CPU trong qua trinh nay
+	 */
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){ // 256 sample 24-bit
 		uart_printf("[INMP441] HAL_I2S_Receive_DMA failed !\r\n");
 	}
@@ -205,8 +205,76 @@ void Inmp441_task_ver2(void const *pvParameter){
 	while(1){
 		if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){
 
-//			Inmp441_frame_debug(buffer16); // Debug frame order
-			Inmp441_downsample_process(&block, &snap);
+			/* Snapshot local ngay khi task wakeup - tranh doc lai volatile trong memory nhieu lan */
+			pcg_dma_event_t event = pcg_dma_event;
+
+#ifdef DWT_DEBUG
+
+			/**
+			 * DEBUG NOTE:
+			 * Thoi gian CPU downsample data: 1.3ms ~ 2.4ms (du nhanh, khong bi overload)
+			 * Thoi gian tu luc ISR -> Done (co ca downsample):  1.38ms ~ 3.4ms
+			 * Tuy DMA ghi vao RAM khong can CPU can thiep nhung ban chat CPU van phai doi
+			 * DMA fill xong buffer thi moi xu ly duoc. Nen khi DMA complete va trigger ISR (256/8000 = 32ms) thi CPU moi
+			 * bat dau den downsample_process -> mat them ~2ms -> Output ~34ms -> Lech frame
+			 * Voi them ly do la DMA cua I2S khong cung goc thoi gian voi TIM3 so voi ecg/ppg
+			 * -> De xuat thu chuyen sang Half-buffer (moi buffer 16ms) & de cho pcg start DMA cung phase voi TIM3
+			 * ngay tu dau he thong (trong main) de PCG di truoc ECG/PPG (?)
+			 */
+
+			if(event.part == PCG_BUFFER_HALF){
+				uint32_t start = DWT->CYCCNT;
+
+				Inmp441_downsample_process(0, PCG_BUFFER_HALF);
+
+				uint32_t end = DWT->CYCCNT;
+				uart_printf("[INMP441] Half: DSP = %lu cycles | ISR->Done = %lu cycles\r\n", end - start, end - event.cycle);
+				/* ISR->Done: 0.68ms ~ 0.72ms */
+			}
+			else{
+				uint32_t start = DWT->CYCCNT;
+
+				Inmp441_downsample_process(DOWNSAMPLE_SAMPLE_COUNT / 2, PCG_BUFFER_FULL);
+				if(pcg_block_ready){
+					memcpy(block.pcg, pcg_temp, sizeof(pcg_temp));
+					block.type = SENSOR_PCG;
+					block.count = DOWNSAMPLE_SAMPLE_COUNT;
+
+#ifdef SYNC_INTERMEDIARY_USING
+					block.timestamp = event.timestamp;
+					block.sample_id = event.sample_id;
+
+					MAIL_SEND_FROM_TASK_TO_SYNC(block); /* Gui block vao sync task */
+#endif // SYNC_INTERMEDIARY_USING
+
+					pcg_block_ready = false;
+				}
+				uint32_t end = DWT->CYCCNT;
+				uart_printf("[INMP441] Full: DSP = %lu cycles | ISR->Done = %lu cycles\r\n", end - start, end - event.cycle);
+				/* ISR->Done: 0.68ms ~ 0.72ms */
+			}
+			/* Total: ~ 1.45ms */
+
+#else
+			if(event.part == PCG_BUFFER_HALF) Inmp441_downsample_process(0, PCG_BUFFER_HALF);
+			else{
+				Inmp441_downsample_process(DOWNSAMPLE_SAMPLE_COUNT / 2, PCG_BUFFER_FULL);
+				if(pcg_block_ready){
+					memcpy(block.pcg, pcg_temp, sizeof(pcg_temp));
+					block.type = SENSOR_PCG;
+					block.count = DOWNSAMPLE_SAMPLE_COUNT;
+
+#ifdef SYNC_INTERMEDIARY_USING
+					block.timestamp = event.timestamp;
+					block.sample_id = event.sample_id;
+
+					MAIL_SEND_FROM_TASK_TO_SYNC(block); /* Gui block vao sync task */
+#endif // SYNC_INTERMEDIARY_USING
+
+					pcg_block_ready = false;
+				}
+			}
+#endif // DWT_DEBUG
 		}
 		else uart_printf("[INMP441] Can not take DMA callback !\r\n");
 	}
@@ -245,6 +313,32 @@ __attribute__((unused)) static void Inmp441_frame_debug(volatile uint16_t *input
 
 /*-----------------------------------------------------------*/
 
+/* Half callback chi xu ly du lieu tam thoi, chi khi RxCplt xong thi moi gui 1 block hoan chinh 32 samples */
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+	if(hi2s->Instance == SPI2){
+
+#ifdef DWT_DEBUG
+		pcg_dma_event.cycle = DWT->CYCCNT;
+#endif // DWT_DEBUG
+		pcg_dma_event.part = PCG_BUFFER_HALF;
+		pcg_dma_event.timestamp = global_sync_snapshot.timestamp;
+		pcg_dma_event.sample_id = global_sync_snapshot.sample_id;
+
+		/**
+		 * Moi 2 half-buffer moi cap nhat frame sync 1 lan
+		 * HALF dau -> lay snapshot moi
+		 * HALF sau -> giu nguyen sample_id/timestamp
+		 */
+
+		vTaskNotifyGiveFromISR(inmp441_taskId, &xHigherPriorityTaskWoken);
+		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	}
+}
+
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Khi ghi DMA hoan tat (256 samples) -> Ngat (ISR) se sinh ra va ham nay se duoc goi (Circular)
  * Ly do khong dung Timer trigger moi 32ms ma dung DMA callback:
@@ -264,9 +358,18 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 
 	if(hi2s->Instance == SPI2){
 
-		// Van de xay ra neu buffer trong ham chua xu ly xong ma DMA Callback cu ban Semaphore Give lien tuc thi Semaphore Take se bi tre !
-		// Khong duoc phep Give Semaphore neu trang thai Semaphore = 1 (non-available)
-		// Kha nang dung Semaphore de trigger khong on lam => Su dung TaskNotify
+#ifdef DWT_DEBUG
+		pcg_dma_event.cycle = DWT->CYCCNT;
+#endif // DWT_DEBUG
+		pcg_dma_event.part = PCG_BUFFER_FULL;
+
+		/**
+		 * Van de xay ra neu buffer trong ham chua xu ly xong ma DMA Callback cu ban Semaphore Give lien tuc thi Semaphore Take se bi tre !
+		 * Khong duoc phep Give Semaphore neu trang thai Semaphore = 1 (non-available)
+		 * Voi ca TaskNotify co toc do nhanh hon 45% so voi Semaphore Binary vi chi can thong bao cho
+		 * 1 task duy nhat de xu ly du lieu chu khong can xu ly nhieu task nhu Semaphore
+		 * Kha nang dung Semaphore de trigger khong on lam => Su dung TaskNotify
+		 */
 //		osSemaphoreRelease(inmp441_semId);
 		vTaskNotifyGiveFromISR(inmp441_taskId, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);

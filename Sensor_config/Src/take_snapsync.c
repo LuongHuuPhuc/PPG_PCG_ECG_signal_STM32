@@ -21,7 +21,8 @@ osThreadId sync_taskId = NULL;
 static osMailQId sync_queueId = NULL;
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
-volatile uint32_t g_sync_block_per_sec = 0;
+static volatile uint32_t g_synced_block = 0;
+static volatile uint32_t g_mismatched_block_count = 0;	/* Bien luu so lan xay ra mismatch */
 #endif // SYNC_BLOCK_COUNT_DEBUG
 
 extern void uart_printf(const char *fmt,...);
@@ -55,7 +56,7 @@ __attribute__((always_inline)) static inline void sync_slot_reset(sync_slot_t *s
  * Nhung neu xay ra mismatch thi khong the reset het flag duoc ma nen drop cac flag cu nhat
  * (sample_id/timestamp be nhat), giu lai 2 cai con lai de cho block tuong ung den
  * Lam the thay vi bo luon 3 block -> Reset -> task tiep tuc gui -> lai lech -> mismatch lien hoan
- * Thi lam cach nay se lam mat mau it hon va he thong se lai tu hoi phuc lai dung phase ban dau
+ * Thi lam cach nay se lam mat mau it hon va he thong se lai TU HOI PHUC lai dung phase ban dau
  * => Su dung sample_id de lam chuan can cu theo de giu phase
  */
 __attribute__((always_inline)) static inline void sync_drop_oldest(sync_slot_t *slot){
@@ -149,7 +150,7 @@ void Sync_Task(void const *pvParameter){
 		in = evt.value.p;
 		if(in == NULL) continue;
 
-		// Gom theo Type
+		// Gom theo Type roi copy data vao sensor tuong ung vao slot
 		switch(in->type){
 		case SENSOR_ECG:
 			slot.ecg = *in;
@@ -177,37 +178,70 @@ void Sync_Task(void const *pvParameter){
 				out.timestamp_sync = slot.ecg.timestamp;
 				out.count_sync = MIN(MIN(slot.ecg.count, slot.ppg.count), slot.pcg.count);
 
-				// !!! Gan truc tiep chi cho bien co cung kieu !!!
-				// Ep sang const cho dung voi memcpy (data gio da duoc snapshot roi)
-				memcpy(out.ecg_sync, (const int16_t*)slot.ecg.ecg, out.count_sync * sizeof(int16_t));
-				memcpy(out.ppg_ir_sync, (const uint32_t*)slot.ppg.ppg.ir, out.count_sync * sizeof(uint32_t));
-				memcpy(out.pcg_sync, (const int32_t*)slot.pcg.pcg, out.count_sync * sizeof(int32_t));
+				memcpy(out.ecg_sync, slot.ecg.ecg, out.count_sync * sizeof(int16_t));
+				memcpy(out.ppg_ir_sync, slot.ppg.ppg.ir, out.count_sync * sizeof(uint32_t));
+				memcpy(out.pcg_sync, slot.pcg.pcg, out.count_sync * sizeof(int32_t));
 
 				/* NOTE: Gui mail block data da sync den trung tam xu ly de DataDispatcher lo het phan con lai */
 				DataDispatcher_Send(&out);
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
-				g_sync_block_per_sec++; /* Dem so block duoc gui di */
+				g_synced_block++; /* Dem so blocks duoc gui di */
 #endif // SYNC_BLOCK_COUNT_DEBUG
 
-				// Tiep tuc reset 3 frame neu moi thu deu on
-				sync_slot_reset(&slot);
-
+				sync_slot_reset(&slot); // Tiep tuc reset 3 frame neu moi thu deu on
 			}
-			// Neu mismatch
+
+			// Neu ready nhung mismatch
 			else{
 #ifdef SYNC_BLOCK_COUNT_DEBUG
-				uart_printf("[SYNC] Mismatch drop oldest ! ECG: %lu PPG: %lu PCG: %lu\r\n",
-							slot.ecg.sample_id, slot.ppg.sample_id, slot.pcg.sample_id);
+				/* Thay vi in log thi chi dung 1 bien de ghi lai so lan xay ra mismatch */
+				g_mismatched_block_count++;
+#else
+				/**
+				 * DEBUG NOTE:
+				 * Sau khi debug, pcg luon bi lech frame cham hon so 2 sensor con lai (luon di sau 1 nhip)
+				 * nhung moi giay van nhan du 32 blocks, khong cham throughput nhung toan bo frame bi
+				 * lech phase 1 nhip. Ly do la vi PCG tu luc DMA tranfer xong -> CPU co data de xu ly thi mat hon 32ms !
+				 * (Da ghi trong task) The nen neu cu lech phase 1 block thi task lai bi roi vao day de drop va doi
+				 * block moi den, lien tuc nhu the voi cac block tiep theo se deu bi tre frame so voi ecg va pcg
+				 * Sai so nay se tich luy theo thoi gian qua nhieu frame nen luc pcg lay duoc id moi thi ecg/ppg block
+				 * da nhay sang id khac
+				 * -> The neu 1s tuy co du 32 blocks nhung van xay ra 32 lan mismatch den tu pcg !
+				 */
+				uart_printf("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
+						slot.ecg.sample_id,
+						slot.ppg.sample_id,
+						slot.pcg.sample_id);
 #endif // SYNC_BLOCK_COUNT_DEBUG
 
-				sync_drop_oldest(&slot); // Khong reset het - chi drop cai cu nhat roi doi cai moi
+				/**
+				 * Khong reset het - chi drop sensor tre nhat roi doi cai moi
+				 * Drop roi doi den khi nao 3 block ready thi moi gui di
+				 * The nen ve ly thuyet se gui du 31-32 blocks/s cho du co bi mismatch
+				 * nhung neu bi lech thi se bo luon block do
+				 */
+				sync_drop_oldest(&slot);
 			}
 		}
-		// Neu ca 3 block chua ready
-		else{ /* Do nothing */}
 	}
 }
+
+/*-----------------------------------------------------------*/
+
+#ifdef SYNC_BLOCK_COUNT_DEBUG
+uint32_t Sync_block_ok_count(void){
+	return g_synced_block;
+}
+
+/*-----------------------------------------------------------*/
+
+uint32_t Sync_mismatch_count(void){
+    return g_mismatched_block_count;
+}
+#endif // SYNC_BLOCK_COUNT_DEBUG
+
+/*-----------------------------------------------------------*/
 
 #endif  // SYNC_INTERMEDIARY_USING
 

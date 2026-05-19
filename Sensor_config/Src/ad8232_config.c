@@ -50,18 +50,19 @@ HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc){
 
 /*-----------------------------------------------------------*/
 
-// === VERSION 3 ===
-
-void Ad8232_task_ver3(void const *pvParameter){
+void Ad8232_task(void const *pvParameter){
 	(void)(pvParameter);
 	sensor_block_t block;
 
 	uart_printf("AD8232 task started !\r\n");
 	memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
 
-	// Ghi du lieu tu DMA vao buffer den khi du 32 mau
+	// DMA ghi du lieu tu ADC vao RAM (buffer) den khi du 32 mau
 	// Trigger tu TIMER (sample rate = 1000Hz) moi mau 1ms la 1 lan doc ADC
-	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ecg_buffer, ECG_DMA_BUFFER) != HAL_OK) uart_printf("[AD8232] HAL_ADC_Start_DMA failed!\r\n");
+	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ecg_buffer, ECG_DMA_BUFFER) != HAL_OK){
+		uart_printf("[AD8232] HAL_ADC_Start_DMA failed!\r\n");
+		Error_Handler();
+	}
 
 	while(1){
 		if(osSemaphoreWait(ad8232_semId, 100) == osOK){ // Sau 32ms thi TIMER nha semaphore
@@ -69,7 +70,8 @@ void Ad8232_task_ver3(void const *pvParameter){
 			// Take notify khi DMA ghi data vao buffer hoan tat tu ham ConvCpltCallback
 			if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) == pdTRUE){
 
-				for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; // Copy gia tri sang bien ecg trong sensor_block_t
+				/* Copy gia tri sang bien ecg trong sensor_block_t -> rat nhanh */
+				for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i];
 
 				block.type = SENSOR_ECG;
 				block.count = ECG_DMA_BUFFER;
@@ -87,71 +89,6 @@ void Ad8232_task_ver3(void const *pvParameter){
 			else uart_printf("[AD8232] Timeout waiting for DMA done !\r\n");
 		}
 		else uart_printf("[AD8232] Can not take semaphore !\r\n");
-	}
-}
-
-/*-----------------------------------------------------------*/
-
-// === VERSION 2 ===
-
-__attribute__((unused)) void Ad8232_task_ver2(void const *pvParameter){
-	(void)(pvParameter);
-	sensor_block_t block;
-
-	uart_printf("AD8232 task started !\r\n");
-	memset(&block, 0, sizeof(sensor_block_t)); //Set ve 0 de tranh byte rac
-
-	//Ghi du lieu DMA vao ECG_DMA_BUFFER nay den khi du 32 mau, trigger moi mau 1ms (sample rate = 1000Hz) la 1 lan doc ADC
-	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ecg_buffer, ECG_DMA_BUFFER) != HAL_OK){
-		uart_printf("[AD8232] HAL_ADC_Start_DMA failed!\r\n");
-	}
-
-	while(1){
-		if(ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE){ //Doi notify DMA hoan tat tu ham ConvCpltCallback
-
-			for(uint8_t i = 0; i < ECG_DMA_BUFFER; i++) block.ecg[i] = ecg_buffer[i]; //Copy gia tri sang bien ecg trong sensor_block_t
-
-			block.type = SENSOR_ECG;
-			block.count = ECG_DMA_BUFFER;
-
-#ifdef SYNC_INTERMEDIARY_USING
-			block.timestamp = global_sync_snapshot.timestamp;
-			block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
-
-			MAIL_SEND_FROM_TASK_TO_SYNC(block); // Gui 32 sample vao den task tiep theo
-#elif defined(SENSOR_SEND_DIRECT_USING)
-			MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
-#endif
-		}
-		else uart_printf("[ADC8232] Timeout waiting for DMA done !\r\n");
-	}
-}
-
-/*-----------------------------------------------------------*/
-
-// ===== VERSION 1 =====
-
-__attribute__((unused)) void Ad8232_task_ver1(void const *pvParameter){
-	(void)(pvParameter);
-	__attribute__((unused)) sensor_block_t block;
-	uart_printf("AD8232 task started !\r\n");
-
-	while(1){
-		if(osSemaphoreWait(ad8232_semId, osWaitForever) == osOK){ //Trigger tu ham Callback de lay semaphore
-			HAL_ADC_Start(&hadc1);
-
-			if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK){
-				block.type = SENSOR_ECG;
-//				block.ecg = (int16_t)HAL_ADC_GetValue(&hadc1);
-
-#ifdef SYNC_INTERMEDIARY_USING
-				MAIL_SEND_FROM_TASK_TO_SYNC(block); // Gui 32 sample vao den task tiep theo
-#elif defined(SENSOR_SEND_DIRECT_USING)
-				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
-#endif
-			}
-			HAL_ADC_Stop(&hadc1);
-		}
 	}
 }
 
