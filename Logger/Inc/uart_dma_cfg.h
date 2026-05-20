@@ -35,10 +35,16 @@ extern "C" {
 
 #include "cmsis_os.h"
 
-#define UART_DMA_TX_QUEUE_LENGTH		16
-#define UART_DMA_TX_MAX_PACKET_SIZE		256
+/**
+ * @note
+ * Tinh nhanh: 32 samples x 20 bytes/sample
+ * (ECG 4 chars + PPG 6 chars + PPG max 7 chars + 3 dau phay/newline)
+ *  ~ 640 bytes
+ */
+#define UART_DMA_TX_MAX_PACKET_SIZE		640 	// 256 -> 640 (du chua 1 block hoan chinh)
+#define UART_DMA_TX_QUEUE_LENGTH		4		// 4 x 640 = 2560 heap, vua du
 #define UART_PRINTF_BUFFER_SIZE      	256  	// Dung cho log/debug binh thuong
-#define UART_STREAM_BUFFER_SIZE  		1024	// Dung cho stream data
+#define UART_STREAM_BUFFER_SIZE  		640		// Dung cho stream data
 
 typedef struct {
 	uint16_t len;  /* Chieu dai packet */

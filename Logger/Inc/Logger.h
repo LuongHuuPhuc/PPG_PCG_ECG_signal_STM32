@@ -35,7 +35,7 @@ extern osThreadId logger_taskId;
 #define MAX_COUNT 				32
 #define MAX_RETRY_SCANNER 		2
 #define LOGGER_QUEUE_LENGTH 	40 	// Tang chieu dai queue de chong tran
-#define MAX_SAMPLE_STR_LEN		24
+#define MAX_SAMPLE_STR_LEN		26
 
 // ==== FUNCTION PROTOTYPE ====
 
@@ -119,57 +119,13 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
  * Sau khi nhan Mail tu task Sync dong bo (giam ganh nang CPU cho Logger)
  * Thi moi in ra man hinh thong qua UART (chap nhan tre in)
  */
-void Logger_three_task_ver2(void const *pvParameter);
+void Logger_three_task(void const *pvParameter);
 
 typedef struct __sensor_sync_block sensor_sync_block_t;
 
 /* Callback function goi boi Sync Task de gui data den Logger Task thong qua data dispatcher */
 void Logger_dispatch(sensor_sync_block_t *block);
 #endif // SYNC_INTERMEDIARY_USING
-
-#ifdef SENSOR_SEND_DIRECT_USING /* NOTE: Cac ham cho viec gui block truc tiep tu Sensor task -> Logger task (khong trung gian) */
-//Kiem tra trang thai du lieu da san sang hay chua
-
-/* Forward Declare cho struct sensor_block_t */
-typedef struct SENSOR_BLOCK_t sensor_block_t;
-
-typedef struct {
-	bool ecg_ready;
-	bool ppg_ready;
-	bool pcg_ready;
-} __attribute__((unused)) sensor_check_t;
-
-/**
- * @brief Ham in ra 3 kenh du lieu PPG PCG ECG cung luc
- * @note Nhan truc tiep 3 block data tu Sensor task va in ra man hinh (khong thong qua sync task)
- */
-__attribute__((unused)) void Logger_three_task_ver1(void const *pvParameter); // Ham nhan data tu queue theo block 32 samples/lan
-
-/**
- * @brief Ham in ra 2 kenh du lieu dong thoi
- * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay (do can tinh min cua 2 block)
- */
-__attribute__((unused)) void Logger_two_task(void const *pvParameter);
-
-/**
- * @brief Ham in ra 1 kenh du lieu
- * @note Can uncomment macro xxx_ONLY_LOGGER trong main.h de su dung ham nay
- */
-__attribute__((unused)) void Logger_one_task(void const *pvParameter); //Ham debug log de xem thuc te co bao nhieu sample moi task
-
-osStatus Logger_mail_send(sensor_block_t *block);
-
-/* Macro nay se de Sensor Task gui thang truc tiep den Logger Task
- * @note: Dung khi KHONG muon dung sync task */
-#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do { \
-	Logger_mail_send(&(block)); \
-} while(0)
-
-#endif // SENSOR_SEND_DIRECT_USING
-
-#ifndef MAIL_SEND_FROM_TASK_DIRECT_LOGGER /* Neu chua enable gi ca */
-#define MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block) do {} while(0) /* Dummy macros function tu Sensor -> Logger de tranh bi loi */
-#endif // MAIL_SEND_FROM_TASK_DIRECT_LOGGER
 
 #ifdef QUEUE_FREE_CHECK /* FreeRTOS API */
 /**
