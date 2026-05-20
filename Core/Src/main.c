@@ -223,7 +223,7 @@ int main(void)
   sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
   configASSERT(sync_taskId);
 
-  osThreadDef(LoggerTaskName, Logger_three_task_ver2, osPriorityBelowNormal, 0, 1024 * 2);
+  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
   configASSERT(logger_taskId);
 
@@ -559,7 +559,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
   /* DMA1_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
@@ -682,7 +682,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		  global_sync_snapshot.timestamp = osKernelSysTick();
 #endif // SYNC_INTERMEDIARY_USING
 
-	      /* MAX dung FIFO va ADC khong dung DMA tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
+	      /* MAX dung FIFO va ADC khong dung tan so cao nhu I2S nen su dung Timer chuan 32ms de kich hoat theo lich trinh doc du lieu  */
+//		  osSemaphoreRelease(inmp441_semId);
 		  osSemaphoreRelease(ad8232_semId); // Give Semaphore cho AD8232 sau moi 32ms
 		  osSemaphoreRelease(max30102_semId); // Give Semaphore cho MAX30102 sau moi 32ms
 	  }
