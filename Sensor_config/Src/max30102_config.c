@@ -16,10 +16,6 @@ extern "C" {
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
 #include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
 
-#ifdef SENSOR_SEND_DIRECT_USING
-#include "Logger.h" // Truong hop su dung MAIL_SEND_FROM_TASK_DIRECT_LOGGER cho Sensor Task -> Logger Task (khong dung sync_task)
-#endif // SENSOR_SEND_DIRECT_USING
-
 //====== VARIABLES DEFINITION ======
 
 volatile uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
@@ -119,9 +115,9 @@ void Max30102_task(void const *pvParameter){
 				block.timestamp = global_sync_snapshot.timestamp;
 				block.sample_id = global_sync_snapshot.sample_id; //Danh dau thoi diem -> dong bo
 
+//		        uart_printf("[MAX30102] sending sample_id = %lu\r\n", block.sample_id);
+
 				MAIL_SEND_FROM_TASK_TO_SYNC(block);
-#elif defined(SENSOR_SEND_DIRECT_USING) /* Gui truc tiep */
-				MAIL_SEND_FROM_TASK_DIRECT_LOGGER(block);
 #endif // SYNC_INTERMEDIARY_USING
 
 			}
