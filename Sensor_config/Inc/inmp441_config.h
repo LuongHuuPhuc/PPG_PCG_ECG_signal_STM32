@@ -53,6 +53,10 @@ extern "C" {
 /* Data Memory Barrier */
 #define DMB()						__asm volatile("dmb" ::: "memory")
 
+#define CLEAR_BITS					0xFFFFFFFF
+#define NOTIFY_HALF					(1UL << 0) // 1
+#define NOTIFY_FULL					(1UL << 1) // 2
+
 // Task & RTOS
 extern osSemaphoreId inmp441_semId;
 extern osThreadId inmp441_taskId;
