@@ -42,7 +42,7 @@ extern "C" {
  *  ~ 640 bytes
  */
 #define UART_DMA_TX_MAX_PACKET_SIZE		640 	// 256 -> 640 (du chua 1 block hoan chinh)
-#define UART_DMA_TX_QUEUE_LENGTH		4		// 4 x 640 = 2560 heap, vua du
+#define UART_DMA_TX_QUEUE_LENGTH		7		// 7 x 640 = 4480 bytes heap
 #define UART_PRINTF_BUFFER_SIZE      	256  	// Dung cho log/debug binh thuong
 #define UART_STREAM_BUFFER_SIZE  		640		// Dung cho stream data
 
