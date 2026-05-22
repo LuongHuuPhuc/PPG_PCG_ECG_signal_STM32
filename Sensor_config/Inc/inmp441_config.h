@@ -53,9 +53,10 @@ extern "C" {
 /* Data Memory Barrier */
 #define DMB()						__asm volatile("dmb" ::: "memory")
 
-#define CLEAR_BITS					0xFFFFFFFF
-#define NOTIFY_HALF					(1UL << 0) // 1
-#define NOTIFY_FULL					(1UL << 1) // 2
+#define NOTIFY_HALF					(1UL << 0) // Event khi half-buffer (0x01)
+#define NOTIFY_FULL					(1UL << 1) // Event khi full-buffer (0x02)
+#define BITS_CLEAR_ON_EXIT			(NOTIFY_HALF | NOTIFY_FULL) // Cac bit can xoa sau khi thoat ham (reset event) (sau khi nhan duoc notify)
+#define BITS_CLEAR_ON_ENTRY			0x00	// Cac bit can xoa khoi gia tri notify cua Task ngay truoc khi vao ham (neu notify chua den)
 
 // Task & RTOS
 extern osSemaphoreId inmp441_semId;

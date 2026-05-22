@@ -40,7 +40,6 @@ extern "C" {
 static UART_HandleTypeDef *uart_dma_handle = NULL;
 
 static osMailQId uart_dma_queueId = NULL;
-//static osSemaphoreId uart_dma_semId = NULL;
 osThreadId uart_dma_taskId = NULL;
 
 /* Current DMA packet pointer - con tro tro den packet hien tai */
@@ -66,11 +65,6 @@ HAL_StatusTypeDef uart_dma_init(UART_HandleTypeDef *huart){
 	osMailQDef(uartDMAQueueName, UART_DMA_TX_QUEUE_LENGTH, uart_dma_packet_t);
 	uart_dma_queueId = osMailCreate(osMailQ(uartDMAQueueName), NULL);
 	if(uart_dma_queueId == NULL) return HAL_ERROR;
-
-	/* Khoi tao semaphore de DMA complete */
-//	osSemaphoreDef(uartDMASemaphoreName);
-//	uart_dma_semId = osSemaphoreCreate(osSemaphore(uartDMASemaphoreName), 1);
-//	if(uart_dma_semId == NULL) return HAL_ERROR;
 
 	return HAL_OK;
 }
@@ -161,7 +155,7 @@ HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len){
 	memcpy(mail->data, data, len); // Copy data lan 1
 	mail->len = len;
 
-	// Gui data vao queue buffer cho DMA
+	// Gui data vao queue buffer cho UART DMA task in ra
 	if(osMailPut(uart_dma_queueId, mail) != osOK){
 		osMailFree(uart_dma_queueId, mail);
 		uart_error_count++;
@@ -191,15 +185,38 @@ void uart_dma_task(void const *pvParameters){
 		packet = (uart_dma_packet_t*)evt.value.p;
 		if(packet == NULL) continue;
 
-		HAL_StatusTypeDef ret = HAL_UART_Transmit_DMA(uart_dma_handle, packet->data, packet->len);
-		if(ret == HAL_OK){
-//			osSemaphoreWait(uart_dma_semId, osWaitForever); // Wait Forerver cho callback nha Semaphore ve
-			ulTaskNotifyTake(pdTRUE, portMAX_DELAY); // Nhe & cho toc do cao hon 45% so voi semaphore
-			uart_ok_count++;
+		HAL_StatusTypeDef ret;
+
+		// Retry neu BUSY, toi da 3 lan
+		for(uint8_t retry = 0; retry < 3; retry++){
+			ret = HAL_UART_Transmit_DMA(uart_dma_handle, packet->data, packet->len);
+
+			if(ret == HAL_OK) break;
+			else if(ret == HAL_BUSY){
+				uart_busy_count++;
+				osDelay(1); // Nhuong CPU, doi UART ranh
+			}
+			else{
+				uart_error_count++;
+				break;
+			}
 		}
-		else if(ret == HAL_BUSY) uart_busy_count++;
-		else uart_error_count++;
-		osMailFree(uart_dma_queueId, packet); /* Callback Data DMA transmit complete thi free luon */
+
+		if(ret == HAL_OK){
+
+			/**
+			 * Wait DMA complete dung TaskNotify nhe & cho toc do cao hon 45% so voi semaphore
+			 * Neu de portMAX_DELAY thi khi DMA stuck se khong reset WDT (de cho no dem ve 0) -> Reset he thong
+			 * -> pdMS_TO_TICK() de biet loi
+			 * -> DMA stuck -> Abort de reset
+			 */
+			if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) == 0){
+				HAL_UART_Abort(uart_dma_handle);
+				uart_error_count++;
+			}
+			else uart_ok_count++;
+		}
+		osMailFree(uart_dma_queueId, packet); /* Callback Data DMA transmit complete thi free luon (du OK hay ERROR) */
 	}
 }
 
@@ -247,8 +264,6 @@ void uart_dma_tx_complete_callback_ver2(UART_HandleTypeDef *huart){
 	// 1 ISR -> 1 task thi dung TaskNotify ngon luon
 	vTaskNotifyGiveFromISR(uart_dma_taskId, &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
-	//	osSemaphoreRelease(uart_dma_semId);
 }
 
 /*-----------------------------------------------------------*/

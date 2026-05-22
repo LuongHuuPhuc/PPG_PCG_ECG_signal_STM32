@@ -77,12 +77,12 @@ HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 	// Khoi tao bo loc FIR
 	fir_init(&fir);
 
-	osSemaphoreDef(inmp441SemaphoreName);
-	inmp441_semId = osSemaphoreCreate(osSemaphore(inmp441SemaphoreName), 1);
-	if(inmp441_semId == NULL){
-		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
-		return HAL_ERROR;
-	}
+//	osSemaphoreDef(inmp441SemaphoreName);
+//	inmp441_semId = osSemaphoreCreate(osSemaphore(inmp441SemaphoreName), 1);
+//	if(inmp441_semId == NULL){
+//		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
+//		return HAL_ERROR;
+//	}
 	return ret;
 }
 
@@ -193,11 +193,31 @@ void Inmp441_task(void const *pvParameter){
 	 */
 	if(HAL_I2S_Receive_DMA(&hi2s2, (uint16_t*)buffer16, I2S_SAMPLE_COUNT) != HAL_OK){ // 256 sample 24-bit
 		uart_printf("[INMP441] HAL_I2S_Receive_DMA failed !\r\n");
+		Error_Handler();
 	}
 
 	while(1){
-		uint32_t notif = 0; /* Su dung Notify bits */
-		if(xTaskNotifyWait(0, CLEAR_BITS, &notif, portMAX_DELAY) == pdTRUE){
+		/**
+		 * NOTE:
+		 *  Su dung Notify bits - bit nao bat thi nhanh do thuc hien
+		 *  thay cho ulTaskNotify vi ulTask chi phu hop cho "chi co 1 loai event"
+		 *  nhung neu co 2 event (HALF, FULL), task chi biet co interrupt chua khong
+		 *  biet HALF hay FULL.
+		 *  - eSetBits hoat dong theo co che: notify_value |= event_bits
+		 *  - Khong ghi de bit cu neu task chua xu ly xong
+		 *  - HALF va FULL co the ton tai dong thoi trong notify_value
+		 *  - Task se kiem tra tung bit de xu ly tung phase DMA
+		 *
+		 *  Tuy nhien eSetBits khong phai counting/queue event:
+		 *  	- Chi luu trang thai bit dang pending
+		 *  	- Khong dem so lan interrupt xay ra
+		 *  	- Nhieu FULL notify den lien tiep co the bi gop thanh 1 bit FULL -> Xu ly lai path da xu ly
+		 *  	trong khi snapshot chua doi phase kip -> In ra gia tri id trung lap lan nua
+		 *  -> Can co co che chong duplicate (last_send_id) de tranh gui lai cung 1 sample_id
+		 *  khi task bi overlap timing
+		 */
+		uint32_t notif = 0; // Gia tri eSetBits 32-bit, khi nhan notify -> notif |= ulValue (bien OR)
+		if(xTaskNotifyWait(BITS_CLEAR_ON_ENTRY, BITS_CLEAR_ON_EXIT, &notif, portMAX_DELAY) == pdTRUE){ // Wait DMA ISR
 
 #ifdef DWT_DEBUG
 
@@ -220,12 +240,14 @@ void Inmp441_task(void const *pvParameter){
 			 * 				  DMA RxCplt callback tiep sau -> Xu ly 0.7ms -> Output 32.7ms
 			 *
 			 * Voi them ly do la DMA cua I2S khong cung goc thoi gian voi TIM3 so voi ecg/ppg
-			 * 		- DMA: chay tu PLLI2S clock (nguon rieng biet)
-			 * 		- TIM3: chay tu APB1 clock (PCLK1)
-			 * 	Hai clock nay co sai so tan so nho (vai ppm), de lau se bi sai so tich luy.
+			 * 		- DMA: chay tu PLLI2S clock (nguon rieng biet) -> ISR xu ly nhanh hon do duoc toi uu hoa de truyen
+			 * 		data truc tiep vao RAM, giam tai CPU do phai truyen du lieu am thanh toc do cao.
+			 * 		- TIM3: chay tu APB1 clock (PCLK1) -> Cham hon DMA ISR do CPU phai thuc hien lenh Read/Write de
+			 * 		xu ly tung byte trong RAM
+			 * -> Hai clock nay co sai so tan so nho (vai ppm), de lau se bi sai so tich luy.
 			 *
 			 * -> De xuat thu chuyen sang Half-buffer (moi buffer 16ms) -> Latency giam
-			 * -> De cho pcg start DMA cung phase voi TIM3 ngay tu dau he thong (trong main) de PCG di truoc ECG/PPG (?)
+			 * -> Thay doi priority cua ISR vi neu pcg DMA xay ra truoc TIM3 thi sample_id se bi cu
 			 */
 
 			if(notif & NOTIFY_HALF){
@@ -258,8 +280,9 @@ void Inmp441_task(void const *pvParameter){
 						last_sent_id = current_id;
 
 						MAIL_SEND_FROM_TASK_TO_SYNC(block); /* Gui block vao sync task */
-#endif // SYNC_INTERMEDIARY_USING
 					}
+#endif // SYNC_INTERMEDIARY_USING
+
 					pcg_block_ready = false;
 				}
 				uint32_t end = DWT->CYCCNT;
@@ -267,19 +290,26 @@ void Inmp441_task(void const *pvParameter){
 				/* ISR->Done: 0.68ms ~ 0.72ms */
 			}
 #else
-			if(notif & NOTIFY_HALF) Inmp441_downsample_process(0, PCG_BUFFER_HALF);
-			if(notif & NOTIFY_FULL){
+			if(notif & NOTIFY_HALF) Inmp441_downsample_process(0, PCG_BUFFER_HALF); // Khi bit vi tri 0 duoc set thi di vao day
+			if(notif & NOTIFY_FULL){ // Khi bit vi tri 1 duoc set thi di vao day
 				/**
 				 * BEFORE:
-				 * Full buffer xong tai t=32ms, cung luc TIM3 fire
+				 * Khi half-full buffer xong tai t=32ms, cung luc TIM3 fire
 				 * Cho semaphore tu TIM3 de dam bao sample_id da duoc
 				 * cap nhat truoc khi lay snapshot - giong co che cua ECG/PPG
 				 */
 //				osSemaphoreWait(inmp441_semId, 5); /* block neu chua duoc Release */
 
 				/**
+				 * ↓↓↓↓↓
 				 * AFTER:
-				 * Khong can dung osSemaphore o day vi
+				 * Khong dung osSemaphore o day vi neu task wakeup vao NOTIFY_FULL
+				 * sau 32ms tu DMA ISR ma TIM3 lai chua trigger thi no se block task
+				 * Trong khoang thoi gian do, DMA tiep tuc chay va co the trigger them
+				 * NOTIFY_FULL lan 2 -> bit duoc set lai truoc khi task kip xu ly cai cu
+				 * -> task xu ly FULL 2 lan cung voi sample_id -> Duplicate block
+				 *
+				 * -> Set Priority cua TIM3 cao hon DMA
 				 * TIM3 ISR priority da duoc set cao hon DMA ISR trong CubeMX
 				 * Tai t=32ms, khi RxCplt va TIM3 fire gan nhu dong thoi:
 				 * 		1. TIM3 ISR chay truoc -> sample_id++ -> osSemaphoreRelease(ecg/ppg)
@@ -287,8 +317,6 @@ void Inmp441_task(void const *pvParameter){
 				 * 		3. Task wakeup -> global_sync_snapshot.sample_id da la N moi
 				 *
 				 * -> Doc truc tiep global_sync_snapshot la an toan, khong can dong bo them
-				 * -> Dung osSemaphore se tre va block task va gay tich luy NOTIFY_FULL dan den
-				 * gui duplicate block neu task chua kip xu ly xong Semaphore
 				 */
 
 				Inmp441_downsample_process(DOWNSAMPLE_SAMPLE_COUNT / 2, PCG_BUFFER_FULL);
@@ -306,15 +334,18 @@ void Inmp441_task(void const *pvParameter){
 						block.sample_id = current_id;
 						last_sent_id = current_id;
 
-//				        uart_printf("[INMP441] sending sample_id = %lu\r\n", block.sample_id);
+//						uart_printf("[INMP441] sending sample_id = %lu\r\n", block.sample_id);
 
 						MAIL_SEND_FROM_TASK_TO_SYNC(block); /* Gui block vao sync task */
-#endif // SYNC_INTERMEDIARY_USING
 					}
+#endif // SYNC_INTERMEDIARY_USING
+
 					/**
+					 * NOTE:
 					 * DMA bat dau tai t=0ms nhung block data PCG do lai dai dien cho thoi diem [0ms -> 32ms]
-					 * Khi block xong thi TIM3 da fire lan 1 (sample_id = 1). PCG gan id=0 truoc do vua moi xong
-					 * thi ECG/PPG luc do dang xu ly id=1 roi
+					 * Khi block xong thi TIM3 da fire lan 1 (sample_id = 1).
+					 * Neu gan id tai ISR callback thi pcg vo tinh lay id=0 truoc do (neu RxCplt chay truoc TIM3 ISR)
+					 * thi se luon bi cham hon so voi ecg/ppg
 					 * -> Khong gan tai ISR callback ma gan ngay sau 32ms khi xu ly xong HalfFull
 					 */
 					pcg_block_ready = false;
@@ -366,13 +397,16 @@ void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
 	if(hi2s->Instance == SPI2){
 
 		/**
-		 *  HalfCplt tai t=16ms lay sample_id = 0 -- day la id cua thoi diem dang chay. Nhung
-		 *  khi block xong tai t=32ms (RxCplt), TIM3 fire va ECG/PPG da sang id=1
+		 * NOTE:
+		 *  HalfCplt tai t=16ms lay sample_id = 0 -> day la id cua thoi diem dang chay.
+		 *  Nhung khi block xong tai t=32ms (RxCplt), TIM3 fire va ECG/PPG da sang id=1
 		 *  -> PCG khong lay snapshot tai ISR ma lay trong task ngay sau khi xu ly xong HalfFull
 		 *  Luc nay TIM3 da chac chan fire va cap nhat sample_id roi vi RxCplt fire tai 32ms
 		 *
 		 *  -> Tai t=32ms, DMA RxCplt va TIM3 gan nhu fire dong thoi, neu RxCplt chay truoc TIM3 thi
-		 *  sample_id cua pcg chua duoc tang -> lay nham id cu
+		 *  sample_id cua pcg chua duoc tang -> lay nham id cu (neu chay truoc thi co the lay sample_id = 0)
+		 *  trong khi sample_id = 1 moi la diem bat dau
+		 *
 		 *  -> Set priority interrupt cua TIM3 cao hon DMA I2S (so be hon).
 		 *  Khi do TIM3 chay truoc -> sample_id++ -> sau do DMA chay -> lay sample_id moi -> match dung voi ECG/PPG
 		 */
@@ -381,7 +415,7 @@ void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
 		pcg_dma_event.cycle_half = DWT->CYCCNT; // Thoi diem DMA half callback duoc trigger
 #endif // DWT_DEBUG
 
-		// eSetBits: set bit 0, khong ghi de bit khac
+		// eSetBits: notif_value |= HALF
 		xTaskNotifyFromISR(inmp441_taskId, NOTIFY_HALF, eSetBits, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
@@ -391,7 +425,7 @@ void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
 
 /**
  * @note
- *  Khi ghi DMA hoan tat (256 samples) -> Ngat (ISR) se sinh ra va ham nay se duoc goi (Circular)
+ * Khi ghi DMA hoan tat (256 samples) -> Ngat (ISR) se sinh ra va ham nay se duoc goi (Circular)
  * Ly do khong dung Timer trigger truc tiep moi 32ms ma dung DMA callback:
  * Vi khi dung Timer, task se chay theo lich trinh co dinh, doc lap voi DMA
  * Cho du data DMA van chua xu ly nhung Timer van cu chay task thi se gap loi "Overwritten"
@@ -414,14 +448,21 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 #endif // DWT_DEBUG
 
 		/**
+		 * NOTE:
 		 * Van de xay ra neu buffer trong ham chua xu ly xong ma DMA Callback cu ban Semaphore Give lien tuc thi Semaphore Take se bi tre !
 		 * Khong duoc phep Give Semaphore neu trang thai Semaphore = 1 (non-available)
 		 * Voi ca TaskNotify co toc do nhanh hon 45% so voi Semaphore Binary vi chi can thong bao cho
-		 * 1 task duy nhat de xu ly du lieu chu khong can xu ly nhieu task nhu Semaphore
-		 * Kha nang dung Semaphore de trigger ISR khong on lam => Su dung TaskNotify
+		 * "1 TASK DUY NHAT" de xu ly du lieu chu khong can xu ly nhieu task den nhu Semaphore
+		 * va ton RAM rat it. Kha nang dung Semaphore de trigger ISR khong on lam => Su dung TaskNotify
 		 */
 
-		// eSetBits: set bit 1, khong ghi de bit 0 neu chua xu ly
+		/**
+		 * NOTE:
+		 * eSetBits: (notif_value |= NOTIFY_FULL)
+		 * Vd: HALF(notif = 0x01) dang pending -> FULL (0x02) toi -> notif = 0x03 (HALF | FULL)
+		 * Khong ghi de cac bit cu chua duoc task xu ly
+		 * Chi luu trang thai bit, khong dem so lan event xay ra
+		 */
 		xTaskNotifyFromISR(inmp441_taskId, NOTIFY_FULL, eSetBits, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}

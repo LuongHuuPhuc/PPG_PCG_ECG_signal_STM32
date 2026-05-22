@@ -193,7 +193,7 @@ void Logger_three_task(void const *pvParameter){
 	osEvent evt;
 	sensor_sync_block_t *data;
 
-	// Buffer local
+	// Buffer local (do static nen chi co Logger duoc dung -> Race neu dung chung)
 	static char stream_buf[UART_STREAM_BUFFER_SIZE]; // buffer dem de gom block data roi in 1 lan, giam blocking
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
