@@ -147,9 +147,13 @@ void Logger_dispatch(sensor_sync_block_t *block){
 /*
  * itoa() co toc do nhanh hon snprintf do snprintf can phai format
  * va phan tich chuoi dinh dang tai thoi diem runtime gay ra chi phi cao
- * con itoa() chi thuc hien 1 nhiem vu duy nhat la chuyen so nguyen thanh
- * chuoi
- * 	-> Log stream data dung cai nay thay cho uart_printf
+ * con itoa() chi thuc hien 1 nhiem vu duy nhat la chuyen gia tri so nhi phan
+ * trong RAM thanh chuoi so ASCII (dec).
+ *
+ * - Block data duoc gui tu SyncTask den LoggerTask duoc de trong RAM van la
+ * cac gia tri so nhi phan. De chuyen qua ASCII thi can phai qua ham nay !
+ * Moi so duoc modulo (chia lay du cho 10) roi cong voi '0' de anh xa vao bang ASCII
+ * ben trong phan mem -> Log stream data dung cai nay thay cho uart_printf
  */
 static int fast_itoa(int value, char *buf){
 	if(value == INT_MIN){
@@ -170,6 +174,7 @@ static int fast_itoa(int value, char *buf){
 
 	if(neg) value = -value;
 
+	/* Tach value nhan duoc thanh cac char don le voi thu tu bi nguoc tu duoi len vao tmp[] */
 	while(value > 0){
 		tmp[i++] = (value % 10) + '0';
 		value /= 10;
@@ -177,7 +182,7 @@ static int fast_itoa(int value, char *buf){
 
 	if(neg) tmp[i++] = '-';
 
-	// reverse
+	// reverse lai tmp[]
 	for(j = 0; j < i; j++) buf[j] = tmp[i - j - 1];
 	buf[i] = '\0';
 
