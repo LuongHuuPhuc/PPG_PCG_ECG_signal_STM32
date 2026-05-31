@@ -1,7 +1,7 @@
 /*
  * @file uart_dma_cfg.h
  *
- * @date Created on: May 14, 2026
+ * @date May 14, 2026
  * @author LuongHuuPhuc
  *
  * @note
@@ -39,7 +39,7 @@ extern "C" {
  * @note
  * Tinh nhanh: 32 samples x 20 bytes/sample
  * (ECG 4 chars + PPG 6 chars + PPG max 7 chars + 3 dau phay/newline)
- *  ~ 640 bytes
+ *  ~ 640 bytes/block
  */
 #define UART_DMA_TX_MAX_PACKET_SIZE		640 	// 256 -> 640 (du chua 1 block hoan chinh, tranh bi truncate - cat ngan)
 #define UART_DMA_TX_QUEUE_LENGTH		7		// 7 x 640 = 4480 bytes heap

@@ -1,7 +1,7 @@
 /*
  * @file uart_dma_cfg.c
  *
- * @date Created on: May 14, 2026
+ * @date May 14, 2026
  * @author LuongHuuPhuc
  */
 

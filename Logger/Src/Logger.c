@@ -1,8 +1,8 @@
 /*
  * @file Logger.c
  *
- *  Created on: Jun 17, 2025
- *  @Author Luong Huu Phuc
+ * @date Jun 17, 2025
+ * @author Luong Huu Phuc
  */
 
 #ifdef __cplusplus
@@ -21,26 +21,17 @@ extern "C" {
 static osMailQId logger_queueId = NULL;
 osThreadId logger_taskId = NULL;
 
-// Extern variables
-extern UART_HandleTypeDef huart2;
-
 /*-----------------------------------------------------------*/
 
 HAL_StatusTypeDef Logger_init(void){
-	HAL_StatusTypeDef ret = HAL_OK;
-
-	/* Khoi tao tai nguyen cho UART DMA dau tien ! */
-	ret = uart_dma_init(&huart2);
-	if(ret != HAL_OK) ret |= HAL_ERROR;
-
 	// Tao Queue cho Logger de nhan block tu Sync
 	osMailQDef(loggerQueueName, LOGGER_QUEUE_LENGTH, sensor_sync_block_t);
 	logger_queueId = osMailCreate(osMailQ(loggerQueueName), NULL);
 	if(logger_queueId == NULL){
 		uart_printf("[LOGGER] Failed to create logger_queueId !\r\n");
-		ret |= HAL_ERROR;
+		return HAL_ERROR;
 	}
-	return ret;
+	return HAL_OK;
 }
 
 /*-----------------------------------------------------------*/
@@ -63,27 +54,10 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c){
 
 /*-----------------------------------------------------------*/
 
-#ifdef QUEUE_FREE_CHECK
-void isQueueFree(const QueueHandle_t queue, const char *name){
-	UBaseType_t used = uxQueueMessagesWaiting(queue);
-	UBaseType_t free = uxQueueSpacesAvailable(queue);
-
-	if(free == 0){
-		uart_printf("[ERROR] Queue %s is FULL ! Used: %lu\r\n", name, used);
-	}else if(free < 5){ // Canh bao khi queue sap day
-		uart_printf("[WARN] Queue %s almost FULL ! Used: %lu, Free: %lu", name, used, free);
-	}
-}
-#endif // QUEUE_FREE_CHECK
-
-/*-----------------------------------------------------------*/
-
 /* Check neu ham co duoc goi trong ISR (return true -> Handler Mode (dang trong ISR))*/
 static inline bool in_isr(void){
 	return (__get_IPSR() != 0U);
 }
-
-/*-----------------------------------------------------------*/
 
 void uart_printf(const char *fmt,...){
 	// Buffer local
@@ -91,7 +65,7 @@ void uart_printf(const char *fmt,...){
 
 	va_list args;
 	va_start(args, fmt);
-	int len = vsnprintf(uart_buf, sizeof(uart_buf), fmt, args);
+	int len = vsnprintf(uart_buf, sizeof(uart_buf), fmt, args); // Ton stack phet :<
 	va_end(args);
 
 	if(len <= 0) return;

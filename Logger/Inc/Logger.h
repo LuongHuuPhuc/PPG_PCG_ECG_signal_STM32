@@ -105,7 +105,7 @@ HAL_StatusTypeDef Logger_init(void);
  * => Tom lai phai dam bao rang cac ISR cua ban luon luon nam trong vung uu tien thap de chung khong lam gian doan co che
  * bao ve cua Kernel khi chung goi cac API RTOS
  */
-__attribute__((weak, unused)) void uart_printf_safe(const char *fmt,...);
+__attribute__((deprecated("This function just for commenting, please use `uart_printf() instead"))) void uart_printf_safe(const char *fmt,...);
 
 /**
  * @brief Ham scan cac bus I2C de xem co dang ton tai dia chi nao khong
@@ -122,18 +122,10 @@ void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 void Logger_three_task(void const *pvParameter);
 
 typedef struct __sensor_sync_block sensor_sync_block_t;
-
 /* Callback function goi boi Sync Task de gui data den Logger Task thong qua data dispatcher */
 void Logger_dispatch(sensor_sync_block_t *block);
-#endif // SYNC_INTERMEDIARY_USING
 
-#ifdef QUEUE_FREE_CHECK /* FreeRTOS API */
-/**
- * @brief Ham kiem tra xem hang doi con free khong
- * @note Neu khong con trong -> Chuong trinh se dung lai
- */
-void isQueueFree(const QueueHandle_t queue, const char *name);
-#endif // QUEUE_FREE_CHECK
+#endif // SYNC_INTERMEDIARY_USING
 
 #ifdef __cplusplus
 }
