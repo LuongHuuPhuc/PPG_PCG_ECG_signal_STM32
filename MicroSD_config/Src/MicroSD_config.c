@@ -458,7 +458,7 @@ sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols){
 
 /*-----------------------------------------------------------*/
 
-void MicroSD_demo_test(void const *pvParameter){
+__attribute__((unused)) void MicroSD_demo_test(void const *pvParameter){
 	(void)(pvParameter);
 	sd_status_t ret;
 	uint8_t count = 0;
@@ -533,6 +533,7 @@ void MicroSD_dispatch(sensor_sync_block_t *block){
 void MicroSD_task(void const *pvParameter){
 
 }
+
 #endif // SYNC_INTERMEDIARY_USING
 
 #ifdef __cplusplus

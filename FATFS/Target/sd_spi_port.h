@@ -25,7 +25,7 @@ extern SPI_HandleTypeDef hspi1;
 
 /* SPI Speed Config */
 #define SD_SPI_PRESCALER_SLOW 			SPI_BAUDRATEPRESCALER_256 /* Khuyen nghi, giai doan init nen de clock cham (100 - 400 kHz) */
-#define SD_SPI_PRESCALER_FAST		    SPI_BAUDRATEPRESCALER_8  /* Sau khi the SD da khoi tao thanh cong */
+#define SD_SPI_PRESCALER_FAST		    SPI_BAUDRATEPRESCALER_8   /* Sau khi the SD da khoi tao thanh cong */
 
 #ifdef __cplusplus
 }
