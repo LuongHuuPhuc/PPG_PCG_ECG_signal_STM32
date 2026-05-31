@@ -1,8 +1,8 @@
 /*
- * inmp441_config.h
+ * @file inmp441_config.h
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifndef INC_INMP441_CONFIG_H_

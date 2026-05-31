@@ -1,8 +1,8 @@
-	/*
- * max30102_config.c
+/*
+ * @file max30102_config.c
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifdef __cplusplus
@@ -31,7 +31,7 @@ extern I2C_HandleTypeDef hi2c1;
 extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 extern void uart_printf(const char *fmt,...);
 
-//====== FUCNTION DEFINITION ======
+// ====== FUCNTION DEFINITION ======
 
 /*-----------------------------------------------------------*/
 

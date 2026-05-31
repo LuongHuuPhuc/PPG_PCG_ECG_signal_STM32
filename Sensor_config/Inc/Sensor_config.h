@@ -80,13 +80,6 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 	};
 } sensor_block_t;
 
-// Extern protocol variables
-extern UART_HandleTypeDef huart2;
-extern TIM_HandleTypeDef htim3;
-extern I2C_HandleTypeDef hi2c1;
-extern ADC_HandleTypeDef hadc1;
-extern I2S_HandleTypeDef hi2s2;
-
 // ==== FUNCTION PROTOTYPE ====
 
 /**
@@ -105,6 +98,14 @@ void StackCheck(void);
  * @brief Ham kiem tra bo nho heap con lai
 */
 void HeapCheck(void);
+
+#ifdef QUEUE_FREE_CHECK /* Using FreeRTOS API, not CMSIS-OS */
+/**
+ * @brief Ham kiem tra xem hang doi con free khong
+ * @note Neu khong con trong -> Chuong trinh se dung lai
+ */
+void QueueCheck(const QueueHandle_t queue, const char *name);
+#endif // QUEUE_FREE_CHECK
 
 #ifdef __cpluplus
 }

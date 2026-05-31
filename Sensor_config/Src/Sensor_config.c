@@ -15,6 +15,10 @@ extern "C" {
 // ====== FUNCTION DEFINITIONS ======
 /*-----------------------------------------------------------*/
 
+extern I2C_HandleTypeDef hi2c1;
+extern ADC_HandleTypeDef hadc1;
+extern I2S_HandleTypeDef hi2s2;
+
 extern HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc);
 extern HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s);
 extern HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
@@ -91,6 +95,21 @@ void vApplicationMallocFailedHook(void){
 				(unsigned int)heap_min_ever);
 	Error_Handler();
 }
+
+/*-----------------------------------------------------------*/
+
+#ifdef QUEUE_FREE_CHECK
+void __attribute__((unused)) QueueCheck(const QueueHandle_t queue, const char *name){
+	UBaseType_t used = uxQueueMessagesWaiting(queue);
+	UBaseType_t free = uxQueueSpacesAvailable(queue);
+
+	if(free == 0){
+		uart_printf("[ERROR] Queue %s is FULL ! Used: %lu\r\n", name, used);
+	}else if(free < 5){ // Canh bao khi queue sap day
+		uart_printf("[WARN] Queue %s almost FULL ! Used: %lu, Free: %lu", name, used, free);
+	}
+}
+#endif // QUEUE_FREE_CHECK
 
 /*-----------------------------------------------------------*/
 

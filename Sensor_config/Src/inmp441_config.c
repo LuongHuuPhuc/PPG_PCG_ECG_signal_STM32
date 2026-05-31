@@ -1,8 +1,8 @@
 /*
- * inmp441_config.c
+ * @file inmp441_config.c
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifdef __cplusplus
@@ -18,9 +18,9 @@ extern "C" {
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
-#include "FIR_Filter.h" // Bo loc LPF cho downsample (tu lam)
-#include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
-#include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
+#include "FIR_Filter.h" 	// Bo loc LPF cho downsample (tu lam)
+#include "Sensor_config.h" 	// Su dung struct `sensor_block_t` va `sensor_type_t`
+#include "take_snapsync.h" 	// Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
 
 /**
  * @note
@@ -265,6 +265,7 @@ void Inmp441_task(void const *pvParameter){
 //				osSemaphoreWait(inmp441_semId, 5);
 
 				Inmp441_downsample_process(DOWNSAMPLE_SAMPLE_COUNT / 2, PCG_BUFFER_FULL);
+
 				if(pcg_block_ready){
 					memcpy(block.pcg, pcg_temp, sizeof(pcg_temp));
 					block.type = SENSOR_PCG;
@@ -320,6 +321,7 @@ void Inmp441_task(void const *pvParameter){
 				 */
 
 				Inmp441_downsample_process(DOWNSAMPLE_SAMPLE_COUNT / 2, PCG_BUFFER_FULL);
+
 				if(pcg_block_ready){
 					memcpy(block.pcg, pcg_temp, sizeof(pcg_temp));
 					block.type = SENSOR_PCG;

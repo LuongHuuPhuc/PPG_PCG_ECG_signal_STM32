@@ -1,8 +1,8 @@
 /*
- * max30102_config.h
+ * @file max30102_config.h
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifndef _INC_MAX30102_CONFIG_H
@@ -48,7 +48,6 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
  * TIMER ban semaphore sau moi 32ms de task thuc hien xu ly
  */
 void Max30102_task(void const *pvParameter);
-
 
 #ifdef __cplusplus
 }

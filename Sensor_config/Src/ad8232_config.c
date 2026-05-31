@@ -1,8 +1,8 @@
 /*
- * ad8232_config.h
+ * @file ad8232_config.c
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifdef __cplusplus

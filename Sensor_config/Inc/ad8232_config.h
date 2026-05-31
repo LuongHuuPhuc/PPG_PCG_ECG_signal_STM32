@@ -1,8 +1,8 @@
 /*
- * ad8232_config.h
+ * @file ad8232_config.h
  *
- *  Created on: Oct 15, 2025
- *      Author: ADMIN
+ * @date Oct 15, 2025
+ * @author LuongHuuPhuc
  */
 
 #ifndef INC_AD8232_CONFIG_H_
@@ -33,7 +33,7 @@ extern "C" {
 extern osThreadId ad8232_taskId;
 extern osSemaphoreId ad8232_semId;
 
-//==== FUNCTION PROTOTYPE ====
+// ==== FUNCTION PROTOTYPE ====
 
 /**
  * @brief Ham khoi tao cam bien AD8232
