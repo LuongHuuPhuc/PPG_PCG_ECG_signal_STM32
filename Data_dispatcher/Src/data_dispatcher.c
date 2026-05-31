@@ -1,8 +1,8 @@
 /*
  * @file data_dispatcher.c
  *
- *  Created on: Apr 23, 2026
- *      Author: ADMIN
+ * @date Apr 23, 2026
+ * @author LuongHuuPhuc
  */
 
 #ifdef __cplusplus
@@ -14,6 +14,7 @@ extern "C" {
 
 #include "Logger.h"
 #include "MicroSD_config.h"
+#include "sensor_pkt.h"
 
 static dispatch_target_t curr_target = DISPATCH_TO_NONE;
 static dispatch_entry_t cb_map[MAX_DISPATCH_CB] = {0}; /* Khoi tao con tro den ham ban dau bang NULL */
@@ -23,13 +24,15 @@ static dispatch_entry_t cb_map[MAX_DISPATCH_CB] = {0}; /* Khoi tao con tro den h
 void DataDispatcher_RegisterCb(dispatch_target_t type, dispatch_callback_t cb){
 	if(type == DISPATCH_TO_UART) cb_map[0].cb = cb;
 	if(type == DISPATCH_TO_SD) cb_map[1].cb = cb;
+	if(type == DISPATCH_TO_PACKET) cb_map[2].cb = cb;
 }
 
 /*-----------------------------------------------------------*/
 
 void DataDispatcher_UnregisterCb(void){
 	cb_map[0].cb = NULL;
-	cb_map[1].cb  = NULL;
+	cb_map[1].cb = NULL;
+	cb_map[2].cb = NULL;
 }
 
 /*-----------------------------------------------------------*/
@@ -40,12 +43,22 @@ void DataDispatcher_SetTarget(dispatch_target_t target){
 
 /*-----------------------------------------------------------*/
 
-__attribute__((weak)) void DataDispatcher_Init(void){
+__attribute__((weak)) void DataDispatcher_Init(dispatch_target_t target){
 	/* Co the khoi tao o noi khac */
-	DataDispatcher_RegisterCb(DISPATCH_TO_UART, Logger_dispatch);
-	DataDispatcher_RegisterCb(DISPATCH_TO_SD, MicroSD_dispatch);
+	DataDispatcher_SetTarget(target);
 
-	DataDispatcher_SetTarget(DISPATCH_TO_UART);
+	/* Dang ky callback tuong ung voi target */
+	if(target & DISPATCH_TO_UART){
+		DataDispatcher_RegisterCb(DISPATCH_TO_UART, Logger_dispatch);
+	}
+
+	if(target & DISPATCH_TO_SD){
+		DataDispatcher_RegisterCb(DISPATCH_TO_SD, MicroSD_dispatch);
+	}
+
+	if(target & DISPATCH_TO_PACKET){
+		DataDispatcher_RegisterCb(DISPATCH_TO_PACKET, PacketBuilder_dispatch);
+	}
 }
 
 /*-----------------------------------------------------------*/
@@ -61,7 +74,12 @@ osStatus DataDispatcher_Send(sensor_sync_block_t *block){
 	if(curr_target & DISPATCH_TO_SD)
 		if(cb_map[1].cb) cb_map[1].cb(block);
 
-	/* BOTH: tu dong goi ca 2 */
+	/* Binary Packet */
+	if(curr_target & DISPATCH_TO_PACKET)
+		if(cb_map[2].cb) cb_map[2].cb(block);
+
+	/* ALL: Binary Packet + SD Card */
+	if(curr_target & DISPATCH_TO_ALL)
 
 	/* NONE */
 	if(curr_target == DISPATCH_TO_NONE) return osOK;
