@@ -107,13 +107,13 @@ def parse_stream(ser):
             audio_count += 1
             samples = struct.unpack_from('<32i', frame, HDR_SIZE)  # 32 x int32
             print(f"[AUDIO] seq={seq} | pcg[0]={samples[0]:8d} pcg[31]={samples[31]:8d} "
-                  f"| total={audio_count}")
+                  f"| total={audio_count} | crc_err={crc_err}")
 
         elif pkt_type == PKT_TYPE_BIO:
             bio_count += 1
             ir  = struct.unpack_from('<32I', frame, HDR_SIZE)         # 32 x uint32
             ecg = struct.unpack_from('<32h', frame, HDR_SIZE + 128)   # 32 x int16
-            print(f"[BIO]   seq={seq} | ir[0]={ir[0]:8d} ecg[0]={ecg[0]:6d} "
+            print(f"[BIO] seq={seq} | ir[0]={ir[0]:8d} ecg[0]={ecg[0]:6d} "
                   f"| total={bio_count} | crc_err={crc_err}")
 
 if __name__ == "__main__":

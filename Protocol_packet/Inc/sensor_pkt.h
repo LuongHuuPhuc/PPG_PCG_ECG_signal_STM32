@@ -150,7 +150,7 @@ static inline uint16_t pkt_build_audio(pkt_audio_t *pkt, uint8_t seq, const int3
 	pkt->hdr.payload_len = n_samples * sizeof(int32_t);
 
 	// Chi la memcpy nen toc do rat nhanh (STM32 toi uu mempcy tot hon for)
-	memcpy(pkt->pcg, pcg_buf, sizeof(int32_t));
+	memcpy(pkt->pcg, pcg_buf, n_samples * sizeof(int32_t));
 
 	/* CRC tinh tren header + payload */
 	uint16_t crc_len = sizeof(ss_pkt_header_t) + pkt->hdr.payload_len;
@@ -173,8 +173,8 @@ static inline uint16_t pkt_build_bio(pkt_bio_t *pkt, uint8_t seq, const uint32_t
 	pkt->hdr.payload_len = n_samples * (sizeof(uint32_t) + sizeof(int16_t));
 
 	// Chi la memcpy nen toc do rat nhanh
-	memcpy(pkt->ir, ir_buf, sizeof(uint32_t));
-	memcpy(pkt->ecg, ecg_buf, sizeof(int16_t));
+	memcpy(pkt->ir, ir_buf, n_samples * sizeof(uint32_t));
+	memcpy(pkt->ecg, ecg_buf, n_samples * sizeof(int16_t));
 
 	/* CRC tinh tren header + payload */
 	uint16_t crc_len = sizeof(ss_pkt_header_t) + pkt->hdr.payload_len;
@@ -185,6 +185,8 @@ static inline uint16_t pkt_build_bio(pkt_bio_t *pkt, uint8_t seq, const uint32_t
 }
 
 #ifdef SYNC_INTERMEDIARY_USING
+
+void PacketBuilder_reset_seq(void);
 
 typedef struct __sensor_sync_block sensor_sync_block_t;
 /**
@@ -198,7 +200,6 @@ typedef struct __sensor_sync_block sensor_sync_block_t;
 void PacketBuilder_dispatch(sensor_sync_block_t *block);
 
 #endif // SYNC_INTERMEDIARY_USING
-
 #endif // SENSOR_BINARY_PACKET
 
 #ifdef __cplusplus

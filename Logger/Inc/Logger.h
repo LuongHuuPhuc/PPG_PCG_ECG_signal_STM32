@@ -24,18 +24,17 @@ extern "C" {
 
 #include "cmsis_os.h"
 
+// ==== MACROS　====
+#define MAX_RETRY_SCANNER 		2
+#define LOGGER_QUEUE_LENGTH 	40 	// Tang chieu dai queue de chong tran
+#define MAX_SAMPLE_STR_LEN		26
+
 /**
  * CMSIS dung con tro de lay data, khong copy truc tiep data nhu FREERTOS API (Hieu nang + toc do cap hon)
  * Data se nam yen trong RAM -> Tre thap hon
  * Dung Mail vi Mail moi truyen duoc struct, Message thi khong
  */
 extern osThreadId logger_taskId;
-
-// ==== MACROS　====
-#define MAX_COUNT 				32
-#define MAX_RETRY_SCANNER 		2
-#define LOGGER_QUEUE_LENGTH 	40 	// Tang chieu dai queue de chong tran
-#define MAX_SAMPLE_STR_LEN		26
 
 // ==== FUNCTION PROTOTYPE ====
 
@@ -105,7 +104,8 @@ HAL_StatusTypeDef Logger_init(void);
  * => Tom lai phai dam bao rang cac ISR cua ban luon luon nam trong vung uu tien thap de chung khong lam gian doan co che
  * bao ve cua Kernel khi chung goi cac API RTOS
  */
-__attribute__((deprecated("This function just for commenting, please use `uart_printf() instead"))) void uart_printf_safe(const char *fmt,...);
+__attribute__((deprecated("This function just for commenting, please use `uart_printf() instead")))
+void uart_printf_safe(const char *fmt,...);
 
 /**
  * @brief Ham scan cac bus I2C de xem co dang ton tai dia chi nao khong

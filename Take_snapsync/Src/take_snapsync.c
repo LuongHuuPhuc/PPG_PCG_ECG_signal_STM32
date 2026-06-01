@@ -9,7 +9,7 @@
 extern "C" {
 #endif //__cplusplus
 
-#include "../../Take_snapsync/Inc/take_snapsync.h"
+#include "take_snapsync.h"
 
 #include "stdbool.h"
 #include "string.h"

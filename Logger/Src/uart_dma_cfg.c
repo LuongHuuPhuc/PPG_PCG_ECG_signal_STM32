@@ -39,6 +39,7 @@ extern "C" {
 
 static UART_HandleTypeDef *uart_dma_handle = NULL;
 
+/* Queue cho LOG ASCII */
 static osMailQId uart_dma_queueId = NULL;
 osThreadId uart_dma_taskId = NULL;
 
@@ -90,7 +91,8 @@ HAL_StatusTypeDef uart_dma_init(UART_HandleTypeDef *huart){
  *
  * __enable_irq(): Lenh nay se set bit primask = 0 (tro ve ban dau)
  */
-__attribute__((unused)) static void uart_dma_kick_tx(void){
+__attribute__((unused))
+static void uart_dma_kick_tx(void){
 	uint32_t primask = __get_PRIMASK();
 	__disable_irq(); // Set bit PRIMASK = 1
 
@@ -140,7 +142,7 @@ HAL_StatusTypeDef uart_tx_blocking(uint8_t *data, uint16_t len){
 
 /*-----------------------------------------------------------*/
 
-HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len){
+HAL_StatusTypeDef uart_tx_dma_enqueue(uint8_t *data, uint16_t len){
 	if(data == NULL || len == 0) return HAL_ERROR;
 
 	if(len > UART_DMA_TX_MAX_PACKET_SIZE) len = UART_DMA_TX_MAX_PACKET_SIZE;
@@ -152,6 +154,7 @@ HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len){
 		uart_busy_count++;
 		return HAL_BUSY;
 	}
+
 	memcpy(mail->data, data, len); // Copy data lan 1
 	mail->len = len;
 
@@ -163,10 +166,48 @@ HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len){
 	}
 
 	// Chuan bi transmit DMA
-//	uart_dma_kick_tx();
+	// uart_dma_kick_tx();
 
 	/* Khong can kick_tx() nhu truoc vi da co task xu ly */
 	return HAL_OK;
+}
+
+/*-----------------------------------------------------------*/
+
+static HAL_StatusTypeDef uart_dma_transmit(uart_dma_packet_t *packet){
+	HAL_StatusTypeDef ret = HAL_ERROR;
+
+	/* Retry neu BUSY, toi da 3 lan */
+	for(uint8_t retry = 0; retry < 3; retry++){
+		ret = HAL_UART_Transmit_DMA(uart_dma_handle, packet->data, packet->len);
+
+		if(ret == HAL_OK) break;
+		else if(ret == HAL_BUSY){
+			uart_busy_count++;
+			osDelay(1); // Nhuong CPU, doi UART ranh
+		}
+		else{
+			uart_error_count++;
+			break;
+		}
+	}
+
+	if(ret == HAL_OK){
+
+		/**
+		 * Wait DMA complete dung TaskNotify nhe & cho toc do cao hon 45% so voi semaphore
+		 * Neu de portMAX_DELAY thi khi DMA stuck se khong reset WDT (de cho no dem ve 0) -> Reset he thong
+		 * -> pdMS_TO_TICK() de biet loi
+		 * -> DMA stuck -> Abort de reset
+		 */
+		if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) == 0){
+			HAL_UART_Abort(uart_dma_handle);
+			uart_error_count++;
+			ret = HAL_TIMEOUT;
+		}
+		else uart_ok_count++;
+	}
+	return ret;
 }
 
 /*-----------------------------------------------------------*/
@@ -178,45 +219,16 @@ void uart_dma_task(void const *pvParameters){
 	uart_dma_packet_t *packet;
 
 	while(1){
-		// Khi nhan duoc Mail gui den queue buffer
 		evt = osMailGet(uart_dma_queueId, osWaitForever);
 		if(evt.status != osEventMail) continue;
 
 		packet = (uart_dma_packet_t*)evt.value.p;
 		if(packet == NULL) continue;
 
-		HAL_StatusTypeDef ret;
+		/* Transmit */
+		uart_dma_transmit(packet);
 
-		// Retry neu BUSY, toi da 3 lan
-		for(uint8_t retry = 0; retry < 3; retry++){
-			ret = HAL_UART_Transmit_DMA(uart_dma_handle, packet->data, packet->len);
-
-			if(ret == HAL_OK) break;
-			else if(ret == HAL_BUSY){
-				uart_busy_count++;
-				osDelay(1); // Nhuong CPU, doi UART ranh
-			}
-			else{
-				uart_error_count++;
-				break;
-			}
-		}
-
-		if(ret == HAL_OK){
-
-			/**
-			 * Wait DMA complete dung TaskNotify nhe & cho toc do cao hon 45% so voi semaphore
-			 * Neu de portMAX_DELAY thi khi DMA stuck se khong reset WDT (de cho no dem ve 0) -> Reset he thong
-			 * -> pdMS_TO_TICK() de biet loi
-			 * -> DMA stuck -> Abort de reset
-			 */
-			if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) == 0){
-				HAL_UART_Abort(uart_dma_handle);
-				uart_error_count++;
-			}
-			else uart_ok_count++;
-		}
-		osMailFree(uart_dma_queueId, packet); /* Callback Data DMA transmit complete thi free luon (du OK hay ERROR) */
+		osMailFree(uart_dma_queueId, packet);
 	}
 }
 
@@ -228,7 +240,8 @@ void uart_dma_task(void const *pvParameters){
  * Goi ham nay trong ham `HAL_UART_TxCpltCallback()`
  * IRQ context -> KHONG goi API tai day
  */
-__attribute__((unused)) void uart_dma_tx_complete_callback_ver1(UART_HandleTypeDef *huart){
+__attribute__((unused))
+void uart_dma_tx_complete_callback_ver1(UART_HandleTypeDef *huart){
 	if(huart != uart_dma_handle) return;
 
 	// Free ngay cho task khac vao
@@ -275,21 +288,11 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 
 /*-----------------------------------------------------------*/
 
-uint32_t uart_dma_get_ok_count(void){
-	return uart_ok_count;
-}
+uint32_t uart_dma_get_ok_count(void){ return uart_ok_count; }
+uint32_t uart_dma_get_busy_count(void){ return uart_busy_count; }
+uint32_t uart_dma_get_error_count(void){ return uart_error_count; }
 
 /*-----------------------------------------------------------*/
-
-uint32_t uart_dma_get_busy_count(void){
-	return uart_busy_count;
-}
-
-/*-----------------------------------------------------------*/
-
-uint32_t uart_dma_get_error_count(void){
-	return uart_error_count;
-}
 
 #ifdef __cplusplus
 }

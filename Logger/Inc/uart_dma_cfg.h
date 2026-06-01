@@ -41,14 +41,16 @@ extern "C" {
  * (ECG 4 chars + PPG 6 chars + PPG max 7 chars + 3 dau phay/newline)
  *  ~ 640 bytes/block
  */
+
+/* Log queue config */
 #define UART_DMA_TX_MAX_PACKET_SIZE		640 	// 256 -> 640 (du chua 1 block hoan chinh, tranh bi truncate - cat ngan)
 #define UART_DMA_TX_QUEUE_LENGTH		7		// 7 x 640 = 4480 bytes heap
 #define UART_PRINTF_BUFFER_SIZE      	256  	// Dung cho log/debug binh thuong
 #define UART_STREAM_BUFFER_SIZE  		640		// Dung cho stream data
 
 typedef struct {
-	uint16_t len;  /* Chieu dai packet */
-	uint8_t data[UART_DMA_TX_MAX_PACKET_SIZE]; /* Mang data cua packet */
+	uint16_t len;  								/* Chieu dai packet */
+	uint8_t data[UART_DMA_TX_MAX_PACKET_SIZE]; 	/* Mang data cua packet */
 } uart_dma_packet_t;
 
 extern osThreadId uart_dma_taskId;
@@ -67,16 +69,19 @@ HAL_StatusTypeDef uart_dma_init(UART_HandleTypeDef *huart);
 HAL_StatusTypeDef uart_tx_blocking(uint8_t *data, uint16_t len);
 
 /**
- * @brief Ham transmit data UART qua DMA (non-blocking)
- * @note Chi duoc 1 noi goi Transmit_DMA() !
+ * @brief Ham enqueue data de transmit log/ASCII/Binary... qua chung DMA queue (non-blocking)
+ * @note Dung cho uart_printf() hoac dung truc tiep (phai format truoc) -> Logger stream
+ * Chi duoc 1 noi goi Transmit_DMA() !
  */
-HAL_StatusTypeDef uart_tx_dma(uint8_t *data, uint16_t len);
+HAL_StatusTypeDef uart_tx_dma_enqueue(uint8_t *data, uint16_t len);
 
 /**
- * @note
- * Chi co nhiem vu duy nhat la truyen data UART tu DMA
- * sau khi enqueue tu cac thread khac
- * Task hau nhu khong tieu ton CPU, stack tieu ton khong nhieu (set thap)
+ * @brief Task xu ly UART DMA Transmit
+ *
+ * @note Chi co nhiem vu duy nhat la truyen data UART tu DMA
+ * sau khi enqueue tu cac thread khac.
+ * \note Task hau nhu khong tieu ton CPU, stack tieu ton khong nhieu (set thap)
+ * \note Uu tien binary packet truoc, sau do moi den log queue
  */
 void uart_dma_task(void const *pvParameters);
 
