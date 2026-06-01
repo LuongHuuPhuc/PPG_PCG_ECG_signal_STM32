@@ -30,13 +30,19 @@
 #include "uart_dma_cfg.h"
 #include "Logger.h"
 #include "Sensor_config.h"
-#include "take_snapsync.h"
 #include "MicroSD_config.h"
 #include "data_dispatcher.h"
 
 #include "ad8232_config.h"
 #include "max30102_config.h"
 #include "inmp441_config.h"
+#include "take_snapsync.h"
+
+#ifdef DEBUG_SEGGER_RTT
+#include "SEGGER_RTT.h"
+#elif defined(DEBUG_SWV_ITM) || defined(DEBUG_DWT)
+#include "SWV_debug.h"
+#endif // DEBUG_SEGGER_RTT
 
 /* USER CODE END Includes */
 
@@ -99,19 +105,6 @@ volatile snapshot_sync_t global_sync_snapshot = {0};
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-#ifdef DWT_DEBUG
-/**
- *  DWT - Data Watchdog & Trace (dung de do thoi gian thuc thi cua thuat toan)
- *  DWT Cycle Counter (thanh ghi CYCCNT nam trong khoi DWT) la mot bo dem thoi gian
- *  phan cung dem chinh xac so xung nhip clock cua bo xu ly
- */
-static void DWT_Init(void){
-	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	DWT->CYCCNT = 0;
-	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-}
-#endif // DWT_DEBUG
-
 /* USER CODE END 0 */
 
 /**
@@ -139,10 +132,6 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-#ifdef DWT_DEBUG
-  DWT_Init();
-#endif // DWT_DEBUG
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -157,9 +146,22 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
+#ifdef DEBUG_SEGGER_RTT
+  SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  SEGGER_RTT_printf(0, "[APP] SEGGER RTT debug OK !\r\n");
+#elif defined(DEBUG_DWT)
+  DWT_Init(); /* Data Watchdog & Trace */
+#elif defined(DEBUG_SWV_ITM)
+  SWV_Init(); /* Serial Wire Viewer */
+  SWV_LOG("[APP] SWV debug OK !\r\n");
+#endif // DebugHelper
+
   /* Note: Phai khoi tao dau tien de co the log !*/
-  SERROR_CHECK(Logger_init());
-  uart_printf(">> [APP] LOGGER & UART DMA init OK !\r\n");
+  SERROR_CHECK(uart_dma_init(&huart2));
+  uart_printf(">> [APP] UART DMA init OK !\r\n");
+
+//  SERROR_CHECK(Logger_init());
+//  uart_printf(">> [APP] LOGGER init OK !\r\n");
 
   /* Khoi tao cam bien */
   SensorConfig_Init();
@@ -170,7 +172,7 @@ int main(void)
 #endif // SYNC_INTERMEDIARY_USING
 
   /* Dang ky callback */
-  DataDispatcher_Init();
+  DataDispatcher_Init(DISPATCH_TO_PACKET);
   uart_printf(">> [APP] Dispatcher init OK !\r\n");
 
   /* USER CODE END 2 */
@@ -202,7 +204,7 @@ int main(void)
    * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
    * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
    */
-  osThreadDef(uartDMATaskName, uart_dma_task, osPriorityNormal, 0, 384);
+  osThreadDef(uartDMATaskName, uart_dma_task, osPriorityNormal, 0, 512);
   uart_dma_taskId = osThreadCreate(osThread(uartDMATaskName), NULL);
   configASSERT(uart_dma_taskId);
 
@@ -223,25 +225,22 @@ int main(void)
   sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
   configASSERT(sync_taskId);
 
-  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
-  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
-  configASSERT(logger_taskId);
+//  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
+//  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
+//  configASSERT(logger_taskId);
 
 //  osThreadDef(microSDTaskName, MicroSD_demo_test, osPriorityLow, 0, 1024 * 3);
 //  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
 //  configASSERT(microsd_taskId);
 
-  //Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
+  // Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
 
   StackCheck();
   HeapCheck();
   uart_printf("[APP] Starting Tasks...! \r\n");
 
-  /* Reset gia tri dem ban dau cua TIMER ve 0 */
-  __HAL_TIM_SET_COUNTER(&htim3, 0);
-
-  /* Khoi dong TIM3 voi interrupt TIMER (1000Hz) */
-  HAL_TIM_Base_Start_IT(&htim3);
+  __HAL_TIM_SET_COUNTER(&htim3, 0); /* Reset gia tri dem ban dau cua TIMER ve 0 */
+  HAL_TIM_Base_Start_IT(&htim3);   	/* Khoi dong TIM3 voi interrupt TIMER (1000Hz) */
 
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -615,11 +614,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB10
-                           PB14 PB3 PB4 PB5
-                           PB6 PB9 */
+                           PB14 PB4 PB5 PB6
+                           PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
-                          |GPIO_PIN_14|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5
-                          |GPIO_PIN_6|GPIO_PIN_9;
+                          |GPIO_PIN_14|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
+                          |GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
