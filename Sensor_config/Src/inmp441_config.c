@@ -59,13 +59,13 @@ typedef enum{
 } pcg_dma_part_t;
 
 /* Debug do tre ISR->Done */
-#ifdef DWT_DEBUG
+#ifdef DEBUG_DWT
 typedef struct {
 	uint32_t cycle_half;
 	uint32_t cycle_full;
 } pcg_dma_event_t;
 static volatile pcg_dma_event_t pcg_dma_event;
-#endif // DWT_DEBUG
+#endif // DEBUG_DWT
 
 // ====== FUCNTION DEFINITION ======
 
@@ -219,7 +219,7 @@ void Inmp441_task(void const *pvParameter){
 		uint32_t notif = 0; // Gia tri eSetBits 32-bit, khi nhan notify -> notif |= ulValue (bien OR)
 		if(xTaskNotifyWait(BITS_CLEAR_ON_ENTRY, BITS_CLEAR_ON_EXIT, &notif, portMAX_DELAY) == pdTRUE){ // Wait DMA ISR
 
-#ifdef DWT_DEBUG
+#ifdef DEBUG_DWT
 
 		    DMB();
 		    pcg_dma_event_t event = pcg_dma_event; // snapshot local
@@ -353,7 +353,7 @@ void Inmp441_task(void const *pvParameter){
 					pcg_block_ready = false;
 				}
 			}
-#endif // DWT_DEBUG
+#endif // DEBUG_DWT
 		}
 		else uart_printf("[INMP441] Can not take DMA callback !\r\n");
 	}
@@ -413,9 +413,9 @@ void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
 		 *  Khi do TIM3 chay truoc -> sample_id++ -> sau do DMA chay -> lay sample_id moi -> match dung voi ECG/PPG
 		 */
 
-#ifdef DWT_DEBUG
+#ifdef DEBUG_DWT
 		pcg_dma_event.cycle_half = DWT->CYCCNT; // Thoi diem DMA half callback duoc trigger
-#endif // DWT_DEBUG
+#endif // DEBUG_DWT
 
 		// eSetBits: notif_value |= HALF
 		xTaskNotifyFromISR(inmp441_taskId, NOTIFY_HALF, eSetBits, &xHigherPriorityTaskWoken);
@@ -445,9 +445,9 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
 
 	if(hi2s->Instance == SPI2){
 
-#ifdef DWT_DEBUG
+#ifdef DEBUG_DWT
 		pcg_dma_event.cycle_full = DWT->CYCCNT; // Thoi diem DMA complete callback duoc trigger
-#endif // DWT_DEBUG
+#endif // DEBUG_DWT
 
 		/**
 		 * NOTE:
