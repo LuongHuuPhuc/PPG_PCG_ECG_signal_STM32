@@ -52,12 +52,18 @@ void PacketBuilder_dispatch(sensor_sync_block_t *block){
 	/* Build Audio packet (PCG) */
 	pkt_build_audio(&s_audio_pkt, s_audio_seq++, block->pcg_sync, block->count_sync);
 	HAL_StatusTypeDef ret1 = uart_tx_dma_enqueue((uint8_t*)&s_audio_pkt, PKT_SIZE_AUDIO);
+
+#ifdef DEBUG_SWV_ITM
 	SWV_LOG("[PKT] Audio seq=%u ret=%d\r\n", (uint8_t)(s_audio_seq - 1), ret1); // ret = 0 (khong loi) -> OK
+#endif // DEBUG_SWV_ITM
 
 	/* Build Bio packet (ECG + PPG) */
 	pkt_build_bio(&s_bio_pkt, s_bio_seq++, block->ppg_ir_sync, block->ecg_sync, block->count_sync);
 	HAL_StatusTypeDef ret2 = uart_tx_dma_enqueue((uint8_t*)&s_bio_pkt, PKT_SIZE_BIO);
+
+#ifdef DEBUG_SWV_ITM
 	SWV_LOG("[PKT] Bio seq=%u ret=%d\r\n", (uint8_t)(s_bio_seq - 1), ret2); // ret = 0 (khong loi) -> OK
+#endif // DEBUG_SWV_ITM
 
 	/**
 	 * @warning
