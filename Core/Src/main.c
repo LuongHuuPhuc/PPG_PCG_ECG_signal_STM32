@@ -160,9 +160,6 @@ int main(void)
   SERROR_CHECK(uart_dma_init(&huart2));
   uart_printf(">> [APP] UART DMA init OK !\r\n");
 
-//  SERROR_CHECK(Logger_init());
-//  uart_printf(">> [APP] LOGGER init OK !\r\n");
-
   /* Khoi tao cam bien */
   SensorConfig_Init();
 
@@ -171,9 +168,18 @@ int main(void)
 	uart_printf(">> [APP] SYNC init OK !\r\n");
 #endif // SYNC_INTERMEDIARY_USING
 
+#ifdef SENSOR_BINARY_PACKET /* Neu dung UART de gui binary packet thi khong dung Logger nua */
   /* Dang ky callback */
   DataDispatcher_Init(DISPATCH_TO_PACKET);
   uart_printf(">> [APP] Dispatcher init OK !\r\n");
+#elif defined(SENSOR_LOGGER_USING) || !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
+  /* Dang ky callback */
+  DataDispatcher_Init(DISPATCH_TO_UART);
+  uart_printf(">> [APP] Dispatcher init OK !\r\n");
+
+  SERROR_CHECK(Logger_init());
+  uart_printf(">> [APP] LOGGER init OK !\r\n");
+#endif // SENSOR_LOGGER_USING
 
   /* USER CODE END 2 */
 
@@ -225,15 +231,17 @@ int main(void)
   sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
   configASSERT(sync_taskId);
 
-//  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
-//  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
-//  configASSERT(logger_taskId);
+#if defined(SENSOR_LOGGER_USING) || !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
+  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
+  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
+  configASSERT(logger_taskId);
+#endif // SENSOR_LOGGER_USING
 
 //  osThreadDef(microSDTaskName, MicroSD_demo_test, osPriorityLow, 0, 1024 * 3);
 //  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
 //  configASSERT(microsd_taskId);
 
-  // Tao cac task (task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS)
+  /* Note: Task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS) */
 
   StackCheck();
   HeapCheck();
