@@ -52,10 +52,12 @@ void PacketBuilder_dispatch(sensor_sync_block_t *block){
 	/* Build Audio packet (PCG) */
 	pkt_build_audio(&s_audio_pkt, s_audio_seq++, block->pcg_sync, block->count_sync);
 	HAL_StatusTypeDef ret1 = uart_tx_dma_enqueue((uint8_t*)&s_audio_pkt, PKT_SIZE_AUDIO);
+	SWV_LOG("[PKT] Audio seq=%u ret=%d\r\n", (uint8_t)(s_audio_seq - 1), ret1); // ret = 0 (khong loi) -> OK
 
 	/* Build Bio packet (ECG + PPG) */
 	pkt_build_bio(&s_bio_pkt, s_bio_seq++, block->ppg_ir_sync, block->ecg_sync, block->count_sync);
 	HAL_StatusTypeDef ret2 = uart_tx_dma_enqueue((uint8_t*)&s_bio_pkt, PKT_SIZE_BIO);
+	SWV_LOG("[PKT] Bio seq=%u ret=%d\r\n", (uint8_t)(s_bio_seq - 1), ret2); // ret = 0 (khong loi) -> OK
 
 	/**
 	 * @warning
@@ -68,7 +70,7 @@ void PacketBuilder_dispatch(sensor_sync_block_t *block){
 #ifdef DEBUG_SEGGER_RTT
 	if(ret1 != HAL_OK) SEGGER_RTT_printf(0, "[PKT] AUDIO drop seq=%u ret=%d\r\n", s_audio_seq - 1, ret1);
 	if(ret2 != HAL_OK) SEGGER_RTT_printf(0, "[PKT] BIO drop seq=%u ret=%d\r\n", s_bio_seq - 1, ret2);
-#elif DEBUG_SWV_ITM
+#elif DEBUG_SWV_ITM /* Co the se khong di den day !*/
 	if(ret1 != HAL_OK) SWV_LOG("[PKT] AUDIO drop seq=%u ret=%d\r\n", s_audio_seq - 1, ret1);
 	if(ret2 != HAL_OK) SWV_LOG("[PKT] BIO drop seq=%u ret=%d\r\n", s_bio_seq - 1, ret2);
 #endif // DebugHelper
