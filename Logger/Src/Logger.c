@@ -18,11 +18,6 @@ extern "C" {
 #include "take_snapsync.h" 	// Lay struct `sensor_sync_block_t`
 #include "uart_dma_cfg.h"	// Su dung UART qua DMA de log
 
-#ifdef DEBUG_SEGGER_RTT
-#include "SEGGER_RTT.h"		// Su dung RTT Jlink thay cho uart_printf() vi dung chung 1 port UART
-#endif // DEBUG_SEGGER_RTT
-
-
 static osMailQId logger_queueId = NULL;
 osThreadId logger_taskId = NULL;
 
@@ -78,9 +73,6 @@ void uart_printf(const char *fmt,...){
 	// Clamp len ve dung so byte thuc co trong buffer
 	if(len >= (int)sizeof(uart_buf)) len = (int)sizeof(uart_buf) - 1; // vi vnsprintf da dam bao co '\0`
 
-#ifdef DEBUG_SEGGER_RTT /* In ra RTT de Debug, khong qua UART neu UART da duoc dung */
-	SEGGER_RTT_WriteString(0, uart_buf);
-#else
 	/* RTOS chua chay -> dung blocking UART thay the */
 	if(osKernelRunning() == 0){
 		if(uart_tx_blocking((uint8_t*)uart_buf, (uint16_t)len) != HAL_OK) return;
@@ -94,7 +86,6 @@ void uart_printf(const char *fmt,...){
 		/* RTOS chay -> chuyen hoan toan qua non-blocking UART de giam tai CPU */
 		uart_tx_dma_enqueue((uint8_t*)uart_buf, (uint16_t)len);
 	}
-#endif // DEBUG_SEGGER_RTT
 }
 
 /*-----------------------------------------------------------*/
