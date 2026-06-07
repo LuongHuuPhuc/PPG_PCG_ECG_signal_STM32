@@ -11,10 +11,12 @@ extern "C" {
 
 #include "SWV_debug.h"
 #include "core_cm4.h"	// ITM_SendChar()
-#include "main.h"
+#include "cmsis_os.h"
 
 #ifdef DEBUG_SWV_ITM
-void SWV_Init(void){
+static osMutexId swv_mutexId = NULL; // Neu co nhieu task goi cung SWV_LOG() thi se bi chen nhau -> Them mutex bao ve
+
+HAL_StatusTypeDef SWV_Init(void){
 	/* Enable trace subsystem */
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 
@@ -26,6 +28,24 @@ void SWV_Init(void){
 
 	TPI->SPPR = 2;
 	TPI->ACPR = 39; // Gia tri cua thanh ghi chia tan so xung bat dong bo
+
+	/* Khoi tao Mutex */
+	osMutexDef(swvMutexName);
+	swv_mutexId = osMutexCreate(osMutex(swvMutexName));
+	if(swv_mutexId == NULL) return HAL_ERROR;
+	return HAL_OK;
+}
+
+/*-----------------------------------------------------------*/
+
+static inline void SWV_MUTEXLOCK(void){
+	if(swv_mutexId != NULL) osMutexWait(swv_mutexId, 1000);
+}
+
+/*-----------------------------------------------------------*/
+
+static inline void SWV_MUTEXUNLOCK(void){
+	if(swv_mutexId != NULL) osMutexRelease(swv_mutexId);
 }
 
 /*-----------------------------------------------------------*/

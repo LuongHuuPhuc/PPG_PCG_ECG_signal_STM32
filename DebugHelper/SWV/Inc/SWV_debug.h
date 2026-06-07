@@ -27,7 +27,7 @@ extern "C" {
  * du lieu. Phan mem cau hinh ITM de nhan cac luong du lieu (vd: printf())
  * va dong goi chung thanh cac luong du lieu
  */
-void SWV_Init(void);
+HAL_StatusTypeDef SWV_Init(void);
 #define SWV_LOG(...) printf(__VA_ARGS__)
 
 #elif DEBUG_DWT
