@@ -11,6 +11,7 @@ extern "C" {
 
 #include "Sensor_config.h"
 #include "stdarg.h"
+#include "dispatch_target_def.h"
 
 // ====== FUNCTION DEFINITIONS ======
 /*-----------------------------------------------------------*/
@@ -23,7 +24,7 @@ extern HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc);
 extern HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s);
 extern HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
 
-void SensorConfig_Init(void){
+void SensorConfig_init(void){
 	SERROR_CHECK(Ad8232_init(&hadc1));
 	uart_printf(">> [SENCONF] AD8232 init OK !\r\n");
 
@@ -36,6 +37,34 @@ void SensorConfig_Init(void){
 	//Check sau khi tao semaphore va queue
 	HeapCheck();
 	StackCheck();
+}
+
+/*-----------------------------------------------------------*/
+
+extern void DataDispatcher_Init(DispatchTypeU32_t target);
+extern HAL_StatusTypeDef Logger_init(void);
+extern HAL_StatusTypeDef MicroSD_init(void);
+
+void SensorOutput_init(void){
+#ifdef SENSOR_BINARY_PACKET /* Neu dung UART de gui binary packet thi khong dung Logger nua */
+  /* Dang ky callback */
+  DataDispatcher_Init(DISPATCH_PACKET);
+
+#elif defined(SENSOR_LOGGER_USING) && !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
+  /* Dang ky callback */
+  DataDispatcher_Init(DISPATCH_UART);
+
+  SERROR_CHECK(Logger_init());
+  uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
+
+#elif defined(SENSOR_SD_CARD_USING)
+  /* Dang ky callback */
+  DataDispatcher_Init(DISPATCH_SD);
+
+  SERROR_CHECK(MicroSD_init());
+  uart_printf("[SENCONF] MicroSD init OK !\r\n");
+#endif // SENSOR_BINARY_PACKET
+  uart_printf(">> [SENCONF] Dispatcher init OK !\r\n");
 }
 
 /*-----------------------------------------------------------*/

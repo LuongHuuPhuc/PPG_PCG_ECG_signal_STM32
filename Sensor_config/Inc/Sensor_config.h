@@ -84,10 +84,14 @@ typedef struct SENSOR_BLOCK_t { // Neu de struct anoymous se khong khop voi forw
 
 /**
  * @brief Ham khoi tao cam bien (Semaphore, Queue,...)
- *
  * @note Ham chi dung de gom cac ham khoi tao MAX30102 - AD8232 - INMP441
  */
-void SensorConfig_Init(void);
+void SensorConfig_init(void);
+
+/**
+ * @brief Ham khoi tao cac function Output can thiet cua data
+ */
+void SensorOutput_init(void);
 
 /**
  * @brief Ham kiem tra bo nho stack con lai
