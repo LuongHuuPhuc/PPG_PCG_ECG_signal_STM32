@@ -13,7 +13,11 @@ extern "C" {
 
 #include "stdbool.h"
 #include "string.h"
-#include "data_dispatcher.h" // Gui len Dispatcher de xu ly tiep block data da dong goi
+#include "data_dispatcher.h" // Gui len Dispatcher de xu ly tiep block data da sync xong
+
+#ifdef DEBUG_SWV_ITM
+#include "SWV_debug.h"
+#endif // DEBUG_SWV_ITM
 
 #ifdef SYNC_INTERMEDIARY_USING
 
@@ -168,10 +172,10 @@ void Sync_Task(void const *pvParameter){
 
 		osMailFree(sync_queueId, in); // Giai phong bo nho heap ngay de cho block khac gui den
 
-		// Neu ca 3 block data ready
+		/* Neu ca 3 block data ready */
 		if(sync_slot_ready(&slot)){
 
-			// Neu timestamp va sampleId match nhau
+			/* Neu timestamp va sampleId match nhau */
 			if(sync_match(&slot)){
 
 				out.sample_id_sync = slot.ecg.sample_id;
@@ -193,12 +197,21 @@ void Sync_Task(void const *pvParameter){
 				sync_slot_reset(&slot); // Tiep tuc reset 3 frame neu moi thu deu on
 			}
 
-			// Neu ready nhung mismatch
+			/* Neu ready nhung mismatch */
 			else{
-#ifdef SYNC_BLOCK_COUNT_DEBUG
-				/* Thay vi in log thi chi dung 1 bien de ghi lai so lan xay ra mismatch */
+#ifdef SYNC_BLOCK_COUNT_DEBUG  /* Thay vi in log thi chi dung 1 bien de ghi lai so lan xay ra mismatch */
 				g_mismatched_block_count++;
-#else
+#elif DEBUG_SWV_ITM /* Debug dung SWV */
+				SWV_LOG("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
+						slot.ecg.sample_id,
+						slot.ppg.sample_id,
+						slot.pcg.sample_id);
+#else /* Debug dung UART */
+				uart_printf("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
+						slot.ecg.sample_id,
+						slot.ppg.sample_id,
+						slot.pcg.sample_id);
+#endif // SYNC_BLOCK_COUNT_DEBUG
 				/**
 				 * DEBUG NOTE:
 				 * Sau khi debug, pcg luon bi lech frame cham hon so 2 sensor con lai (luon di sau 1 nhip)
@@ -210,19 +223,14 @@ void Sync_Task(void const *pvParameter){
 				 * da nhay sang id khac
 				 * -> The neu 1s tuy co du 32 blocks nhung van xay ra 32 lan mismatch den tu pcg !
 				 */
-				uart_printf("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
-						slot.ecg.sample_id,
-						slot.ppg.sample_id,
-						slot.pcg.sample_id);
-#endif // SYNC_BLOCK_COUNT_DEBUG
 
+				sync_drop_oldest(&slot);
 				/**
 				 * Khong reset het - chi drop sensor tre nhat roi doi cai moi
 				 * Drop roi doi den khi nao 3 block ready thi moi gui di
 				 * The nen ve ly thuyet se gui du 31-32 blocks/s cho du co bi mismatch
 				 * nhung neu bi lech thi se bo luon block do
 				 */
-				sync_drop_oldest(&slot);
 			}
 		}
 	}

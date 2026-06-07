@@ -49,7 +49,6 @@ typedef struct __sensor_sync_block{
  * va de trong TIMER callback tai main.c de trigger counter
  */
 extern volatile snapshot_sync_t global_sync_snapshot;
-
 extern osThreadId sync_taskId;	   // Sync task ID
 
 // ==== FUNCTION PROTOTYPE ====
