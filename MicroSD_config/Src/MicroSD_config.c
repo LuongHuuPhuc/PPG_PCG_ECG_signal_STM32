@@ -38,6 +38,8 @@ osThreadId microsd_taskId = NULL;
 static osMutexId microsd_mutexId = NULL;
 static osMailQId microsd_queueId = NULL;
 
+extern void uart_printf(const char *fmt,...);
+
 /* ===================== HELPER FUCNTION DEFINITION ===================== */
 
 /**
@@ -83,44 +85,21 @@ static sd_status_t MicroSD_AppendFormattedString(char *line, uint32_t max_len, u
 
 /*-----------------------------------------------------------*/
 
-sd_status_t MicroSD_MutexInit(void){
-	if(microsd_mutexId != NULL) return SD_OK;
-
-	/* Khoi tao mutex cho API cua Micro SD */
-	osMutexDef(microSDMutexName);
-	microsd_mutexId = osMutexCreate(osMutex(microSDMutexName));
-	if(microsd_mutexId == NULL){
-		uart_printf("[MICRO_SD] Failed to create Semaphores Mutex !\r\n");
-		return SD_ERR;
-	}
-	return SD_OK;
-}
-
-/*-----------------------------------------------------------*/
-
 static inline void MicroSD_MUTEXLOCK(void){
-	if(microsd_mutexId != NULL){
-		osMutexWait(microsd_mutexId, osWaitForever);
-	}
+	if(microsd_mutexId != NULL) osMutexWait(microsd_mutexId, osWaitForever);
 }
 
 /*-----------------------------------------------------------*/
 
 static inline void MicroSD_MUTEXUNLOCK(void){
-	if(microsd_mutexId != NULL){
-		osMutexRelease(microsd_mutexId);
-	}
+	if(microsd_mutexId != NULL) osMutexRelease(microsd_mutexId);
 }
 
 /* ===================== FUCNTION DEFINITION ===================== */
 
-/*-----------------------------------------------------------*/
-
-sd_status_t MicroSD_Init(void){
+sd_status_t MicroSD_Mount(void){
 	FRESULT fr;
 	BYTE work[_MAX_SS];
-
-	if(MicroSD_MutexInit() != SD_OK) return SD_ERR;
 
     MicroSD_MUTEXLOCK();
 	if(is_Mounted){
@@ -166,6 +145,42 @@ sd_status_t MicroSD_Init(void){
 
 /*-----------------------------------------------------------*/
 
+sd_status_t MicroSD_Unmount(void){
+	FRESULT fr;
+
+	MicroSD_MUTEXLOCK();
+	if(is_Opened){
+		/* Cung 1 API MicroSD goi lan nhau -> Deadlock -> Khong goi MicroSD_Close */
+		// Inline code MicroSD_Close() vao day
+
+		fr = f_sync(&file);
+		if (fr != FR_OK){
+			uart_printf("[MICRO_SD] Sync data failed (f_sync): %d\r\n", fr);
+			MicroSD_MUTEXUNLOCK();
+			return SD_SYNC_FAIL;
+		}
+
+		fr = f_close(&file);
+		if (fr != FR_OK){
+			uart_printf("[MICRO_SD] Close file failed (f_close): %d\r\n", fr);
+			MicroSD_MUTEXUNLOCK();
+			return SD_CLOSE_FAIL;
+		}
+		is_Opened = false;
+	}
+
+	if(is_Mounted){
+		if(f_mount(NULL, (TCHAR const *)USERPath, 1) != FR_OK){
+			MicroSD_MUTEXUNLOCK();
+			return SD_UNMOUNT_FAIL;
+		}
+		is_Mounted = false;
+	}
+	MicroSD_MUTEXUNLOCK();
+	return SD_OK;
+}
+
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Ham xoa toan bo dung co trong file hien tai
@@ -338,43 +353,6 @@ sd_status_t MicroSD_Close(void){
 
 /*-----------------------------------------------------------*/
 
-sd_status_t MicroSD_Unmount(void){
-	FRESULT fr;
-
-	MicroSD_MUTEXLOCK();
-	if(is_Opened){
-		/* Cung 1 API MicroSD goi lan nhau -> Deadlock -> Khong goi MicroSD_Close */
-		// Inline code MicroSD_Close() vao day
-
-		fr = f_sync(&file);
-		if (fr != FR_OK){
-			uart_printf("[MICRO_SD] Sync data failed (f_sync): %d\r\n", fr);
-			MicroSD_MUTEXUNLOCK();
-			return SD_SYNC_FAIL;
-		}
-
-		fr = f_close(&file);
-		if (fr != FR_OK){
-			uart_printf("[MICRO_SD] Close file failed (f_close): %d\r\n", fr);
-			MicroSD_MUTEXUNLOCK();
-			return SD_CLOSE_FAIL;
-		}
-		is_Opened = false;
-	}
-
-	if(is_Mounted){
-		if(f_mount(NULL, (TCHAR const *)USERPath, 1) != FR_OK){
-			MicroSD_MUTEXUNLOCK();
-			return SD_UNMOUNT_FAIL;
-		}
-		is_Mounted = false;
-	}
-	MicroSD_MUTEXUNLOCK();
-	return SD_OK;
-}
-
-/*-----------------------------------------------------------*/
-
 bool MicroSD_IsMounted(void){
 	bool ret;
 	MicroSD_MUTEXLOCK();
@@ -458,18 +436,78 @@ sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols){
 
 /*-----------------------------------------------------------*/
 
-__attribute__((unused)) void MicroSD_demo_test(void const *pvParameter){
+#ifdef SYNC_INTERMEDIARY_USING
+static sd_status_t MicroSD_InternalInit(void){
+	if(microsd_mutexId != NULL) return SD_OK;
+
+	/* Khoi tao mutex cho API cua Micro SD */
+	osMutexDef(microSDMutexName);
+	microsd_mutexId = osMutexCreate(osMutex(microSDMutexName));
+	if(microsd_mutexId == NULL) return SD_ERR;
+
+	/* Khoi tao queue cho task cua Micro SD nhan data tu sync task */
+	osMailQDef(microSDQueueName, SD_CARD_QUEUE_LENGTH, sensor_sync_block_t);
+	microsd_queueId = osMailCreate(osMailQ(microSDQueueName), NULL);
+	if(microsd_queueId == NULL) return SD_ERR;
+
+	return SD_OK;
+}
+
+/*-----------------------------------------------------------*/
+
+HAL_StatusTypeDef MicroSD_init(void){
+	/* 1. Khoi tao RTOS variables */
+	if(MicroSD_InternalInit() != SD_OK) return HAL_ERROR;
+
+	/* 2. Mount the SD */
+	sd_status_t ret = MicroSD_Mount();
+	if(ret != SD_OK){
+		uart_printf("[MICRO_SD] MircoSD_Mount failed: %d\r\n", ret);
+		return HAL_ERROR;
+	}
+	return HAL_OK;
+}
+
+/*-----------------------------------------------------------*/
+
+static inline osStatus MicroSD_mail_send(sensor_sync_block_t *block){
+	sensor_sync_block_t *mail = osMailAlloc(microsd_queueId, 0);
+	if(mail == NULL){
+		uart_printf("[MICRO_SD] MicroSD queue memory alloc failed!\r\n");
+		return osErrorNoMemory;
+	}
+
+	*mail = *block; // Copy
+	osStatus ret = osMailPut(microsd_queueId, mail);
+	if(ret != osOK){
+		uart_printf("[MICRO_SD] MicroSD queue full!\r\n");
+		osMailFree(microsd_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
+	}
+	return ret;
+}
+
+/*-----------------------------------------------------------*/
+
+void MicroSD_dispatch(sensor_sync_block_t *block){
+	if(MicroSD_mail_send(block) != osOK){
+		uart_printf("[MICRO_SD] Mail sent from SYNC error !\r\n");
+	}
+}
+
+/*-----------------------------------------------------------*/
+
+void MicroSD_task(void const *pvParameter){
+
+}
+#endif // SYNC_INTERMEDIARY_USING
+
+/*-----------------------------------------------------------*/
+
+void MicroSD_demo_test(void const *pvParameter){
 	(void)(pvParameter);
 	sd_status_t ret;
 	uint8_t count = 0;
 	uart_printf("MicroSD task started !\r\n");
-
-	ret = MicroSD_Init();
-	if(ret != SD_OK){
-		uart_printf("[MICRO_SD] MircoSD_Init failed: %d\r\n", ret);
-		for(;;) osDelay(1000);
-	}
-	uart_printf("[MICRO_SD] MicroSD_Init OK!\r\n");
 
 	/* Demo Line */
 	ret = MicroSD_Open(TXT_FILE_NAME, true);
@@ -500,41 +538,6 @@ __attribute__((unused)) void MicroSD_demo_test(void const *pvParameter){
 	ret = MicroSD_Open(CSV_FILE_NAME, true);
 	for(;;)osDelay(1000);
 }
-
-/*-----------------------------------------------------------*/
-
-#ifdef SYNC_INTERMEDIARY_USING
-static inline osStatus MicroSD_mail_send(sensor_sync_block_t *block){
-	sensor_sync_block_t *mail = osMailAlloc(microsd_queueId, 0);
-	if(mail == NULL){
-		uart_printf("[MICRO_SD] MicroSD queue memory alloc failed!\r\n");
-		return osErrorNoMemory;
-	}
-
-	*mail = *block; // Copy
-	osStatus ret = osMailPut(microsd_queueId, mail);
-	if(ret != osOK){
-		uart_printf("[MICRO_SD] MicroSD queue full!\r\n");
-		osMailFree(microsd_queueId, mail);  /* Tranh memory leak neu khong gui duoc Mail */
-	}
-	return ret;
-}
-
-/*-----------------------------------------------------------*/
-
-void MicroSD_dispatch(sensor_sync_block_t *block){
-	if(MicroSD_mail_send(block) != osOK){
-		uart_printf("[MICRO_SD] Mail sent from SYNC error !\r\n");
-	}
-}
-
-/*-----------------------------------------------------------*/
-
-void MicroSD_task(void const *pvParameter){
-
-}
-
-#endif // SYNC_INTERMEDIARY_USING
 
 #ifdef __cplusplus
 }

@@ -57,7 +57,7 @@ extern "C" {
 #define MICROSD_MAX_LINE_LEN    256U /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 #endif // MICRO_MAX_LINE_LEN
 
-#define SD_CARD_QUEUE
+#define SD_CARD_QUEUE_LENGTH	1
 
 /* SD Card Button Event macros */
 #define SD_EVENT_START			(1 << 0)
@@ -83,11 +83,16 @@ typedef enum __SD_STATUS_t {
 } sd_status_t;
 
 extern osThreadId microsd_taskId;
-extern void uart_printf(const char *fmt,...);
 
 // ==== FUCNTION PROTOTYPE ====
 
 #ifdef SYNC_INTERMEDIARY_USING
+/**
+ * @brief Ham khoi tao SD card
+ * (Ket hop khoi tao RTOS variables va Mount SD)
+ */
+HAL_StatusTypeDef MicroSD_init(void);
+
 /**
  * @brief Ham nhan block data da dong bo cua Sensor task
  * tu Sync task de ghi vao SD Card
@@ -101,12 +106,17 @@ void MicroSD_dispatch(sensor_sync_block_t *block);
 #endif // SYNC_INTERMEDIARY_USING
 
 /**
- * @brief Ham khoi tao SD card
  * Chuc nang la Mount (Gan ket) toi the SD de nhan dien, ket noi va kich hoạt the SD
  * de nguoi dung co the truy cap, doc va ghi du lieu
  * @retval Trang thai cua the SD
  */
-sd_status_t MicroSD_Init(void);
+sd_status_t MicroSD_Mount(void);
+
+/**
+ * @brief Ham thao/ngat ket noi thao the an toan
+ * Ngat toan bo he thong the (phan cung)
+ */
+sd_status_t MicroSD_Unmount(void);
 
 /**
  * @brìef Ham mo file co trong SD Card
@@ -138,23 +148,6 @@ sd_status_t MicroSD_Flush(void);
 sd_status_t MicroSD_Close(void);
 
 /**
- * @brief Ham thao/ngat ket noi thao the an toan
- * Ngat toan bo he thong the (phan cung)
- */
-sd_status_t MicroSD_Unmount(void);
-
-/**
- * @brief Kiem tra xem Filesystem co dang duoc gan vao khong
- * (SD Card co dang chay)
- */
-bool MicroSD_IsMounted(void);
-
-/**
- * @brief Kiem tra xem File co dang duoc mo khong
- */
-bool MicroSD_IsOpened(void);
-
-/**
  * @brief Ham ghi data theo 1 dong vao file hien tai
  *
  * @details
@@ -166,6 +159,17 @@ bool MicroSD_IsOpened(void);
  * @retval Trang thai cua the SD
  */
 sd_status_t MicroSD_WriteLine(const char *fmt,...);
+
+/**
+ * @brief Kiem tra xem Filesystem co dang duoc gan vao khong
+ * (SD Card co dang chay)
+ */
+bool MicroSD_IsMounted(void);
+
+/**
+ * @brief Kiem tra xem File co dang duoc mo khong
+ */
+bool MicroSD_IsOpened(void);
 
 /**
  * @brief Ham thuc hien ghi data theo dang CSV tu chuoi gia tri unsigned 32-bit
@@ -181,6 +185,7 @@ sd_status_t MicroSD_WriteLine(const char *fmt,...);
  * Ham nay se gioi han so cot ghi 1 lan va su dung `sprintf` lien tuc
  * gay ton CPU -> Cham hon
  */
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols);
 
 /**
@@ -193,6 +198,7 @@ sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols);
  * @param[in] data Con tro den chuoi gia tri dau vao
  * @param[in] num_cols So cot mong muon ghi vao
  */
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols);
 
 /**
@@ -205,13 +211,14 @@ sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols);
  * @param[in] cols Con tro cua mang chuoi dau vao
  * @param[in] num_cols So cot muon ghi
  */
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols);
 
 /**
  * @brief Task demo ghi du lieu vao the SD (thay cho viec dung UART in ra man hinh)
  */
-__attribute__((unused)) void MicroSD_demo_test(void const *pvParameter);
-
+__attribute__((unused, deprecated("This is task just for a simple Demo, please use MicroSD_task()")))
+void MicroSD_demo_test(void const *pvParameter);
 
 #ifdef __cplusplus
 }
