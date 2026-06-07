@@ -12,12 +12,18 @@ extern "C" {
 #include "data_dispatcher.h"
 #include "stdint.h"
 
-#include "Logger.h"
-#include "MicroSD_config.h"
-#include "sensor_pkt.h"
+#include "Logger.h"				// Logger_dispatch()
+#include "MicroSD_config.h"		// MicroSD_dispatch()
+#include "sensor_pkt.h"			// PacketBuilder_dispatch()
 
 static dispatch_target_t curr_target = DISPATCH_TO_NONE;
 static dispatch_entry_t cb_map[MAX_DISPATCH_CB] = {0}; /* Khoi tao con tro den ham ban dau bang NULL */
+
+/*-----------------------------------------------------------*/
+
+static inline void DataDispatcher_SetTarget(DispatchTypeU32_t target){
+	curr_target = (dispatch_target_t)target; // Cast DispatchType_t (uint32_t) ve dispatch_target_t
+}
 
 /*-----------------------------------------------------------*/
 
@@ -37,14 +43,7 @@ void DataDispatcher_UnregisterCb(void){
 
 /*-----------------------------------------------------------*/
 
-void DataDispatcher_SetTarget(dispatch_target_t target){
-	curr_target = target;
-}
-
-/*-----------------------------------------------------------*/
-
-__attribute__((weak)) void DataDispatcher_Init(dispatch_target_t target){
-	/* Co the khoi tao o noi khac */
+__attribute__((weak)) void DataDispatcher_Init(DispatchTypeU32_t target){
 	DataDispatcher_SetTarget(target);
 
 	/* Dang ky callback tuong ung voi target */
