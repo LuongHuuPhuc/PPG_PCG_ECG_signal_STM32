@@ -17,11 +17,10 @@ extern "C" {
 /* Su dung Debugger khac thay cho uart_printf() vi dung chung 1 port UART */
 #ifdef DEBUG_SEGGER_RTT
 #include "SEGGER_RTT.h"
-#elif defined(DEBUG_SWV_ITM ) || defined(DEBUG_DWT)
+#elif defined(DEBUG_SWV_ITM) || defined(DEBUG_DWT)
 #include "SWV_debug.h"
 #endif // DEBUG_SEGGER_RTT
 
-#ifdef SENSOR_BINARY_PACKET
 #ifdef SYNC_INTERMEDIARY_USING
 
 /**
@@ -51,18 +50,22 @@ void PacketBuilder_dispatch(sensor_sync_block_t *block){
 
 	/* Build Audio packet (PCG) */
 	pkt_build_audio(&s_audio_pkt, s_audio_seq++, block->pcg_sync, block->count_sync);
-	HAL_StatusTypeDef ret1 = uart_tx_dma_enqueue((uint8_t*)&s_audio_pkt, PKT_SIZE_AUDIO);
 
 #ifdef DEBUG_SWV_ITM
+	HAL_StatusTypeDef ret1 = uart_tx_dma_enqueue((uint8_t*)&s_audio_pkt, PKT_SIZE_AUDIO);
 	SWV_LOG("[PKT] Audio seq=%u ret=%d\r\n", (uint8_t)(s_audio_seq - 1), ret1); // ret = 0 (khong loi) -> OK
+#else
+	uart_tx_dma_enqueue((uint8_t*)&s_audio_pkt, PKT_SIZE_AUDIO);
 #endif // DEBUG_SWV_ITM
 
 	/* Build Bio packet (ECG + PPG) */
 	pkt_build_bio(&s_bio_pkt, s_bio_seq++, block->ppg_ir_sync, block->ecg_sync, block->count_sync);
-	HAL_StatusTypeDef ret2 = uart_tx_dma_enqueue((uint8_t*)&s_bio_pkt, PKT_SIZE_BIO);
 
 #ifdef DEBUG_SWV_ITM
+	HAL_StatusTypeDef ret2 = uart_tx_dma_enqueue((uint8_t*)&s_bio_pkt, PKT_SIZE_BIO);
 	SWV_LOG("[PKT] Bio seq=%u ret=%d\r\n", (uint8_t)(s_bio_seq - 1), ret2); // ret = 0 (khong loi) -> OK
+#else
+	uart_tx_dma_enqueue((uint8_t*)&s_bio_pkt, PKT_SIZE_BIO);
 #endif // DEBUG_SWV_ITM
 
 	/**
@@ -83,7 +86,6 @@ void PacketBuilder_dispatch(sensor_sync_block_t *block){
 }
 
 #endif // SYNC_INTERMEDIARY_USING
-#endif // SENSOR_BINARY_PACKET
 
 #ifdef __cplusplus
 }

@@ -49,8 +49,6 @@ extern "C" {
  * - Packet 2 - MAX30102 + AD8232 (bio): 32 samples x (4 + 2) bytes = 192 + header/CRC/footer = 201 bytes
  */
 
-#ifdef SENSOR_BINARY_PACKET
-
 /* ============ Hang so & cau truc cua packet ============ */
 
 #define PKT_HEADER			0xAA 	/* Header */
@@ -200,7 +198,6 @@ typedef struct __sensor_sync_block sensor_sync_block_t;
 void PacketBuilder_dispatch(sensor_sync_block_t *block);
 
 #endif // SYNC_INTERMEDIARY_USING
-#endif // SENSOR_BINARY_PACKET
 
 #ifdef __cplusplus
 }
