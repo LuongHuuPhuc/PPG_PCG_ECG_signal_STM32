@@ -146,40 +146,32 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Khoi tao Debug function */
 #ifdef DEBUG_SEGGER_RTT
   SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
   SEGGER_RTT_printf(0, "[APP] SEGGER RTT debug OK !\r\n");
 #elif defined(DEBUG_DWT)
   DWT_Init(); /* Data Watchdog & Trace */
 #elif defined(DEBUG_SWV_ITM)
-  SWV_Init(); /* Serial Wire Viewer */
+  SERROR_CHECK(SWV_Init()); /* Serial Wire Viewer */
   SWV_LOG("[APP] SWV debug OK !\r\n");
 #endif // DebugHelper
 
-  /* Note: Phai khoi tao dau tien de co the log !*/
+  /* Note: Phai khoi tao dau tien de co the log ! */
   SERROR_CHECK(uart_dma_init(&huart2));
   uart_printf(">> [APP] UART DMA init OK !\r\n");
 
   /* Khoi tao cam bien */
-  SensorConfig_Init();
+  SensorConfig_init();
 
+  /* Khoi tao Output cua data */
+  SensorOutput_init();
+
+  /* Khoi tao Sync function */
 #ifdef SYNC_INTERMEDIARY_USING
-	SERROR_CHECK(Sync_init());
-	uart_printf(">> [APP] SYNC init OK !\r\n");
+  SERROR_CHECK(Sync_init());
+  uart_printf(">> [APP] SYNC init OK !\r\n");
 #endif // SYNC_INTERMEDIARY_USING
-
-#ifdef SENSOR_BINARY_PACKET /* Neu dung UART de gui binary packet thi khong dung Logger nua */
-  /* Dang ky callback */
-  DataDispatcher_Init(DISPATCH_TO_PACKET);
-  uart_printf(">> [APP] Dispatcher init OK !\r\n");
-#elif defined(SENSOR_LOGGER_USING) || !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
-  /* Dang ky callback */
-  DataDispatcher_Init(DISPATCH_TO_UART);
-  uart_printf(">> [APP] Dispatcher init OK !\r\n");
-
-  SERROR_CHECK(Logger_init());
-  uart_printf(">> [APP] LOGGER init OK !\r\n");
-#endif // SENSOR_LOGGER_USING
 
   /* USER CODE END 2 */
 
@@ -231,15 +223,17 @@ int main(void)
   sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
   configASSERT(sync_taskId);
 
-#if defined(SENSOR_LOGGER_USING) || !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
+#if defined(SENSOR_LOGGER_USING) && !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
   osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
   logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
   configASSERT(logger_taskId);
 #endif // SENSOR_LOGGER_USING
 
-//  osThreadDef(microSDTaskName, MicroSD_demo_test, osPriorityLow, 0, 1024 * 3);
-//  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
-//  configASSERT(microsd_taskId);
+#ifdef SENSOR_SD_CARD_USING
+  osThreadDef(microSDTaskName, MicroSD_task, osPriorityLow, 0, 1024 * 3);
+  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
+  configASSERT(microsd_taskId);
+#endif // SENSOR_SD_CARD_USING
 
   /* Note: Task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS) */
 
