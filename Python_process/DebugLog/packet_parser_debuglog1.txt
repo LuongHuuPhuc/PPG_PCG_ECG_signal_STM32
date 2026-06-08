@@ -1,0 +1,875 @@
+Listening on COM7 @ 460800...
+Press Ctrl+C to stop
+
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[AUDIO] seq=189 | pcg[0]=    6968 pcg[31]=    2255 | total=1 | crc_err=0
+[BIO] seq=189 | ir[0]=     403 ecg[0]=     0 | total=1 | crc_err=0
+[AUDIO] seq=190 | pcg[0]=    1639 pcg[31]=    2918 | total=2 | crc_err=0
+[BIO] seq=190 | ir[0]=     403 ecg[0]=  3856 | total=2 | crc_err=0
+[AUDIO] seq=191 | pcg[0]=    4161 pcg[31]=     484 | total=3 | crc_err=0
+[BIO] seq=191 | ir[0]=     384 ecg[0]=   940 | total=3 | crc_err=0
+[AUDIO] seq=192 | pcg[0]=    3373 pcg[31]=    2605 | total=4 | crc_err=0
+[BIO] seq=192 | ir[0]=     383 ecg[0]=  1864 | total=4 | crc_err=0
+[AUDIO] seq=193 | pcg[0]=    2743 pcg[31]=    2759 | total=5 | crc_err=0
+[BIO] seq=193 | ir[0]=     411 ecg[0]=  3672 | total=5 | crc_err=0
+[AUDIO] seq=194 | pcg[0]=   -2750 pcg[31]=    -405 | total=6 | crc_err=0
+[BIO] seq=194 | ir[0]=     409 ecg[0]=     0 | total=6 | crc_err=0
+[AUDIO] seq=195 | pcg[0]=    -128 pcg[31]=    6006 | total=7 | crc_err=0
+[BIO] seq=195 | ir[0]=     408 ecg[0]=  3936 | total=7 | crc_err=0
+[AUDIO] seq=196 | pcg[0]=     988 pcg[31]=    2039 | total=8 | crc_err=0
+[BIO] seq=196 | ir[0]=     411 ecg[0]=   866 | total=8 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=197 got seq=198 -> lost=1 packets
+[AUDIO] seq=198 | pcg[0]=    4056 pcg[31]=    1825 | total=9 | crc_err=0
+[LOSS] BIO: expected seq=197 got seq=198 -> lost=1 packets
+[BIO] seq=198 | ir[0]=     412 ecg[0]=  3600 | total=9 | crc_err=0
+[AUDIO] seq=199 | pcg[0]=   -3491 pcg[31]=    3308 | total=10 | crc_err=0
+[BIO] seq=199 | ir[0]=     416 ecg[0]=     0 | total=10 | crc_err=0
+[AUDIO] seq=200 | pcg[0]=     176 pcg[31]=    1867 | total=11 | crc_err=0
+[BIO] seq=200 | ir[0]=     416 ecg[0]=  3924 | total=11 | crc_err=0
+[AUDIO] seq=201 | pcg[0]=   -1395 pcg[31]=    -754 | total=12 | crc_err=0
+[BIO] seq=201 | ir[0]=     401 ecg[0]=   693 | total=12 | crc_err=0
+[AUDIO] seq=202 | pcg[0]=    -623 pcg[31]=     589 | total=13 | crc_err=0
+[BIO] seq=202 | ir[0]=     411 ecg[0]=  2146 | total=13 | crc_err=0
+[AUDIO] seq=203 | pcg[0]=     939 pcg[31]=    -433 | total=14 | crc_err=0
+[BIO] seq=203 | ir[0]=     401 ecg[0]=  3496 | total=14 | crc_err=0
+[AUDIO] seq=204 | pcg[0]=   -4115 pcg[31]=    1342 | total=15 | crc_err=0
+[BIO] seq=204 | ir[0]=     421 ecg[0]=     0 | total=15 | crc_err=0
+[AUDIO] seq=205 | pcg[0]=   -1658 pcg[31]=    2651 | total=16 | crc_err=0
+[BIO] seq=205 | ir[0]=     404 ecg[0]=  3988 | total=16 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=206 got seq=207 -> lost=1 packets
+[AUDIO] seq=207 | pcg[0]=    1237 pcg[31]=   -2298 | total=17 | crc_err=0
+[LOSS] BIO: expected seq=206 got seq=207 -> lost=1 packets
+[BIO] seq=207 | ir[0]=     393 ecg[0]=  2240 | total=17 | crc_err=0
+[AUDIO] seq=208 | pcg[0]=   -2567 pcg[31]=    -645 | total=18 | crc_err=0
+[BIO] seq=208 | ir[0]=     393 ecg[0]=  3368 | total=18 | crc_err=0
+[AUDIO] seq=209 | pcg[0]=   -3443 pcg[31]=     132 | total=19 | crc_err=0
+[BIO] seq=209 | ir[0]=     404 ecg[0]=     0 | total=19 | crc_err=0
+[AUDIO] seq=210 | pcg[0]=    6368 pcg[31]=    3207 | total=20 | crc_err=0
+[BIO] seq=210 | ir[0]=     415 ecg[0]=  3992 | total=20 | crc_err=0
+[AUDIO] seq=211 | pcg[0]=    -439 pcg[31]=   -1766 | total=21 | crc_err=0
+[BIO] seq=211 | ir[0]=     376 ecg[0]=   534 | total=21 | crc_err=0
+[AUDIO] seq=212 | pcg[0]=   -3278 pcg[31]=   -3235 | total=22 | crc_err=0
+[BIO] seq=212 | ir[0]=     417 ecg[0]=  2352 | total=22 | crc_err=0
+[AUDIO] seq=213 | pcg[0]=    -653 pcg[31]=   -1181 | total=23 | crc_err=0
+[BIO] seq=213 | ir[0]=     414 ecg[0]=  3328 | total=23 | crc_err=0
+[AUDIO] seq=214 | pcg[0]=    2337 pcg[31]=   -2650 | total=24 | crc_err=0
+[BIO] seq=214 | ir[0]=     395 ecg[0]=     0 | total=24 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=215 got seq=216 -> lost=1 packets
+[AUDIO] seq=216 | pcg[0]=    5492 pcg[31]=   -4653 | total=25 | crc_err=0
+[LOSS] BIO: expected seq=215 got seq=216 -> lost=1 packets
+[BIO] seq=216 | ir[0]=     413 ecg[0]=   467 | total=25 | crc_err=0
+[AUDIO] seq=217 | pcg[0]=    2464 pcg[31]=     102 | total=26 | crc_err=0
+[BIO] seq=217 | ir[0]=     413 ecg[0]=  2412 | total=26 | crc_err=0
+[AUDIO] seq=218 | pcg[0]=    -203 pcg[31]=   -2614 | total=27 | crc_err=0
+[BIO] seq=218 | ir[0]=     406 ecg[0]=  3248 | total=27 | crc_err=0
+[AUDIO] seq=219 | pcg[0]=   -5885 pcg[31]=   -2457 | total=28 | crc_err=0
+[BIO] seq=219 | ir[0]=     392 ecg[0]=     0 | total=28 | crc_err=0
+[AUDIO] seq=220 | pcg[0]=     342 pcg[31]=    2617 | total=29 | crc_err=0
+[BIO] seq=220 | ir[0]=     417 ecg[0]=  3956 | total=29 | crc_err=0
+[AUDIO] seq=221 | pcg[0]=    4830 pcg[31]=    7190 | total=30 | crc_err=0
+[BIO] seq=221 | ir[0]=     413 ecg[0]=   434 | total=30 | crc_err=0
+[AUDIO] seq=222 | pcg[0]=    2330 pcg[31]=    4638 | total=31 | crc_err=0
+[BIO] seq=222 | ir[0]=     418 ecg[0]=  2508 | total=31 | crc_err=0
+[AUDIO] seq=223 | pcg[0]=    4121 pcg[31]=    2876 | total=32 | crc_err=0
+[BIO] seq=223 | ir[0]=     415 ecg[0]=  3152 | total=32 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=224 got seq=225 -> lost=1 packets
+[AUDIO] seq=225 | pcg[0]=    -140 pcg[31]=     945 | total=33 | crc_err=0
+[LOSS] BIO: expected seq=224 got seq=225 -> lost=1 packets
+[BIO] seq=225 | ir[0]=     409 ecg[0]=  3984 | total=33 | crc_err=0
+[AUDIO] seq=226 | pcg[0]=    -420 pcg[31]=    1808 | total=34 | crc_err=0
+[BIO] seq=226 | ir[0]=     415 ecg[0]=   202 | total=34 | crc_err=0
+[AUDIO] seq=227 | pcg[0]=   -3335 pcg[31]=    3186 | total=35 | crc_err=0
+[BIO] seq=227 | ir[0]=     415 ecg[0]=  2604 | total=35 | crc_err=0
+[AUDIO] seq=228 | pcg[0]=    3462 pcg[31]=    1867 | total=36 | crc_err=0
+[BIO] seq=228 | ir[0]=     402 ecg[0]=  2916 | total=36 | crc_err=0
+[AUDIO] seq=229 | pcg[0]=    1956 pcg[31]=    1971 | total=37 | crc_err=0
+[BIO] seq=229 | ir[0]=     405 ecg[0]=     0 | total=37 | crc_err=0
+[AUDIO] seq=230 | pcg[0]=    -819 pcg[31]=     576 | total=38 | crc_err=0
+[BIO] seq=230 | ir[0]=     395 ecg[0]=  4016 | total=38 | crc_err=0
+[AUDIO] seq=231 | pcg[0]=    1211 pcg[31]=   -4836 | total=39 | crc_err=0
+[BIO] seq=231 | ir[0]=     413 ecg[0]=   288 | total=39 | crc_err=0
+[AUDIO] seq=232 | pcg[0]=    3623 pcg[31]=   -3698 | total=40 | crc_err=0
+[BIO] seq=232 | ir[0]=     412 ecg[0]=  2736 | total=40 | crc_err=0
+[AUDIO] seq=233 | pcg[0]=    -770 pcg[31]=   -8100 | total=41 | crc_err=0
+[BIO] seq=233 | ir[0]=     412 ecg[0]=  3032 | total=41 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 65 garbage bytes before header
+[WARN] Skipped 134 garbage bytes before header
+[LOSS] AUDIO: expected seq=234 got seq=235 -> lost=1 packets
+[AUDIO] seq=235 | pcg[0]=   -3778 pcg[31]=    3855 | total=42 | crc_err=0
+[LOSS] BIO: expected seq=234 got seq=235 -> lost=1 packets
+[BIO] seq=235 | ir[0]=     429 ecg[0]=  3984 | total=42 | crc_err=0
+[AUDIO] seq=236 | pcg[0]=    -127 pcg[31]=    1524 | total=43 | crc_err=0
+[BIO] seq=236 | ir[0]=     429 ecg[0]=   247 | total=43 | crc_err=0
+[AUDIO] seq=237 | pcg[0]=    3104 pcg[31]=    -328 | total=44 | crc_err=0
+[BIO] seq=237 | ir[0]=     404 ecg[0]=  2760 | total=44 | crc_err=0
+[AUDIO] seq=238 | pcg[0]=   -1232 pcg[31]=   -2616 | total=45 | crc_err=0
+[BIO] seq=238 | ir[0]=     400 ecg[0]=  2936 | total=45 | crc_err=0
+[AUDIO] seq=239 | pcg[0]=    3000 pcg[31]=   -3243 | total=46 | crc_err=0
+[BIO] seq=239 | ir[0]=     413 ecg[0]=     0 | total=46 | crc_err=0
+[AUDIO] seq=240 | pcg[0]=    2504 pcg[31]=     959 | total=47 | crc_err=0
+[BIO] seq=240 | ir[0]=     412 ecg[0]=  4032 | total=47 | crc_err=0
+[AUDIO] seq=241 | pcg[0]=   -2075 pcg[31]=   -2923 | total=48 | crc_err=0
+[BIO] seq=241 | ir[0]=     408 ecg[0]=    40 | total=48 | crc_err=0
+[AUDIO] seq=242 | pcg[0]=   -4974 pcg[31]=    -599 | total=49 | crc_err=0
+[BIO] seq=242 | ir[0]=     409 ecg[0]=  2848 | total=49 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=243 got seq=244 -> lost=1 packets
+[AUDIO] seq=244 | pcg[0]=   -1178 pcg[31]=   -3639 | total=50 | crc_err=0
+[LOSS] BIO: expected seq=243 got seq=244 -> lost=1 packets
+[BIO] seq=244 | ir[0]=     418 ecg[0]=     0 | total=50 | crc_err=0
+[AUDIO] seq=245 | pcg[0]=     414 pcg[31]=    2159 | total=51 | crc_err=0
+[BIO] seq=245 | ir[0]=     418 ecg[0]=  3984 | total=51 | crc_err=0
+[AUDIO] seq=246 | pcg[0]=   -2217 pcg[31]=    1756 | total=52 | crc_err=0
+[BIO] seq=246 | ir[0]=     404 ecg[0]=   189 | total=52 | crc_err=0
+[AUDIO] seq=247 | pcg[0]=   -2668 pcg[31]=    1876 | total=53 | crc_err=0
+[BIO] seq=247 | ir[0]=     417 ecg[0]=  2912 | total=53 | crc_err=0
+[AUDIO] seq=248 | pcg[0]=   -2044 pcg[31]=    2062 | total=54 | crc_err=0
+[BIO] seq=248 | ir[0]=     407 ecg[0]=  2740 | total=54 | crc_err=0
+[AUDIO] seq=249 | pcg[0]=    -730 pcg[31]=    -558 | total=55 | crc_err=0
+[BIO] seq=249 | ir[0]=     411 ecg[0]=    17 | total=55 | crc_err=0
+[AUDIO] seq=250 | pcg[0]=    1452 pcg[31]=    -873 | total=56 | crc_err=0
+[BIO] seq=250 | ir[0]=     416 ecg[0]=  3980 | total=56 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 181 garbage bytes before header
+[WARN] Skipped 18 garbage bytes before header
+[LOSS] AUDIO: expected seq=251 got seq=252 -> lost=1 packets
+[AUDIO] seq=252 | pcg[0]=   -3677 pcg[31]=   -3801 | total=57 | crc_err=0
+[LOSS] BIO: expected seq=251 got seq=252 -> lost=1 packets
+[BIO] seq=252 | ir[0]=     407 ecg[0]=  2936 | total=57 | crc_err=0
+[AUDIO] seq=253 | pcg[0]=    1948 pcg[31]=    -869 | total=58 | crc_err=0
+[BIO] seq=253 | ir[0]=     407 ecg[0]=  2656 | total=58 | crc_err=0
+[AUDIO] seq=254 | pcg[0]=    -792 pcg[31]=    -676 | total=59 | crc_err=0
+[BIO] seq=254 | ir[0]=     410 ecg[0]=    70 | total=59 | crc_err=0
+[AUDIO] seq=255 | pcg[0]=    -585 pcg[31]=     465 | total=60 | crc_err=0
+[BIO] seq=255 | ir[0]=     407 ecg[0]=  4000 | total=60 | crc_err=0
+[AUDIO] seq=0 | pcg[0]=    -250 pcg[31]=     508 | total=61 | crc_err=0
+[BIO] seq=0 | ir[0]=     398 ecg[0]=    82 | total=61 | crc_err=0
+[AUDIO] seq=1 | pcg[0]=     248 pcg[31]=     135 | total=62 | crc_err=0
+[BIO] seq=1 | ir[0]=     403 ecg[0]=  2996 | total=62 | crc_err=0
+[AUDIO] seq=2 | pcg[0]=   -2249 pcg[31]=    3229 | total=63 | crc_err=0
+[BIO] seq=2 | ir[0]=     437 ecg[0]=  2576 | total=63 | crc_err=0
+[AUDIO] seq=3 | pcg[0]=   -1805 pcg[31]=    -312 | total=64 | crc_err=0
+[BIO] seq=3 | ir[0]=     373 ecg[0]=   176 | total=64 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=4 got seq=5 -> lost=1 packets
+[AUDIO] seq=5 | pcg[0]=      23 pcg[31]=    1003 | total=65 | crc_err=0
+[LOSS] BIO: expected seq=4 got seq=5 -> lost=1 packets
+[BIO] seq=5 | ir[0]=     413 ecg[0]=    48 | total=65 | crc_err=0
+[AUDIO] seq=6 | pcg[0]=    1321 pcg[31]=   -2291 | total=66 | crc_err=0
+[BIO] seq=6 | ir[0]=     413 ecg[0]=  3104 | total=66 | crc_err=0
+[AUDIO] seq=7 | pcg[0]=    -453 pcg[31]=    -661 | total=67 | crc_err=0
+[BIO] seq=7 | ir[0]=     413 ecg[0]=  2500 | total=67 | crc_err=0
+[AUDIO] seq=8 | pcg[0]=   -3176 pcg[31]=      25 | total=68 | crc_err=0
+[BIO] seq=8 | ir[0]=     410 ecg[0]=   200 | total=68 | crc_err=0
+[AUDIO] seq=9 | pcg[0]=     848 pcg[31]=   -1836 | total=69 | crc_err=0
+[BIO] seq=9 | ir[0]=     418 ecg[0]=  4095 | total=69 | crc_err=0
+[AUDIO] seq=10 | pcg[0]=    2785 pcg[31]=   -2306 | total=70 | crc_err=0
+[BIO] seq=10 | ir[0]=     413 ecg[0]=    45 | total=70 | crc_err=0
+[AUDIO] seq=11 | pcg[0]=    1258 pcg[31]=   -4850 | total=71 | crc_err=0
+[BIO] seq=11 | ir[0]=     438 ecg[0]=  3016 | total=71 | crc_err=0
+[AUDIO] seq=12 | pcg[0]=     -67 pcg[31]=    2476 | total=72 | crc_err=0
+[BIO] seq=12 | ir[0]=     408 ecg[0]=  2400 | total=72 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 85 garbage bytes before header
+[WARN] Skipped 3 garbage bytes before header
+[WARN] Skipped 110 garbage bytes before header
+[LOSS] AUDIO: expected seq=13 got seq=14 -> lost=1 packets
+[AUDIO] seq=14 | pcg[0]=   -1368 pcg[31]=     936 | total=73 | crc_err=0
+[LOSS] BIO: expected seq=13 got seq=14 -> lost=1 packets
+[BIO] seq=14 | ir[0]=     415 ecg[0]=  3984 | total=73 | crc_err=0
+[AUDIO] seq=15 | pcg[0]=    2334 pcg[31]=   -1941 | total=74 | crc_err=0
+[BIO] seq=15 | ir[0]=     415 ecg[0]=    48 | total=74 | crc_err=0
+[AUDIO] seq=16 | pcg[0]=   -2865 pcg[31]=    -797 | total=75 | crc_err=0
+[BIO] seq=16 | ir[0]=     398 ecg[0]=  3208 | total=75 | crc_err=0
+[AUDIO] seq=17 | pcg[0]=   -2713 pcg[31]=    1393 | total=76 | crc_err=0
+[BIO] seq=17 | ir[0]=     406 ecg[0]=  2312 | total=76 | crc_err=0
+[AUDIO] seq=18 | pcg[0]=    1941 pcg[31]=    2502 | total=77 | crc_err=0
+[BIO] seq=18 | ir[0]=     431 ecg[0]=   329 | total=77 | crc_err=0
+[AUDIO] seq=19 | pcg[0]=    -197 pcg[31]=   -3735 | total=78 | crc_err=0
+[BIO] seq=19 | ir[0]=     413 ecg[0]=  3952 | total=78 | crc_err=0
+[AUDIO] seq=20 | pcg[0]=      31 pcg[31]=     446 | total=79 | crc_err=0
+[BIO] seq=20 | ir[0]=     420 ecg[0]=     0 | total=79 | crc_err=0
+[AUDIO] seq=21 | pcg[0]=    1113 pcg[31]=     425 | total=80 | crc_err=0
+[BIO] seq=21 | ir[0]=     408 ecg[0]=  3240 | total=80 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 85 garbage bytes before header
+[WARN] Skipped 114 garbage bytes before header
+[LOSS] AUDIO: expected seq=22 got seq=23 -> lost=1 packets
+[AUDIO] seq=23 | pcg[0]=     131 pcg[31]=    3673 | total=81 | crc_err=0
+[LOSS] BIO: expected seq=22 got seq=23 -> lost=1 packets
+[BIO] seq=23 | ir[0]=     408 ecg[0]=   429 | total=81 | crc_err=0
+[AUDIO] seq=24 | pcg[0]=    2582 pcg[31]=    3207 | total=82 | crc_err=0
+[BIO] seq=24 | ir[0]=     408 ecg[0]=  3976 | total=82 | crc_err=0
+[AUDIO] seq=25 | pcg[0]=    4367 pcg[31]=   -8085 | total=83 | crc_err=0
+[BIO] seq=25 | ir[0]=     385 ecg[0]=     0 | total=83 | crc_err=0
+[AUDIO] seq=26 | pcg[0]=   -1015 pcg[31]=   -2172 | total=84 | crc_err=0
+[BIO] seq=26 | ir[0]=     402 ecg[0]=  3312 | total=84 | crc_err=0
+[AUDIO] seq=27 | pcg[0]=   -3673 pcg[31]=    3517 | total=85 | crc_err=0
+[BIO] seq=27 | ir[0]=     430 ecg[0]=  2128 | total=85 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=28 got seq=29 -> lost=1 packets
+[AUDIO] seq=29 | pcg[0]=     579 pcg[31]=    1168 | total=86 | crc_err=0
+[LOSS] BIO: expected seq=28 got seq=29 -> lost=1 packets
+[BIO] seq=29 | ir[0]=     410 ecg[0]=  3992 | total=86 | crc_err=0
+[AUDIO] seq=30 | pcg[0]=    -242 pcg[31]=   -2234 | total=87 | crc_err=0
+[BIO] seq=30 | ir[0]=     412 ecg[0]=     0 | total=87 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=31 got seq=32 -> lost=1 packets
+[AUDIO] seq=32 | pcg[0]=    -999 pcg[31]=    3215 | total=88 | crc_err=0
+[LOSS] BIO: expected seq=31 got seq=32 -> lost=1 packets
+[BIO] seq=32 | ir[0]=     421 ecg[0]=  2084 | total=88 | crc_err=0
+[AUDIO] seq=33 | pcg[0]=    2548 pcg[31]=   -2664 | total=89 | crc_err=0
+[BIO] seq=33 | ir[0]=     413 ecg[0]=   552 | total=89 | crc_err=0
+[AUDIO] seq=34 | pcg[0]=    1082 pcg[31]=       7 | total=90 | crc_err=0
+[BIO] seq=34 | ir[0]=     413 ecg[0]=  3984 | total=90 | crc_err=0
+[AUDIO] seq=35 | pcg[0]=   -4213 pcg[31]=     811 | total=91 | crc_err=0
+[BIO] seq=35 | ir[0]=     408 ecg[0]=     0 | total=91 | crc_err=0
+[AUDIO] seq=36 | pcg[0]=   -1271 pcg[31]=   -1780 | total=92 | crc_err=0
+[BIO] seq=36 | ir[0]=     410 ecg[0]=  3408 | total=92 | crc_err=0
+[WARN] Skipped 33 garbage bytes before header
+[WARN] Skipped 102 garbage bytes before header
+[WARN] Skipped 61 garbage bytes before header
+[WARN] Skipped 138 garbage bytes before header
+[LOSS] AUDIO: expected seq=37 got seq=38 -> lost=1 packets
+[AUDIO] seq=38 | pcg[0]=    2091 pcg[31]=   -2813 | total=93 | crc_err=0
+[LOSS] BIO: expected seq=37 got seq=38 -> lost=1 packets
+[BIO] seq=38 | ir[0]=     423 ecg[0]=   658 | total=93 | crc_err=0
+[AUDIO] seq=39 | pcg[0]=    -431 pcg[31]=    1531 | total=94 | crc_err=0
+[BIO] seq=39 | ir[0]=     416 ecg[0]=  4000 | total=94 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=40 got seq=41 -> lost=1 packets
+[AUDIO] seq=41 | pcg[0]=    -717 pcg[31]=   -1023 | total=95 | crc_err=0
+[LOSS] BIO: expected seq=40 got seq=41 -> lost=1 packets
+[BIO] seq=41 | ir[0]=     411 ecg[0]=  3424 | total=95 | crc_err=0
+[AUDIO] seq=42 | pcg[0]=     116 pcg[31]=    1060 | total=96 | crc_err=0
+[BIO] seq=42 | ir[0]=     411 ecg[0]=  1924 | total=96 | crc_err=0
+[AUDIO] seq=43 | pcg[0]=   -2130 pcg[31]=    -307 | total=97 | crc_err=0
+[BIO] seq=43 | ir[0]=     402 ecg[0]=   706 | total=97 | crc_err=0
+[AUDIO] seq=44 | pcg[0]=    3627 pcg[31]=     656 | total=98 | crc_err=0
+[BIO] seq=44 | ir[0]=     406 ecg[0]=  4008 | total=98 | crc_err=0
+[AUDIO] seq=45 | pcg[0]=    1409 pcg[31]=    1110 | total=99 | crc_err=0
+[BIO] seq=45 | ir[0]=     413 ecg[0]=     0 | total=99 | crc_err=0
+[AUDIO] seq=46 | pcg[0]=    -634 pcg[31]=   -2259 | total=100 | crc_err=0
+[BIO] seq=46 | ir[0]=     407 ecg[0]=  3472 | total=100 | crc_err=0
+[AUDIO] seq=47 | pcg[0]=    -713 pcg[31]=     235 | total=101 | crc_err=0
+[BIO] seq=47 | ir[0]=     412 ecg[0]=  1848 | total=101 | crc_err=0
+[AUDIO] seq=48 | pcg[0]=   -1428 pcg[31]=    -153 | total=102 | crc_err=0
+[BIO] seq=48 | ir[0]=     375 ecg[0]=   752 | total=102 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=49 got seq=50 -> lost=1 packets
+[AUDIO] seq=50 | pcg[0]=    -266 pcg[31]=    3492 | total=103 | crc_err=0
+[LOSS] BIO: expected seq=49 got seq=50 -> lost=1 packets
+[BIO] seq=50 | ir[0]=     420 ecg[0]=     0 | total=103 | crc_err=0
+[AUDIO] seq=51 | pcg[0]=     799 pcg[31]=    -512 | total=104 | crc_err=0
+[BIO] seq=51 | ir[0]=     420 ecg[0]=  3504 | total=104 | crc_err=0
+[AUDIO] seq=52 | pcg[0]=     894 pcg[31]=     132 | total=105 | crc_err=0
+[BIO] seq=52 | ir[0]=     415 ecg[0]=  1772 | total=105 | crc_err=0
+[AUDIO] seq=53 | pcg[0]=     639 pcg[31]=   -1009 | total=106 | crc_err=0
+[BIO] seq=53 | ir[0]=     413 ecg[0]=   881 | total=106 | crc_err=0
+[AUDIO] seq=54 | pcg[0]=    2010 pcg[31]=    -905 | total=107 | crc_err=0
+[BIO] seq=54 | ir[0]=     417 ecg[0]=  4064 | total=107 | crc_err=0
+[AUDIO] seq=55 | pcg[0]=   -4474 pcg[31]=   -1692 | total=108 | crc_err=0
+[BIO] seq=55 | ir[0]=     409 ecg[0]=     0 | total=108 | crc_err=0
+[AUDIO] seq=56 | pcg[0]=    1418 pcg[31]=    -853 | total=109 | crc_err=0
+[BIO] seq=56 | ir[0]=     413 ecg[0]=  3568 | total=109 | crc_err=0
+[AUDIO] seq=57 | pcg[0]=    2389 pcg[31]=    3150 | total=110 | crc_err=0
+[BIO] seq=57 | ir[0]=     424 ecg[0]=  1680 | total=110 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=58 got seq=59 -> lost=1 packets
+[AUDIO] seq=59 | pcg[0]=    3265 pcg[31]=   -1901 | total=111 | crc_err=0
+[LOSS] BIO: expected seq=58 got seq=59 -> lost=1 packets
+[BIO] seq=59 | ir[0]=     414 ecg[0]=  3968 | total=111 | crc_err=0
+[AUDIO] seq=60 | pcg[0]=    -757 pcg[31]=   -1036 | total=112 | crc_err=0
+[BIO] seq=60 | ir[0]=     414 ecg[0]=     0 | total=112 | crc_err=0
+[AUDIO] seq=61 | pcg[0]=   -4358 pcg[31]=   -1679 | total=113 | crc_err=0
+[BIO] seq=61 | ir[0]=     410 ecg[0]=  3576 | total=113 | crc_err=0
+[AUDIO] seq=62 | pcg[0]=    -845 pcg[31]=   -8409 | total=114 | crc_err=0
+[BIO] seq=62 | ir[0]=     411 ecg[0]=  1669 | total=114 | crc_err=0
+[AUDIO] seq=63 | pcg[0]=   -3304 pcg[31]=    -990 | total=115 | crc_err=0
+[BIO] seq=63 | ir[0]=     434 ecg[0]=  1061 | total=115 | crc_err=0
+[AUDIO] seq=64 | pcg[0]=    2814 pcg[31]=   -2768 | total=116 | crc_err=0
+[BIO] seq=64 | ir[0]=     426 ecg[0]=  3952 | total=116 | crc_err=0
+[AUDIO] seq=65 | pcg[0]=    -460 pcg[31]=    2379 | total=117 | crc_err=0
+[BIO] seq=65 | ir[0]=     390 ecg[0]=     0 | total=117 | crc_err=0
+[AUDIO] seq=66 | pcg[0]=      40 pcg[31]=     309 | total=118 | crc_err=0
+[BIO] seq=66 | ir[0]=     417 ecg[0]=  3632 | total=118 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 65 garbage bytes before header
+[WARN] Skipped 134 garbage bytes before header
+[LOSS] AUDIO: expected seq=67 got seq=68 -> lost=1 packets
+[AUDIO] seq=68 | pcg[0]=   -2832 pcg[31]=    1866 | total=119 | crc_err=0
+[LOSS] BIO: expected seq=67 got seq=68 -> lost=1 packets
+[BIO] seq=68 | ir[0]=     417 ecg[0]=  1088 | total=119 | crc_err=0
+[AUDIO] seq=69 | pcg[0]=   -4649 pcg[31]=   -2078 | total=120 | crc_err=0
+[BIO] seq=69 | ir[0]=     417 ecg[0]=  3976 | total=120 | crc_err=0
+[AUDIO] seq=70 | pcg[0]=    3863 pcg[31]=    1675 | total=121 | crc_err=0
+[BIO] seq=70 | ir[0]=     417 ecg[0]=     0 | total=121 | crc_err=0
+[AUDIO] seq=71 | pcg[0]=     388 pcg[31]=     230 | total=122 | crc_err=0
+[BIO] seq=71 | ir[0]=     422 ecg[0]=  3620 | total=122 | crc_err=0
+[AUDIO] seq=72 | pcg[0]=    1234 pcg[31]=    1715 | total=123 | crc_err=0
+[BIO] seq=72 | ir[0]=     432 ecg[0]=  1450 | total=123 | crc_err=0
+[AUDIO] seq=73 | pcg[0]=    -822 pcg[31]=    2856 | total=124 | crc_err=0
+[BIO] seq=73 | ir[0]=     409 ecg[0]=  1156 | total=124 | crc_err=0
+[AUDIO] seq=74 | pcg[0]=   -2051 pcg[31]=    2374 | total=125 | crc_err=0
+[BIO] seq=74 | ir[0]=     410 ecg[0]=  4000 | total=125 | crc_err=0
+[AUDIO] seq=75 | pcg[0]=     747 pcg[31]=     261 | total=126 | crc_err=0
+[BIO] seq=75 | ir[0]=     421 ecg[0]=     0 | total=126 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=76 got seq=77 -> lost=1 packets
+[AUDIO] seq=77 | pcg[0]=     925 pcg[31]=   -2775 | total=127 | crc_err=0
+[LOSS] BIO: expected seq=76 got seq=77 -> lost=1 packets
+[BIO] seq=77 | ir[0]=     404 ecg[0]=  1396 | total=127 | crc_err=0
+[AUDIO] seq=78 | pcg[0]=   -2095 pcg[31]=   -1338 | total=128 | crc_err=0
+[BIO] seq=78 | ir[0]=     404 ecg[0]=  1225 | total=128 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 13 garbage bytes before header
+[WARN] Skipped 186 garbage bytes before header
+[LOSS] AUDIO: expected seq=79 got seq=80 -> lost=1 packets
+[AUDIO] seq=80 | pcg[0]=    -367 pcg[31]=     693 | total=129 | crc_err=0
+[LOSS] BIO: expected seq=79 got seq=80 -> lost=1 packets
+[BIO] seq=80 | ir[0]=     433 ecg[0]=     0 | total=129 | crc_err=0
+[AUDIO] seq=81 | pcg[0]=   -1097 pcg[31]=    -159 | total=130 | crc_err=0
+[BIO] seq=81 | ir[0]=     406 ecg[0]=  3720 | total=130 | crc_err=0
+[WARN] Skipped 29 garbage bytes before header
+[WARN] Skipped 106 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=82 got seq=83 -> lost=1 packets
+[AUDIO] seq=83 | pcg[0]=   -5767 pcg[31]=   -3063 | total=131 | crc_err=0
+[LOSS] BIO: expected seq=82 got seq=83 -> lost=1 packets
+[BIO] seq=83 | ir[0]=     416 ecg[0]=  1336 | total=131 | crc_err=0
+[AUDIO] seq=84 | pcg[0]=    8815 pcg[31]=    3871 | total=132 | crc_err=0
+[BIO] seq=84 | ir[0]=     417 ecg[0]=  3968 | total=132 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 187 garbage bytes before header
+[WARN] Skipped 12 garbage bytes before header
+[LOSS] AUDIO: expected seq=85 got seq=86 -> lost=1 packets
+[AUDIO] seq=86 | pcg[0]=    1628 pcg[31]=    -413 | total=133 | crc_err=0
+[LOSS] BIO: expected seq=85 got seq=86 -> lost=1 packets
+[BIO] seq=86 | ir[0]=     417 ecg[0]=  3764 | total=133 | crc_err=0
+[AUDIO] seq=87 | pcg[0]=    5644 pcg[31]=   -3906 | total=134 | crc_err=0
+[BIO] seq=87 | ir[0]=     417 ecg[0]=  1196 | total=134 | crc_err=0
+[AUDIO] seq=88 | pcg[0]=      80 pcg[31]=    3099 | total=135 | crc_err=0
+[BIO] seq=88 | ir[0]=     397 ecg[0]=  1444 | total=135 | crc_err=0
+[AUDIO] seq=89 | pcg[0]=    5031 pcg[31]=    1117 | total=136 | crc_err=0
+[BIO] seq=89 | ir[0]=     409 ecg[0]=  3808 | total=136 | crc_err=0
+[AUDIO] seq=90 | pcg[0]=   -3022 pcg[31]=    -399 | total=137 | crc_err=0
+[BIO] seq=90 | ir[0]=     405 ecg[0]=     0 | total=137 | crc_err=0
+[AUDIO] seq=91 | pcg[0]=    5069 pcg[31]=    1652 | total=138 | crc_err=0
+[BIO] seq=91 | ir[0]=     380 ecg[0]=  3808 | total=138 | crc_err=0
+[AUDIO] seq=92 | pcg[0]=   -2623 pcg[31]=   -2067 | total=139 | crc_err=0
+[BIO] seq=92 | ir[0]=     415 ecg[0]=  1180 | total=139 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=93 got seq=94 -> lost=1 packets
+[AUDIO] seq=94 | pcg[0]=   -1672 pcg[31]=     847 | total=140 | crc_err=0
+[LOSS] BIO: expected seq=93 got seq=94 -> lost=1 packets
+[BIO] seq=94 | ir[0]=     412 ecg[0]=  3912 | total=140 | crc_err=0
+[AUDIO] seq=95 | pcg[0]=    -231 pcg[31]=   -2993 | total=141 | crc_err=0
+[BIO] seq=95 | ir[0]=     408 ecg[0]=     0 | total=141 | crc_err=0
+[AUDIO] seq=96 | pcg[0]=   -2997 pcg[31]=   -1733 | total=142 | crc_err=0
+[BIO] seq=96 | ir[0]=     408 ecg[0]=  3840 | total=142 | crc_err=0
+[AUDIO] seq=97 | pcg[0]=    1120 pcg[31]=   -2337 | total=143 | crc_err=0
+[BIO] seq=97 | ir[0]=     409 ecg[0]=  1142 | total=143 | crc_err=0
+[AUDIO] seq=98 | pcg[0]=   -2521 pcg[31]=     450 | total=144 | crc_err=0
+[BIO] seq=98 | ir[0]=     403 ecg[0]=  1600 | total=144 | crc_err=0
+[AUDIO] seq=99 | pcg[0]=    2810 pcg[31]=    7701 | total=145 | crc_err=0
+[BIO] seq=99 | ir[0]=     419 ecg[0]=  3936 | total=145 | crc_err=0
+[AUDIO] seq=100 | pcg[0]=    2511 pcg[31]=   -3917 | total=146 | crc_err=0
+[BIO] seq=100 | ir[0]=     424 ecg[0]=     0 | total=146 | crc_err=0
+[AUDIO] seq=101 | pcg[0]=    1115 pcg[31]=   -2004 | total=147 | crc_err=0
+[BIO] seq=101 | ir[0]=     413 ecg[0]=  3904 | total=147 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=102 got seq=104 -> lost=2 packets
+[AUDIO] seq=104 | pcg[0]=     -25 pcg[31]=    -467 | total=148 | crc_err=0
+[LOSS] BIO: expected seq=102 got seq=104 -> lost=2 packets
+[BIO] seq=104 | ir[0]=     409 ecg[0]=  3792 | total=148 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=105 got seq=106 -> lost=1 packets
+[AUDIO] seq=106 | pcg[0]=   -1411 pcg[31]=     388 | total=149 | crc_err=0
+[LOSS] BIO: expected seq=105 got seq=106 -> lost=1 packets
+[BIO] seq=106 | ir[0]=     416 ecg[0]=  3896 | total=149 | crc_err=0
+[AUDIO] seq=107 | pcg[0]=    -153 pcg[31]=   -1420 | total=150 | crc_err=0
+[BIO] seq=107 | ir[0]=     405 ecg[0]=   978 | total=150 | crc_err=0
+[AUDIO] seq=108 | pcg[0]=    2111 pcg[31]=     462 | total=151 | crc_err=0
+[BIO] seq=108 | ir[0]=     410 ecg[0]=  1760 | total=151 | crc_err=0
+[AUDIO] seq=109 | pcg[0]=    1832 pcg[31]=   -1350 | total=152 | crc_err=0
+[BIO] seq=109 | ir[0]=     419 ecg[0]=  3792 | total=152 | crc_err=0
+[AUDIO] seq=110 | pcg[0]=   -3377 pcg[31]=    1816 | total=153 | crc_err=0
+[BIO] seq=110 | ir[0]=     403 ecg[0]=     0 | total=153 | crc_err=0
+[AUDIO] seq=111 | pcg[0]=   -1614 pcg[31]=   -3680 | total=154 | crc_err=0
+[BIO] seq=111 | ir[0]=     411 ecg[0]=  3904 | total=154 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=112 got seq=113 -> lost=1 packets
+[AUDIO] seq=113 | pcg[0]=    3766 pcg[31]=    4583 | total=155 | crc_err=0
+[LOSS] BIO: expected seq=112 got seq=113 -> lost=1 packets
+[BIO] seq=113 | ir[0]=     413 ecg[0]=  1840 | total=155 | crc_err=0
+[AUDIO] seq=114 | pcg[0]=    5333 pcg[31]=    -465 | total=156 | crc_err=0
+[BIO] seq=114 | ir[0]=     413 ecg[0]=  3684 | total=156 | crc_err=0
+[AUDIO] seq=115 | pcg[0]=   -4944 pcg[31]=    2696 | total=157 | crc_err=0
+[BIO] seq=115 | ir[0]=     404 ecg[0]=     0 | total=157 | crc_err=0
+[AUDIO] seq=116 | pcg[0]=    5768 pcg[31]=   -6655 | total=158 | crc_err=0
+[BIO] seq=116 | ir[0]=     384 ecg[0]=  3896 | total=158 | crc_err=0
+[AUDIO] seq=117 | pcg[0]=   -3823 pcg[31]=   -1827 | total=159 | crc_err=0
+[BIO] seq=117 | ir[0]=     434 ecg[0]=   825 | total=159 | crc_err=0
+[AUDIO] seq=118 | pcg[0]=   -3218 pcg[31]=    -607 | total=160 | crc_err=0
+[BIO] seq=118 | ir[0]=     432 ecg[0]=  1904 | total=160 | crc_err=0
+[AUDIO] seq=119 | pcg[0]=    5847 pcg[31]=    3124 | total=161 | crc_err=0
+[BIO] seq=119 | ir[0]=     425 ecg[0]=  3624 | total=161 | crc_err=0
+[AUDIO] seq=120 | pcg[0]=     328 pcg[31]=     -26 | total=162 | crc_err=0
+[BIO] seq=120 | ir[0]=     407 ecg[0]=     0 | total=162 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=121 got seq=122 -> lost=1 packets
+[AUDIO] seq=122 | pcg[0]=   -9126 pcg[31]=     684 | total=163 | crc_err=0
+[LOSS] BIO: expected seq=121 got seq=122 -> lost=1 packets
+[BIO] seq=122 | ir[0]=     420 ecg[0]=   754 | total=163 | crc_err=0
+[AUDIO] seq=123 | pcg[0]=    1195 pcg[31]=   -4242 | total=164 | crc_err=0
+[BIO] seq=123 | ir[0]=     420 ecg[0]=  1988 | total=164 | crc_err=0
+[AUDIO] seq=124 | pcg[0]=    -424 pcg[31]=    1258 | total=165 | crc_err=0
+[BIO] seq=124 | ir[0]=     405 ecg[0]=  3552 | total=165 | crc_err=0
+[AUDIO] seq=125 | pcg[0]=   -3068 pcg[31]=     123 | total=166 | crc_err=0
+[BIO] seq=125 | ir[0]=     381 ecg[0]=     0 | total=166 | crc_err=0
+[AUDIO] seq=126 | pcg[0]=    -186 pcg[31]=   -7226 | total=167 | crc_err=0
+[BIO] seq=126 | ir[0]=     426 ecg[0]=  3904 | total=167 | crc_err=0
+[AUDIO] seq=127 | pcg[0]=   -7554 pcg[31]=    3556 | total=168 | crc_err=0
+[BIO] seq=127 | ir[0]=     397 ecg[0]=   710 | total=168 | crc_err=0
+[AUDIO] seq=128 | pcg[0]=    3011 pcg[31]=   -1892 | total=169 | crc_err=0
+[BIO] seq=128 | ir[0]=     421 ecg[0]=  1808 | total=169 | crc_err=0
+[AUDIO] seq=129 | pcg[0]=    1300 pcg[31]=      94 | total=170 | crc_err=0
+[BIO] seq=129 | ir[0]=     415 ecg[0]=  3496 | total=170 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 147 garbage bytes before header
+[WARN] Skipped 52 garbage bytes before header
+[LOSS] AUDIO: expected seq=130 got seq=131 -> lost=1 packets
+[AUDIO] seq=131 | pcg[0]=    2037 pcg[31]=   -2249 | total=171 | crc_err=0
+[LOSS] BIO: expected seq=130 got seq=131 -> lost=1 packets
+[BIO] seq=131 | ir[0]=     418 ecg[0]=  3952 | total=171 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 85 garbage bytes before header
+[WARN] Skipped 114 garbage bytes before header
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=132 got seq=134 -> lost=2 packets
+[AUDIO] seq=134 | pcg[0]=    -149 pcg[31]=   -1852 | total=172 | crc_err=0
+[LOSS] BIO: expected seq=132 got seq=134 -> lost=2 packets
+[BIO] seq=134 | ir[0]=     405 ecg[0]=  3576 | total=172 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=135 got seq=136 -> lost=1 packets
+[AUDIO] seq=136 | pcg[0]=    1271 pcg[31]=   -5085 | total=173 | crc_err=0
+[LOSS] BIO: expected seq=135 got seq=136 -> lost=1 packets
+[BIO] seq=136 | ir[0]=     447 ecg[0]=  3912 | total=173 | crc_err=0
+[AUDIO] seq=137 | pcg[0]=    1635 pcg[31]=    2536 | total=174 | crc_err=0
+[BIO] seq=137 | ir[0]=     399 ecg[0]=   586 | total=174 | crc_err=0
+[AUDIO] seq=138 | pcg[0]=   -1227 pcg[31]=   -1400 | total=175 | crc_err=0
+[BIO] seq=138 | ir[0]=     402 ecg[0]=  2216 | total=175 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 61 garbage bytes before header
+[WARN] Skipped 138 garbage bytes before header
+[LOSS] AUDIO: expected seq=139 got seq=140 -> lost=1 packets
+[AUDIO] seq=140 | pcg[0]=     207 pcg[31]=    -520 | total=176 | crc_err=0
+[LOSS] BIO: expected seq=139 got seq=140 -> lost=1 packets
+[BIO] seq=140 | ir[0]=     402 ecg[0]=     0 | total=176 | crc_err=0
+[AUDIO] seq=141 | pcg[0]=     115 pcg[31]=    -305 | total=177 | crc_err=0
+[BIO] seq=141 | ir[0]=     410 ecg[0]=  3840 | total=177 | crc_err=0
+[AUDIO] seq=142 | pcg[0]=     415 pcg[31]=     642 | total=178 | crc_err=0
+[BIO] seq=142 | ir[0]=     410 ecg[0]=   532 | total=178 | crc_err=0
+[AUDIO] seq=143 | pcg[0]=    -145 pcg[31]=     688 | total=179 | crc_err=0
+[BIO] seq=143 | ir[0]=     404 ecg[0]=  2336 | total=179 | crc_err=0
+[AUDIO] seq=144 | pcg[0]=     766 pcg[31]=    1907 | total=180 | crc_err=0
+[BIO] seq=144 | ir[0]=     406 ecg[0]=  3352 | total=180 | crc_err=0
+[AUDIO] seq=145 | pcg[0]=      96 pcg[31]=     511 | total=181 | crc_err=0
+[BIO] seq=145 | ir[0]=     388 ecg[0]=     0 | total=181 | crc_err=0
+[AUDIO] seq=146 | pcg[0]=     833 pcg[31]=     456 | total=182 | crc_err=0
+[BIO] seq=146 | ir[0]=     420 ecg[0]=  4000 | total=182 | crc_err=0
+[AUDIO] seq=147 | pcg[0]=     280 pcg[31]=   -1020 | total=183 | crc_err=0
+[BIO] seq=147 | ir[0]=     384 ecg[0]=   482 | total=183 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 69 garbage bytes before header
+[WARN] Skipped 55 garbage bytes before header
+[WARN] Skipped 74 garbage bytes before header
+[LOSS] AUDIO: expected seq=148 got seq=149 -> lost=1 packets
+[AUDIO] seq=149 | pcg[0]=     567 pcg[31]=   -1105 | total=184 | crc_err=0
+[LOSS] BIO: expected seq=148 got seq=149 -> lost=1 packets
+[BIO] seq=149 | ir[0]=     421 ecg[0]=  3264 | total=184 | crc_err=0
+[AUDIO] seq=150 | pcg[0]=    1361 pcg[31]=    -840 | total=185 | crc_err=0
+[BIO] seq=150 | ir[0]=     421 ecg[0]=     0 | total=185 | crc_err=0
+[AUDIO] seq=151 | pcg[0]=   -2129 pcg[31]=   -2274 | total=186 | crc_err=0
+[BIO] seq=151 | ir[0]=     408 ecg[0]=  4000 | total=186 | crc_err=0
+[AUDIO] seq=152 | pcg[0]=    1272 pcg[31]=   -1599 | total=187 | crc_err=0
+[BIO] seq=152 | ir[0]=     431 ecg[0]=   449 | total=187 | crc_err=0
+[AUDIO] seq=153 | pcg[0]=    -103 pcg[31]=    1060 | total=188 | crc_err=0
+[BIO] seq=153 | ir[0]=     408 ecg[0]=  2476 | total=188 | crc_err=0
+[AUDIO] seq=154 | pcg[0]=   -4444 pcg[31]=   -2472 | total=189 | crc_err=0
+[BIO] seq=154 | ir[0]=     413 ecg[0]=  3176 | total=189 | crc_err=0
+[AUDIO] seq=155 | pcg[0]=    2340 pcg[31]=    -805 | total=190 | crc_err=0
+[BIO] seq=155 | ir[0]=     411 ecg[0]=     0 | total=190 | crc_err=0
+[AUDIO] seq=156 | pcg[0]=      91 pcg[31]=     -92 | total=191 | crc_err=0
+[BIO] seq=156 | ir[0]=     412 ecg[0]=  4032 | total=191 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 61 garbage bytes before header
+[WARN] Skipped 138 garbage bytes before header
+[LOSS] AUDIO: expected seq=157 got seq=158 -> lost=1 packets
+[AUDIO] seq=158 | pcg[0]=    1897 pcg[31]=   -1930 | total=192 | crc_err=0
+[LOSS] BIO: expected seq=157 got seq=158 -> lost=1 packets
+[BIO] seq=158 | ir[0]=     416 ecg[0]=  2594 | total=192 | crc_err=0
+[AUDIO] seq=159 | pcg[0]=   -2550 pcg[31]=    -298 | total=193 | crc_err=0
+[BIO] seq=159 | ir[0]=     412 ecg[0]=  3108 | total=193 | crc_err=0
+[AUDIO] seq=160 | pcg[0]=   -1508 pcg[31]=    -783 | total=194 | crc_err=0
+[BIO] seq=160 | ir[0]=     412 ecg[0]=     0 | total=194 | crc_err=0
+[AUDIO] seq=161 | pcg[0]=   -2610 pcg[31]=   -1833 | total=195 | crc_err=0
+[BIO] seq=161 | ir[0]=     422 ecg[0]=  3976 | total=195 | crc_err=0
+[AUDIO] seq=162 | pcg[0]=     221 pcg[31]=   -1783 | total=196 | crc_err=0
+[BIO] seq=162 | ir[0]=     407 ecg[0]=   321 | total=196 | crc_err=0
+[AUDIO] seq=163 | pcg[0]=    1285 pcg[31]=   -2327 | total=197 | crc_err=0
+[BIO] seq=163 | ir[0]=     427 ecg[0]=  2656 | total=197 | crc_err=0
+[AUDIO] seq=164 | pcg[0]=   -1751 pcg[31]=   -1116 | total=198 | crc_err=0
+[BIO] seq=164 | ir[0]=     410 ecg[0]=  3048 | total=198 | crc_err=0
+[AUDIO] seq=165 | pcg[0]=      44 pcg[31]=   -1055 | total=199 | crc_err=0
+[BIO] seq=165 | ir[0]=     421 ecg[0]=     0 | total=199 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=166 got seq=167 -> lost=1 packets
+[AUDIO] seq=167 | pcg[0]=    -964 pcg[31]=      97 | total=200 | crc_err=0
+[LOSS] BIO: expected seq=166 got seq=167 -> lost=1 packets
+[BIO] seq=167 | ir[0]=     425 ecg[0]=   211 | total=200 | crc_err=0
+[AUDIO] seq=168 | pcg[0]=    -657 pcg[31]=   -1538 | total=201 | crc_err=0
+[BIO] seq=168 | ir[0]=     415 ecg[0]=  2768 | total=201 | crc_err=0
+[AUDIO] seq=169 | pcg[0]=    2703 pcg[31]=   -2017 | total=202 | crc_err=0
+[BIO] seq=169 | ir[0]=     415 ecg[0]=  2948 | total=202 | crc_err=0
+[AUDIO] seq=170 | pcg[0]=    3535 pcg[31]=   -3028 | total=203 | crc_err=0
+[BIO] seq=170 | ir[0]=     415 ecg[0]=     0 | total=203 | crc_err=0
+[AUDIO] seq=171 | pcg[0]=     646 pcg[31]=     931 | total=204 | crc_err=0
+[BIO] seq=171 | ir[0]=     415 ecg[0]=  4072 | total=204 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=172 got seq=173 -> lost=1 packets
+[AUDIO] seq=173 | pcg[0]=    -132 pcg[31]=    2181 | total=205 | crc_err=0
+[LOSS] BIO: expected seq=172 got seq=173 -> lost=1 packets
+[BIO] seq=173 | ir[0]=     398 ecg[0]=  2752 | total=205 | crc_err=0
+[AUDIO] seq=174 | pcg[0]=   -2417 pcg[31]=   -1348 | total=206 | crc_err=0
+[BIO] seq=174 | ir[0]=     407 ecg[0]=  2880 | total=206 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=175 got seq=176 -> lost=1 packets
+[AUDIO] seq=176 | pcg[0]=    1368 pcg[31]=     939 | total=207 | crc_err=0
+[LOSS] BIO: expected seq=175 got seq=176 -> lost=1 packets
+[BIO] seq=176 | ir[0]=     413 ecg[0]=  3992 | total=207 | crc_err=0
+[AUDIO] seq=177 | pcg[0]=   -1151 pcg[31]=    2846 | total=208 | crc_err=0
+[BIO] seq=177 | ir[0]=     418 ecg[0]=   160 | total=208 | crc_err=0
+[AUDIO] seq=178 | pcg[0]=    3466 pcg[31]=    -589 | total=209 | crc_err=0
+[BIO] seq=178 | ir[0]=     418 ecg[0]=  2848 | total=209 | crc_err=0
+[AUDIO] seq=179 | pcg[0]=   -1432 pcg[31]=    1527 | total=210 | crc_err=0
+[BIO] seq=179 | ir[0]=     397 ecg[0]=  2792 | total=210 | crc_err=0
+[AUDIO] seq=180 | pcg[0]=   -1475 pcg[31]=   -3788 | total=211 | crc_err=0
+[BIO] seq=180 | ir[0]=     415 ecg[0]=     0 | total=211 | crc_err=0
+[AUDIO] seq=181 | pcg[0]=     144 pcg[31]=    2452 | total=212 | crc_err=0
+[BIO] seq=181 | ir[0]=     418 ecg[0]=  3984 | total=212 | crc_err=0
+[AUDIO] seq=182 | pcg[0]=    -784 pcg[31]=    -568 | total=213 | crc_err=0
+[BIO] seq=182 | ir[0]=     392 ecg[0]=   148 | total=213 | crc_err=0
+[AUDIO] seq=183 | pcg[0]=     155 pcg[31]=    -195 | total=214 | crc_err=0
+[BIO] seq=183 | ir[0]=     442 ecg[0]=  2920 | total=214 | crc_err=0
+[AUDIO] seq=184 | pcg[0]=    2075 pcg[31]=    3091 | total=215 | crc_err=0
+[BIO] seq=184 | ir[0]=     410 ecg[0]=  2816 | total=215 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=185 got seq=186 -> lost=1 packets
+[AUDIO] seq=186 | pcg[0]=    1989 pcg[31]=   -2966 | total=216 | crc_err=0
+[LOSS] BIO: expected seq=185 got seq=186 -> lost=1 packets
+[BIO] seq=186 | ir[0]=     415 ecg[0]=  4032 | total=216 | crc_err=0
+[AUDIO] seq=187 | pcg[0]=     511 pcg[31]=    1746 | total=217 | crc_err=0
+[BIO] seq=187 | ir[0]=     415 ecg[0]=   118 | total=217 | crc_err=0
+[AUDIO] seq=188 | pcg[0]=    1168 pcg[31]=    1579 | total=218 | crc_err=0
+[BIO] seq=188 | ir[0]=     407 ecg[0]=  2936 | total=218 | crc_err=0
+[AUDIO] seq=189 | pcg[0]=     799 pcg[31]=    -899 | total=219 | crc_err=0
+[BIO] seq=189 | ir[0]=     420 ecg[0]=  2644 | total=219 | crc_err=0
+[AUDIO] seq=190 | pcg[0]=   -1951 pcg[31]=   -1718 | total=220 | crc_err=0
+[BIO] seq=190 | ir[0]=     388 ecg[0]=   107 | total=220 | crc_err=0
+[AUDIO] seq=191 | pcg[0]=    1763 pcg[31]=   -1654 | total=221 | crc_err=0
+[BIO] seq=191 | ir[0]=     411 ecg[0]=  3968 | total=221 | crc_err=0
+[AUDIO] seq=192 | pcg[0]=     670 pcg[31]=     403 | total=222 | crc_err=0
+[BIO] seq=192 | ir[0]=     403 ecg[0]=    57 | total=222 | crc_err=0
+[AUDIO] seq=193 | pcg[0]=    2175 pcg[31]=    2862 | total=223 | crc_err=0
+[BIO] seq=193 | ir[0]=     428 ecg[0]=  3016 | total=223 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 57 garbage bytes before header
+[WARN] Skipped 55 garbage bytes before header
+[WARN] Skipped 86 garbage bytes before header
+[LOSS] AUDIO: expected seq=194 got seq=195 -> lost=1 packets
+[AUDIO] seq=195 | pcg[0]=     196 pcg[31]=    1225 | total=224 | crc_err=0
+[LOSS] BIO: expected seq=194 got seq=195 -> lost=1 packets
+[BIO] seq=195 | ir[0]=     416 ecg[0]=   196 | total=224 | crc_err=0
+[AUDIO] seq=196 | pcg[0]=    1103 pcg[31]=    -269 | total=225 | crc_err=0
+[BIO] seq=196 | ir[0]=     416 ecg[0]=  3968 | total=225 | crc_err=0
+[AUDIO] seq=197 | pcg[0]=   -1596 pcg[31]=    -934 | total=226 | crc_err=0
+[BIO] seq=197 | ir[0]=     410 ecg[0]=    35 | total=226 | crc_err=0
+[AUDIO] seq=198 | pcg[0]=   -2597 pcg[31]=     332 | total=227 | crc_err=0
+[BIO] seq=198 | ir[0]=     418 ecg[0]=  3104 | total=227 | crc_err=0
+[AUDIO] seq=199 | pcg[0]=    1755 pcg[31]=    -245 | total=228 | crc_err=0
+[BIO] seq=199 | ir[0]=     416 ecg[0]=  2456 | total=228 | crc_err=0
+[AUDIO] seq=200 | pcg[0]=     328 pcg[31]=    1994 | total=229 | crc_err=0
+[BIO] seq=200 | ir[0]=     415 ecg[0]=   214 | total=229 | crc_err=0
+[AUDIO] seq=201 | pcg[0]=   -1663 pcg[31]=     918 | total=230 | crc_err=0
+[BIO] seq=201 | ir[0]=     383 ecg[0]=  4000 | total=230 | crc_err=0
+[AUDIO] seq=202 | pcg[0]=    -786 pcg[31]=    1181 | total=231 | crc_err=0
+[BIO] seq=202 | ir[0]=     425 ecg[0]=     4 | total=231 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=203 got seq=204 -> lost=1 packets
+[AUDIO] seq=204 | pcg[0]=    -685 pcg[31]=     769 | total=232 | crc_err=0
+[LOSS] BIO: expected seq=203 got seq=204 -> lost=1 packets
+[BIO] seq=204 | ir[0]=     409 ecg[0]=  2330 | total=232 | crc_err=0
+[AUDIO] seq=205 | pcg[0]=    3107 pcg[31]=   -1459 | total=233 | crc_err=0
+[BIO] seq=205 | ir[0]=     416 ecg[0]=   306 | total=233 | crc_err=0
+[AUDIO] seq=206 | pcg[0]=     864 pcg[31]=   -1436 | total=234 | crc_err=0
+[BIO] seq=206 | ir[0]=     416 ecg[0]=  3856 | total=234 | crc_err=0
+[AUDIO] seq=207 | pcg[0]=     120 pcg[31]=    -331 | total=235 | crc_err=0
+[BIO] seq=207 | ir[0]=     404 ecg[0]=     0 | total=235 | crc_err=0
+[AUDIO] seq=208 | pcg[0]=   -1200 pcg[31]=    1822 | total=236 | crc_err=0
+[BIO] seq=208 | ir[0]=     383 ecg[0]=  3272 | total=236 | crc_err=0
+[AUDIO] seq=209 | pcg[0]=     448 pcg[31]=    1475 | total=237 | crc_err=0
+[BIO] seq=209 | ir[0]=     420 ecg[0]=  2260 | total=237 | crc_err=0
+[AUDIO] seq=210 | pcg[0]=   -1418 pcg[31]=     623 | total=238 | crc_err=0
+[BIO] seq=210 | ir[0]=     414 ecg[0]=   438 | total=238 | crc_err=0
+[AUDIO] seq=211 | pcg[0]=   -1570 pcg[31]=     -44 | total=239 | crc_err=0
+[BIO] seq=211 | ir[0]=     420 ecg[0]=  3992 | total=239 | crc_err=0
+[AUDIO] seq=212 | pcg[0]=    -445 pcg[31]=     324 | total=240 | crc_err=0
+[BIO] seq=212 | ir[0]=     412 ecg[0]=     0 | total=240 | crc_err=0
+[AUDIO] seq=213 | pcg[0]=   -2814 pcg[31]=    3692 | total=241 | crc_err=0
+[BIO] seq=213 | ir[0]=     405 ecg[0]=  3280 | total=241 | crc_err=0
+[AUDIO] seq=214 | pcg[0]=     777 pcg[31]=     375 | total=242 | crc_err=0
+[BIO] seq=214 | ir[0]=     422 ecg[0]=  2164 | total=242 | crc_err=0
+[AUDIO] seq=215 | pcg[0]=    2491 pcg[31]=    1454 | total=243 | crc_err=0
+[BIO] seq=215 | ir[0]=     422 ecg[0]=   474 | total=243 | crc_err=0
+[AUDIO] seq=216 | pcg[0]=   -2565 pcg[31]=   -2436 | total=244 | crc_err=0
+[BIO] seq=216 | ir[0]=     410 ecg[0]=  4008 | total=244 | crc_err=0
+[AUDIO] seq=217 | pcg[0]=    1059 pcg[31]=     673 | total=245 | crc_err=0
+[BIO] seq=217 | ir[0]=     410 ecg[0]=     0 | total=245 | crc_err=0
+[AUDIO] seq=218 | pcg[0]=    1537 pcg[31]=    -313 | total=246 | crc_err=0
+[BIO] seq=218 | ir[0]=     423 ecg[0]=  3328 | total=246 | crc_err=0
+[AUDIO] seq=219 | pcg[0]=   -2411 pcg[31]=   -1720 | total=247 | crc_err=0
+[BIO] seq=219 | ir[0]=     410 ecg[0]=  2096 | total=247 | crc_err=0
+[AUDIO] seq=220 | pcg[0]=     866 pcg[31]=     458 | total=248 | crc_err=0
+[BIO] seq=220 | ir[0]=     408 ecg[0]=   528 | total=248 | crc_err=0
+[AUDIO] seq=221 | pcg[0]=   -2692 pcg[31]=    -415 | total=249 | crc_err=0
+[BIO] seq=221 | ir[0]=     428 ecg[0]=  3992 | total=249 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 21 garbage bytes before header
+[WARN] Skipped 178 garbage bytes before header
+[LOSS] AUDIO: expected seq=222 got seq=223 -> lost=1 packets
+[AUDIO] seq=223 | pcg[0]=   -1243 pcg[31]=    1032 | total=250 | crc_err=0
+[LOSS] BIO: expected seq=222 got seq=223 -> lost=1 packets
+[BIO] seq=223 | ir[0]=     408 ecg[0]=  3360 | total=250 | crc_err=0
+[AUDIO] seq=224 | pcg[0]=    2480 pcg[31]=    2395 | total=251 | crc_err=0
+[BIO] seq=224 | ir[0]=     408 ecg[0]=  2042 | total=251 | crc_err=0
+[AUDIO] seq=225 | pcg[0]=    4204 pcg[31]=   -3943 | total=252 | crc_err=0
+[BIO] seq=225 | ir[0]=     413 ecg[0]=   613 | total=252 | crc_err=0
+[AUDIO] seq=226 | pcg[0]=    -259 pcg[31]=   -3512 | total=253 | crc_err=0
+[BIO] seq=226 | ir[0]=     419 ecg[0]=  4000 | total=253 | crc_err=0
+[AUDIO] seq=227 | pcg[0]=   -3228 pcg[31]=    3512 | total=254 | crc_err=0
+[BIO] seq=227 | ir[0]=     396 ecg[0]=     0 | total=254 | crc_err=0
+[AUDIO] seq=228 | pcg[0]=   -2878 pcg[31]=    -723 | total=255 | crc_err=0
+[BIO] seq=228 | ir[0]=     433 ecg[0]=  3408 | total=255 | crc_err=0
+[AUDIO] seq=229 | pcg[0]=     357 pcg[31]=     339 | total=256 | crc_err=0
+[BIO] seq=229 | ir[0]=     409 ecg[0]=  1928 | total=256 | crc_err=0
+[AUDIO] seq=230 | pcg[0]=    2680 pcg[31]=    5082 | total=257 | crc_err=0
+[BIO] seq=230 | ir[0]=     429 ecg[0]=   699 | total=257 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=231 got seq=232 -> lost=1 packets
+[AUDIO] seq=232 | pcg[0]=   -1436 pcg[31]=     441 | total=258 | crc_err=0
+[LOSS] BIO: expected seq=231 got seq=232 -> lost=1 packets
+[BIO] seq=232 | ir[0]=     418 ecg[0]=     0 | total=258 | crc_err=0
+[AUDIO] seq=233 | pcg[0]=    3064 pcg[31]=    4488 | total=259 | crc_err=0
+[BIO] seq=233 | ir[0]=     412 ecg[0]=  3480 | total=259 | crc_err=0
+[AUDIO] seq=234 | pcg[0]=   -2068 pcg[31]=   -2431 | total=260 | crc_err=0
+[BIO] seq=234 | ir[0]=     412 ecg[0]=  1856 | total=260 | crc_err=0
+[AUDIO] seq=235 | pcg[0]=     585 pcg[31]=    -593 | total=261 | crc_err=0
+[BIO] seq=235 | ir[0]=     408 ecg[0]=   776 | total=261 | crc_err=0
+[AUDIO] seq=236 | pcg[0]=     769 pcg[31]=     692 | total=262 | crc_err=0
+[BIO] seq=236 | ir[0]=     404 ecg[0]=  4000 | total=262 | crc_err=0
+[AUDIO] seq=237 | pcg[0]=   -3469 pcg[31]=      74 | total=263 | crc_err=0
+[BIO] seq=237 | ir[0]=     407 ecg[0]=     0 | total=263 | crc_err=0
+[AUDIO] seq=238 | pcg[0]=     645 pcg[31]=   -2752 | total=264 | crc_err=0
+[BIO] seq=238 | ir[0]=     392 ecg[0]=  3568 | total=264 | crc_err=0
+[AUDIO] seq=239 | pcg[0]=   -1300 pcg[31]=    2860 | total=265 | crc_err=0
+[BIO] seq=239 | ir[0]=     415 ecg[0]=  1756 | total=265 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=240 got seq=241 -> lost=1 packets
+[AUDIO] seq=241 | pcg[0]=   -2482 pcg[31]=    1235 | total=266 | crc_err=0
+[LOSS] BIO: expected seq=240 got seq=241 -> lost=1 packets
+[BIO] seq=241 | ir[0]=     427 ecg[0]=  4016 | total=266 | crc_err=0
+[AUDIO] seq=242 | pcg[0]=    2337 pcg[31]=    -999 | total=267 | crc_err=0
+[BIO] seq=242 | ir[0]=     416 ecg[0]=     0 | total=267 | crc_err=0
+[AUDIO] seq=243 | pcg[0]=   -1499 pcg[31]=    3455 | total=268 | crc_err=0
+[BIO] seq=243 | ir[0]=     416 ecg[0]=  3528 | total=268 | crc_err=0
+[AUDIO] seq=244 | pcg[0]=    2755 pcg[31]=     543 | total=269 | crc_err=0
+[BIO] seq=244 | ir[0]=     413 ecg[0]=  1686 | total=269 | crc_err=0
+[AUDIO] seq=245 | pcg[0]=    3425 pcg[31]=   -1110 | total=270 | crc_err=0
+[BIO] seq=245 | ir[0]=     412 ecg[0]=   880 | total=270 | crc_err=0
+[AUDIO] seq=246 | pcg[0]=   -3577 pcg[31]=    -933 | total=271 | crc_err=0
+[BIO] seq=246 | ir[0]=     403 ecg[0]=  3988 | total=271 | crc_err=0
+[AUDIO] seq=247 | pcg[0]=    -418 pcg[31]=    1852 | total=272 | crc_err=0
+[BIO] seq=247 | ir[0]=     390 ecg[0]=     5 | total=272 | crc_err=0
+[AUDIO] seq=248 | pcg[0]=    2003 pcg[31]=   -3678 | total=273 | crc_err=0
+[BIO] seq=248 | ir[0]=     414 ecg[0]=  3600 | total=273 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=249 got seq=250 -> lost=1 packets
+[AUDIO] seq=250 | pcg[0]=    -675 pcg[31]=     450 | total=274 | crc_err=0
+[LOSS] BIO: expected seq=249 got seq=250 -> lost=1 packets
+[BIO] seq=250 | ir[0]=     420 ecg[0]=  1049 | total=274 | crc_err=0
+[AUDIO] seq=251 | pcg[0]=   -2237 pcg[31]=     807 | total=275 | crc_err=0
+[BIO] seq=251 | ir[0]=     411 ecg[0]=  4080 | total=275 | crc_err=0
+[AUDIO] seq=252 | pcg[0]=   -6080 pcg[31]=    1309 | total=276 | crc_err=0
+[BIO] seq=252 | ir[0]=     411 ecg[0]=     0 | total=276 | crc_err=0
+[AUDIO] seq=253 | pcg[0]=    4115 pcg[31]=    -237 | total=277 | crc_err=0
+[BIO] seq=253 | ir[0]=     412 ecg[0]=  3632 | total=277 | crc_err=0
+[AUDIO] seq=254 | pcg[0]=   -3016 pcg[31]=    2306 | total=278 | crc_err=0
+[BIO] seq=254 | ir[0]=     399 ecg[0]=  1520 | total=278 | crc_err=0
+[AUDIO] seq=255 | pcg[0]=    5609 pcg[31]=   -4692 | total=279 | crc_err=0
+[BIO] seq=255 | ir[0]=     398 ecg[0]=  1060 | total=279 | crc_err=0
+[AUDIO] seq=0 | pcg[0]=    4408 pcg[31]=     120 | total=280 | crc_err=0
+[BIO] seq=0 | ir[0]=     411 ecg[0]=  3984 | total=280 | crc_err=0
+[AUDIO] seq=1 | pcg[0]=   -2443 pcg[31]=    2109 | total=281 | crc_err=0
+[BIO] seq=1 | ir[0]=     420 ecg[0]=     0 | total=281 | crc_err=0
+[AUDIO] seq=2 | pcg[0]=    2639 pcg[31]=   -5510 | total=282 | crc_err=0
+[BIO] seq=2 | ir[0]=     407 ecg[0]=  3704 | total=282 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=3 got seq=4 -> lost=1 packets
+[AUDIO] seq=4 | pcg[0]=   -3059 pcg[31]=    1054 | total=283 | crc_err=0
+[LOSS] BIO: expected seq=3 got seq=4 -> lost=1 packets
+[BIO] seq=4 | ir[0]=     417 ecg[0]=  1204 | total=283 | crc_err=0
+[AUDIO] seq=5 | pcg[0]=   -2540 pcg[31]=    1821 | total=284 | crc_err=0
+[BIO] seq=5 | ir[0]=     417 ecg[0]=  4016 | total=284 | crc_err=0
+[AUDIO] seq=6 | pcg[0]=    1400 pcg[31]=   -1393 | total=285 | crc_err=0
+[BIO] seq=6 | ir[0]=     383 ecg[0]=     0 | total=285 | crc_err=0
+[AUDIO] seq=7 | pcg[0]=   -1114 pcg[31]=    -201 | total=286 | crc_err=0
+[BIO] seq=7 | ir[0]=     430 ecg[0]=  3748 | total=286 | crc_err=0
+[AUDIO] seq=8 | pcg[0]=    1397 pcg[31]=    1458 | total=287 | crc_err=0
+[BIO] seq=8 | ir[0]=     414 ecg[0]=  1388 | total=287 | crc_err=0
+[AUDIO] seq=9 | pcg[0]=   -1605 pcg[31]=     882 | total=288 | crc_err=0
+[BIO] seq=9 | ir[0]=     414 ecg[0]=  1320 | total=288 | crc_err=0
+[AUDIO] seq=10 | pcg[0]=      19 pcg[31]=    -857 | total=289 | crc_err=0
+[BIO] seq=10 | ir[0]=     402 ecg[0]=  3968 | total=289 | crc_err=0
+[AUDIO] seq=11 | pcg[0]=      85 pcg[31]=    2320 | total=290 | crc_err=0
+[BIO] seq=11 | ir[0]=     400 ecg[0]=     0 | total=290 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=12 got seq=13 -> lost=1 packets
+[AUDIO] seq=13 | pcg[0]=    -995 pcg[31]=   -1680 | total=291 | crc_err=0
+[LOSS] BIO: expected seq=12 got seq=13 -> lost=1 packets
+[BIO] seq=13 | ir[0]=     417 ecg[0]=  1252 | total=291 | crc_err=0
+[AUDIO] seq=14 | pcg[0]=   -1481 pcg[31]=    2317 | total=292 | crc_err=0
+[BIO] seq=14 | ir[0]=     417 ecg[0]=  1404 | total=292 | crc_err=0
+[AUDIO] seq=15 | pcg[0]=     792 pcg[31]=    2134 | total=293 | crc_err=0
+[BIO] seq=15 | ir[0]=     408 ecg[0]=  3956 | total=293 | crc_err=0
+[AUDIO] seq=16 | pcg[0]=     413 pcg[31]=    1551 | total=294 | crc_err=0
+[BIO] seq=16 | ir[0]=     430 ecg[0]=     0 | total=294 | crc_err=0
+[AUDIO] seq=17 | pcg[0]=    1405 pcg[31]=    1550 | total=295 | crc_err=0
+[BIO] seq=17 | ir[0]=     387 ecg[0]=  3784 | total=295 | crc_err=0
+[AUDIO] seq=18 | pcg[0]=    2538 pcg[31]=   -1717 | total=296 | crc_err=0
+[BIO] seq=18 | ir[0]=     381 ecg[0]=  1176 | total=296 | crc_err=0
+[AUDIO] seq=19 | pcg[0]=   -1128 pcg[31]=    1154 | total=297 | crc_err=0
+[BIO] seq=19 | ir[0]=     416 ecg[0]=  1472 | total=297 | crc_err=0
+[AUDIO] seq=20 | pcg[0]=   -2284 pcg[31]=    -260 | total=298 | crc_err=0
+[BIO] seq=20 | ir[0]=     408 ecg[0]=  3920 | total=298 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=21 got seq=22 -> lost=1 packets
+[AUDIO] seq=22 | pcg[0]=   -3604 pcg[31]=    1868 | total=299 | crc_err=0
+[LOSS] BIO: expected seq=21 got seq=22 -> lost=1 packets
+[BIO] seq=22 | ir[0]=     417 ecg[0]=  3812 | total=299 | crc_err=0
+[AUDIO] seq=23 | pcg[0]=   -2405 pcg[31]=    4691 | total=300 | crc_err=0
+[BIO] seq=23 | ir[0]=     417 ecg[0]=  1088 | total=300 | crc_err=0
+[AUDIO] seq=24 | pcg[0]=    1233 pcg[31]=    -613 | total=301 | crc_err=0
+[BIO] seq=24 | ir[0]=     408 ecg[0]=  1588 | total=301 | crc_err=0
+[AUDIO] seq=25 | pcg[0]=   -1520 pcg[31]=    1512 | total=302 | crc_err=0
+[BIO] seq=25 | ir[0]=     408 ecg[0]=  3856 | total=302 | crc_err=0
+[AUDIO] seq=26 | pcg[0]=      -5 pcg[31]=     155 | total=303 | crc_err=0
+[BIO] seq=26 | ir[0]=     428 ecg[0]=    77 | total=303 | crc_err=0
+[AUDIO] seq=27 | pcg[0]=    1773 pcg[31]=    3327 | total=304 | crc_err=0
+[BIO] seq=27 | ir[0]=     424 ecg[0]=  3844 | total=304 | crc_err=0
+[AUDIO] seq=28 | pcg[0]=    -631 pcg[31]=     978 | total=305 | crc_err=0
+[BIO] seq=28 | ir[0]=     432 ecg[0]=   952 | total=305 | crc_err=0
+[AUDIO] seq=29 | pcg[0]=    1899 pcg[31]=     801 | total=306 | crc_err=0
+[BIO] seq=29 | ir[0]=     397 ecg[0]=  1666 | total=306 | crc_err=0
+[WARN] Skipped 113 garbage bytes before header
+[WARN] Skipped 22 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=30 got seq=31 -> lost=1 packets
+[AUDIO] seq=31 | pcg[0]=     587 pcg[31]=   -1467 | total=307 | crc_err=0
+[LOSS] BIO: expected seq=30 got seq=31 -> lost=1 packets
+[BIO] seq=31 | ir[0]=     414 ecg[0]=     0 | total=307 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=32 got seq=34 -> lost=2 packets
+[AUDIO] seq=34 | pcg[0]=    1429 pcg[31]=     203 | total=308 | crc_err=0
+[LOSS] BIO: expected seq=32 got seq=34 -> lost=2 packets
+[BIO] seq=34 | ir[0]=     413 ecg[0]=  1777 | total=308 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=35 got seq=36 -> lost=1 packets
+[AUDIO] seq=36 | pcg[0]=    1092 pcg[31]=     589 | total=309 | crc_err=0
+[LOSS] BIO: expected seq=35 got seq=36 -> lost=1 packets
+[BIO] seq=36 | ir[0]=     422 ecg[0]=     0 | total=309 | crc_err=0
+[AUDIO] seq=37 | pcg[0]=    -344 pcg[31]=     168 | total=310 | crc_err=0
+[BIO] seq=37 | ir[0]=     409 ecg[0]=  3904 | total=310 | crc_err=0
+[AUDIO] seq=38 | pcg[0]=     -65 pcg[31]=     387 | total=311 | crc_err=0
+[BIO] seq=38 | ir[0]=     408 ecg[0]=   836 | total=311 | crc_err=0
+[AUDIO] seq=39 | pcg[0]=    4390 pcg[31]=    -387 | total=312 | crc_err=0
+[BIO] seq=39 | ir[0]=     406 ecg[0]=  1848 | total=312 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=40 got seq=41 -> lost=1 packets
+[AUDIO] seq=41 | pcg[0]=      23 pcg[31]=   -1802 | total=313 | crc_err=0
+[LOSS] BIO: expected seq=40 got seq=41 -> lost=1 packets
+[BIO] seq=41 | ir[0]=     409 ecg[0]=     0 | total=313 | crc_err=0
+[AUDIO] seq=42 | pcg[0]=    1870 pcg[31]=   -2811 | total=314 | crc_err=0
+[BIO] seq=42 | ir[0]=     409 ecg[0]=  3968 | total=314 | crc_err=0
+[AUDIO] seq=43 | pcg[0]=   -2582 pcg[31]=    -273 | total=315 | crc_err=0
+[BIO] seq=43 | ir[0]=     392 ecg[0]=   816 | total=315 | crc_err=0
+[AUDIO] seq=44 | pcg[0]=   -1784 pcg[31]=    2048 | total=316 | crc_err=0
+[BIO] seq=44 | ir[0]=     430 ecg[0]=  1908 | total=316 | crc_err=0
+[AUDIO] seq=45 | pcg[0]=   -2307 pcg[31]=    2503 | total=317 | crc_err=0
+[BIO] seq=45 | ir[0]=     416 ecg[0]=  3704 | total=317 | crc_err=0
+[AUDIO] seq=46 | pcg[0]=   -1633 pcg[31]=    -714 | total=318 | crc_err=0
+[BIO] seq=46 | ir[0]=     422 ecg[0]=     0 | total=318 | crc_err=0
+[AUDIO] seq=47 | pcg[0]=    1185 pcg[31]=     699 | total=319 | crc_err=0
+[BIO] seq=47 | ir[0]=     414 ecg[0]=  3888 | total=319 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+[WARN] Skipped 200 garbage bytes before header
+[LOSS] AUDIO: expected seq=48 got seq=49 -> lost=1 packets
+[AUDIO] seq=49 | pcg[0]=     317 pcg[31]=    -413 | total=320 | crc_err=0
+[LOSS] BIO: expected seq=48 got seq=49 -> lost=1 packets
+[BIO] seq=49 | ir[0]=     417 ecg[0]=  1904 | total=320 | crc_err=0
+[AUDIO] seq=50 | pcg[0]=    2214 pcg[31]=     341 | total=321 | crc_err=0
+
+Stopped.
