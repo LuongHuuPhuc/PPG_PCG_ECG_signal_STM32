@@ -51,10 +51,11 @@ extern "C" {
 #define SYNC_INTERMEDIARY_USING		1 	/* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
 #define SENSOR_BINARY_PACKET		1	/* Dung UART de gui Binary packet */
 //#define SENSOR_LOGGER_USING			1	/* Dung UART de log data */
+//#define SENSOR_SD_CARD_USING		1	/* Dung SD Card de luu data */
 
 /* Debug Macros */
-//#define SYNC_BLOCK_COUNT_DEBUG  	1	/* Uncomment de su dung debug */
-//#define DEBUG_DWT					1  	/* Data Watchdog & Trace */
+//#define SYNC_BLOCK_COUNT_DEBUG  	1	/* Debug block data tu Sync Task */
+//#define DEBUG_DWT					1  	/* Data Watchdog & Trace de tinh toan thoi gian */
 //#define DEBUG_SEGGER_RTT			1	/* Debug bang SEGGER Real-time Transfer J-Link thay cho UART */
 //#define DEBUG_SWV_ITM				1	/* Debug bang Serial Wire Viewer thay cho UART */
 
