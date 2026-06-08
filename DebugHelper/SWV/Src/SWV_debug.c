@@ -14,7 +14,22 @@ extern "C" {
 #include "cmsis_os.h"
 
 #ifdef DEBUG_SWV_ITM
+#ifdef SWV_MUTEX_USING
 static osMutexId swv_mutexId = NULL; // Neu co nhieu task goi cung SWV_LOG() thi se bi chen nhau -> Them mutex bao ve
+/*-----------------------------------------------------------*/
+
+static inline void SWV_MUTEXLOCK(void){
+	if(swv_mutexId != NULL) osMutexWait(swv_mutexId, 1000);
+}
+
+/*-----------------------------------------------------------*/
+
+static inline void SWV_MUTEXUNLOCK(void){
+	if(swv_mutexId != NULL) osMutexRelease(swv_mutexId);
+}
+
+/*-----------------------------------------------------------*/
+#endif // SWV_MUTEX_USING
 
 HAL_StatusTypeDef SWV_Init(void){
 	/* Enable trace subsystem */
@@ -29,23 +44,13 @@ HAL_StatusTypeDef SWV_Init(void){
 	TPI->SPPR = 2;
 	TPI->ACPR = 39; // Gia tri cua thanh ghi chia tan so xung bat dong bo
 
+#ifdef SWV_MUTEX_USING
 	/* Khoi tao Mutex */
 	osMutexDef(swvMutexName);
 	swv_mutexId = osMutexCreate(osMutex(swvMutexName));
 	if(swv_mutexId == NULL) return HAL_ERROR;
+#endif // SWV_MUTEX_USING
 	return HAL_OK;
-}
-
-/*-----------------------------------------------------------*/
-
-static inline void SWV_MUTEXLOCK(void){
-	if(swv_mutexId != NULL) osMutexWait(swv_mutexId, 1000);
-}
-
-/*-----------------------------------------------------------*/
-
-static inline void SWV_MUTEXUNLOCK(void){
-	if(swv_mutexId != NULL) osMutexRelease(swv_mutexId);
 }
 
 /*-----------------------------------------------------------*/

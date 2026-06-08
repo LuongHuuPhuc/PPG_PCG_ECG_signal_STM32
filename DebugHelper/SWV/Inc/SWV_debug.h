@@ -16,6 +16,8 @@ extern "C" {
 
 #include "main.h"
 
+//#define SWV_MUTEX_USING		1
+
 #ifdef DEBUG_SWV_ITM
 /**
  * @brief SWV - Serial Wire Viewer - tinh nang debug real-time trong STM32
