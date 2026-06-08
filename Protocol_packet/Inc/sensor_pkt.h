@@ -109,7 +109,7 @@ typedef struct {
 /*-----------------------------------------------------------*/
 
 /**
- * @brief
+ * @brief Thuc hien tinh toan CRC16 cho binary packet gui di tu STM32
  *
  * @param[in] data Con tro tro den mang gia tri dau vao
  * @param[in] len Chieu dai cua mang du lieu
