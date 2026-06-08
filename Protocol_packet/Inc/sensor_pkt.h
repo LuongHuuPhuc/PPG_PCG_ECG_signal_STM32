@@ -35,18 +35,26 @@ extern "C" {
  * - Header: 6 bytes
  * - CRC16: 2 bytes
  * - Footer: 1 byte
- * -> Tong 1 packet: 329 bytes
- * -----
- * Fs = 1000Hz (1ms/sample) voi 1 block = 32 samples (32ms) -> 1s = ~31.25 blocks (~1024 samples)
- * -> 32 packets/s = 10.3KB/s
+ * -> Tong 1 packet = 329 bytes
+ * Nhung BLE co gioi han kich thuoc toi da cua 1 packet: 
  * BLE 5.0 cua ESP32S3 co MTU (Maximum Transmission Unit): 247 bytes
  * BLE 4.0 - 4.2: MTU mac dinh la 23 bytes (3 bytes header + 20 payload)
- * (Data vuot qua MTU phai chia thanh nhieu goi nho, gay fragment)
- *
+ * -> Data vuot qua gioi han cua MTU phai chia thanh nhieu goi nho, gay fragment
  * -----
+ * Tinh toan ban dau: Voi Fs = 1000Hz (1ms/sample) voi 1 block = 32 samples (32ms) 
+ * -> 1s = ~31.25 blocks (~1024 samples)
+ * -> 32 packets/s (1 packet = 329 bytes) -> 10.5KB/s -> Baudrate 460800 OK ! (~22.7% bandwidth UART)
+ * Tuy nhien bandwidth thuc te cua BLE 5.x co the len toi 1.4Mbps (~175KB/s),
+ * toc do cao thi cung khong the ganh duoc suc nang cua 1 Packet vuot qua MTU !
  * -> Tach thanh 2 packet: Audio rieng, Bio rieng
+ * -----
  * - Packet 1 - INMP441 (audio): 32 samples x 4 bytes = 128 + header/CRC/footer = 137 bytes
+ *		+ 1 frame UART = 11bit (8-bit payload + 2 bit Start/Stop + 1 Parity) -> (137 x 11) / 460800 = 3.27ms 
  * - Packet 2 - MAX30102 + AD8232 (bio): 32 samples x (4 + 2) bytes = 192 + header/CRC/footer = 201 bytes
+ * 		+ 1 frame UART = 11bit -> (192 x 11) / 460800 = 4.58ms
+ * -> Tong 1 block (2 packet) = 338 bytes/32ms 
+ * -> Tong transmit 2 packet = 7.85ms -> 24.15ms idle
+ * -> 1s = ~32 blocks (Can gui 64 lan lien = 64 packets) -> 10.8KB/s -> Baudrate 460800 OK ! (~23.5% bandwidth UART)
  */
 
 /* ============ Hang so & cau truc cua packet ============ */
