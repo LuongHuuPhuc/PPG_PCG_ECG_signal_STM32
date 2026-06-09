@@ -163,7 +163,8 @@ static inline uint16_t pkt_build_audio(pkt_audio_t *pkt, uint8_t seq, const int3
 	pkt->ftr.crc16 = pkt_crc16((uint8_t*)pkt, crc_len);
 	pkt->ftr.footer = PKT_FOOTER;
 
-	return sizeof(pkt_audio_t);
+	/* Tra ve dung kich thuoc packet gui di */
+	return (sizeof(ss_pkt_header_t) + pkt->hdr.payload_len + sizeof(ss_pkt_footer_t));
 }
 
 /*-----------------------------------------------------------*/
@@ -187,7 +188,8 @@ static inline uint16_t pkt_build_bio(pkt_bio_t *pkt, uint8_t seq, const uint32_t
 	pkt->ftr.crc16 = pkt_crc16((uint8_t*)pkt, crc_len);
 	pkt->ftr.footer = PKT_FOOTER;
 
-	return sizeof(pkt_bio_t);
+	/* Tra ve dung kich thuoc packet gui di */
+	return (sizeof(ss_pkt_header_t) + pkt->hdr.payload_len + sizeof(ss_pkt_footer_t));
 }
 
 #ifdef SYNC_INTERMEDIARY_USING
