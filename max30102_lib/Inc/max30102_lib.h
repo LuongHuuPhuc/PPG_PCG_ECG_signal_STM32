@@ -14,9 +14,7 @@ extern "C"{
 #endif
 
 #include <stdint.h>
-#include <string.h>
 #include <stdlib.h>
-#include <string.h>
 #include "cmsis_os.h"
 #include "max30102_low_level.h"
 
@@ -27,6 +25,8 @@ extern "C"{
 		configASSERT(0);\
 	}\
 } while(0)
+
+#define MAX_UNUSED(X) 	__attribute__((unsued)) x
 
 typedef enum max30102_mode_t
 {
@@ -80,13 +80,11 @@ typedef enum max30102_multi_led_ctrl_t
     max30102_led_ir
 } max30102_multi_led_ctrl_t;
 
+/* Cau truc du lieu cho data cua MAX30102 */
 typedef struct max30102_record {
-	uint8_t activeLeds;
-	uint8_t head; //Head of samples
-	uint8_t tail; //Tail of samples
-	uint32_t red_sample[MAX30102_STORAGE_SIZE];
-	uint32_t ir_sample[MAX30102_STORAGE_SIZE]; //Do dai 1 samples data doc tu Register
-	uint32_t green_sample[MAX30102_STORAGE_SIZE];
+	uint8_t activeLeds; // So led hoat dong
+	uint8_t head; 		// Head of samples
+	uint8_t tail; 		// Tail of samples
 } max30102_record;
 
 extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
@@ -329,26 +327,24 @@ HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
  * @param obj Pointer to max30102_t object instance.
  * @retval In ra data luon, khong tra ve gi ca
  */
+__attribute__((unused))
 void max30102_read_fifo_ver1(max30102_t *obj);
 
 /**
  * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.2)
- * @retval `num_samples` - So mau doc duoc
  *
- * @warning Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read)
- * Roi moi vao vong for
+ * @warning Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read) roi moi vao vong for
  *
  * @param obj - Con tro tro toi doi tuong max30102_t
- * @param ir_buf - Buffer chua du lieu cua IR lay tu fifo
- * @param red_buf - Buffer chua du lieu cua RED lay tu fifo
  * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
  *
  * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
  * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
  * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
+ *
+ * @retval `num_samples` - So mau doc duoc
  */
-uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf,
-									uint32_t *red_buf, uint16_t max_samples);
+uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint16_t max_samples);
 
 /**
  * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.1)
@@ -366,8 +362,8 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
  * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
  * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
  */
-uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record,
-														  uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
+__attribute__((unused))
+uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
 
 /**
  * @brief Ham kiem tra trang thai thanh ghi (DEBUG)
@@ -377,34 +373,6 @@ uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30
  * Giup xac dinh cau hinh hien tai
  */
 void max30102_config_register_status_verbose(max30102_t *obj);
-
-/**
- * @brief Ham doc gia tri FIFO troi tra ve so mau da doc
- * @note Code toi uu byte cho dong vi dieu khien co thanh ghi han che nhu Arduino
- */
-int16_t __attribute__((unused))max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples);
-
-/**
- * @brief Ham doc data RED tu FIFO
- */
-uint32_t __attribute__((unused))max30102_ver3_getFIFORed(max30102_record *record);
-
-/**
- * @brief Ham doc data IR tu FIFO
- */
-uint32_t __attribute__((unused))max30102_ver3_getFIFOIR(max30102_record *record);
-
-/**
- * @brief Ham kiem tra xem co bao nhieu sample dang ton tai
- *
- */
-int __attribute__((unused))max30102_ver3_sample_available(max30102_record *record);
-
-/**
- * @brief Ham doc tiep samples tu tail cua FIFO
- *
- */
-void __attribute__((unused))max30102_ver3_next_sample(max30102_record *record);
 
 #endif
 

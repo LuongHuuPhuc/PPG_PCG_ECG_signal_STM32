@@ -4,13 +4,17 @@
  */
 
 #include "max30102_lib.h"
+
 #include "stdio.h"
+#include <string.h>
 #include "max30102_low_level.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+/*-----------------------------------------------------------*/
 
 __attribute__((weak)) void max30102_plot(uint32_t ir_sample, uint32_t red_sample){
     UNUSED(ir_sample);
@@ -267,6 +271,7 @@ HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj){
 
 /*-----------------------------------------------------------*/
 
+__attribute__((unused))
 void max30102_read_fifo_ver1(max30102_t *obj){
     // First transaction: Get the FIFO_WR_PTR
     uint8_t wr_ptr = 0, rd_ptr = 0;
@@ -294,7 +299,8 @@ void max30102_read_fifo_ver1(max30102_t *obj){
 
 /*-----------------------------------------------------------*/
 
-uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
+__attribute__((unused))
+uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
 	uint8_t wr_ptr = 0; // Vi tri ghi tiep theo - khi tang den 31 roi ghi tiep, no se vong ve 0
 	uint8_t rd_ptr = 0; // Vi tri doc tiep theo -> Khong tang thi khong doc duoc data
 
@@ -347,15 +353,17 @@ uint16_t __attribute__((unused))max30102_read_fifo_ver2_1(max30102_t *obj, max30
 
 /*-----------------------------------------------------------*/
 
-uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
+uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint16_t max_samples){
 	uint8_t wr_ptr = 0, rd_ptr = 0;
+
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
 
-//	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
+	/* Debug su dung SWV thong qua printf */
+	// printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
 
-	//Tinh so mau trong FIFO
-	int16_t num_samples = (int16_t)(wr_ptr - rd_ptr) & 0x1F; //FIFO depth = 32
+	// Tinh so mau trong FIFO
+	int16_t num_samples = (int16_t)(wr_ptr - rd_ptr) & 0x1F; // FIFO depth = 32
 
 	if(num_samples < 1) num_samples += 32;
 	if(num_samples > max_samples) num_samples = max_samples;
@@ -366,22 +374,22 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
 		if(bytesToRead > 0){
 			uint8_t data_temp[bytesToRead];
 
-			//Doc 1 lan toan bo du lieu trong FIFO thay vi doc tung lan
+			// Doc 1 lan toan bo du lieu trong FIFO thay vi doc tung lan
 			MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, data_temp, bytesToRead));
 
-			//Chuyen tung mau raw data thanh mau IR va RED
+			// Chuyen tung mau raw data thanh mau IR va RED
 			for(int8_t i = 0; i < num_samples; i++){
 				int index = i * record->activeLeds * MAX30102_BYTES_PER_LED;
 
-				//Nhay qua tung mau (voi i = 0, 1,...,31)
-				if(record->activeLeds >= 1){ //RED
-					red_buf[i] = ((uint32_t)(data_temp[index] << 16) |
+				// Nhay qua tung mau (voi i = 0, 1,...,31)
+				if(record->activeLeds >= 1){ // RED
+					obj->_ir_samples[i] = ((uint32_t)(data_temp[index] << 16) |
 								(uint32_t)(data_temp[index + 1] << 8) |
 								(uint32_t)(data_temp[index + 2])) & 0x3FFFF;
 
 				}
-				if(record->activeLeds >= 2){ //RED + IR
-					ir_buf[i] = ((uint32_t)(data_temp[index + 3] << 16) |
+				if(record->activeLeds >= 2){ // RED + IR
+					obj->_red_samples[i] = ((uint32_t)(data_temp[index + 3] << 16) |
 								(uint32_t)(data_temp[index + 4] << 8) |
 								(uint32_t)(data_temp[index + 5])) & 0x3FFFF; //18-bit data
 				}
@@ -402,131 +410,10 @@ void max30102_config_register_status_verbose(max30102_t *obj){
 	max30102_read(obj, MAX30102_FIFO_CONFIG, &fifo_reg, 1);
 
 	uart_printf("[DEBUG] MODE=0x%02X SPO2=0x%02X IRLED=0x%02X REDLED=0x%02X FIFO=0x%02X\r\n",
-							mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg);
+				mode_reg, spo2_reg, irled_reg, redled_reg, fifo_reg);
 }
 
 /*-----------------------------------------------------------*/
-
-int16_t __attribute__((unused))max30102_read_fifo_ver3(max30102_t *obj, max30102_record *record, uint16_t max_samples){
-	uint8_t wr_ptr = 0, rd_ptr = 0;
-	max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);
-	max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1);
-
-	int16_t num_samples = (int16_t)(wr_ptr - rd_ptr) & 0x1F; //So sample muon doc tu FIFO
-
-	if(num_samples < 0) num_samples += 32;
-	if(num_samples > max_samples) num_samples = max_samples;
-
-	if(num_samples > 0){
-		//Doc so byte cua IR va RED (3 bytes moi LED)
-		int bytesLeftToRead = (int)(num_samples * record->activeLeds * MAX30102_BYTES_PER_LED);
-
-		//FIFO co the chua toi da 32 samples
-		//Neu 3 led -> 32 * 3 * 3 = 288 bytes
-		//Nhung I2C tren nhieu MCU chi cho phep doc toi da 32 bytes moi lan -> Chi nho thanh nhieu block
-		while(bytesLeftToRead > 0){
-			int toGet = bytesLeftToRead;
-			if(toGet > 32){
-				//Neu toGet > 32 bytes thi voi RED + IR (6 bytes 1 lan) -> 32 % 6 = thua 2 bytes
-				//Neu toGet > 32 bytes thi voi RED + IR + GREEN (9 bytes 1 lan) -> 32 % 9 = thua 5 bytes
-				//Vi vay phai giam xuong boi so gan nhat cua 3 * so LED -> 2 led = 30 bytes, 3 led = 27 bytes
-				toGet = 32  - (32 % (MAX30102_BYTES_PER_LED * record->activeLeds)); //So bytes se lay (30 bytes not 32 bytes)
-			}
-
-			bytesLeftToRead -= toGet; //So bytes thua (2 bytes)
-			uint8_t data_temp[toGet]; //Mang dung de convert thanh Red va IR
-
-			//Read bytes
-			max30102_read(obj, MAX30102_FIFO_DATA, data_temp, toGet);
-
-			uint8_t read_count = 0;
-
-			while(toGet > 0){
-				record->head++;
-				record->head %= MAX30102_STORAGE_SIZE;
-
-				uint8_t temp[sizeof(uint32_t)]; //Mang 4 bytes
-				uint32_t tempLong;
-
-				temp[3] = 0; //Bytes cuoi khong co nghia
-				temp[2] = data_temp[read_count++];
-				temp[1] = data_temp[read_count++];
-				temp[0] = data_temp[read_count++];
-
-				//Convert mang thanh long
-				memcpy(&tempLong, temp, sizeof(tempLong));
-
-				tempLong &= 0x3FFFF; //Padding chi chua lai 18-bit (bit-mask)
-
-				record->red_sample[record->head] = tempLong; //Ghi data vao head, lay data tu tail (FIFO)
-
-				//Neu co tu 1 led tro len (red)
-				if(record->activeLeds > 1){
-					temp[3] = 0;
-					temp[2] = data_temp[read_count++];
-					temp[1] = data_temp[read_count++];
-					temp[0] = data_temp[read_count++];
-
-					memcpy(&tempLong, temp, sizeof(tempLong));
-
-					tempLong &= 0x3FFFF;
-
-					record->ir_sample[record->head] = tempLong;//Ghi data vao head, lay data tu tail (FIFO)
-				}
-
-				//Neu co hon 2 led (red + ir)
-				if(record->activeLeds > 2){
-					temp[3] = 0;
-					temp[2] = data_temp[read_count++];
-					temp[1] = data_temp[read_count++];
-					temp[0] = data_temp[read_count++];
-
-					memcpy(&tempLong, temp, sizeof(tempLong));
-
-					tempLong &= 0x3FFFF;
-
-					record->green_sample[record->head] = tempLong;//Ghi data vao head, lay data tu tail (FIFO)
-				}
-
-				toGet -= record->activeLeds * MAX30102_BYTES_PER_LED; //Tru di so byte da doc
-			}
-		}
-	}
-
-	return num_samples;
-}
-
-/*-----------------------------------------------------------*/
-
-int __attribute__((unused))max30102_ver3_sample_available(max30102_record *record){
-	int numberOfSamples = record->head - record->tail;
-	if(numberOfSamples < 0){
-		numberOfSamples += MAX30102_STORAGE_SIZE;
-	}
-	return numberOfSamples;
-}
-
-
-/*-----------------------------------------------------------*/
-
-void __attribute__((unused))max30102_ver3_next_sample(max30102_record *record){
-	if(max30102_ver3_sample_available(record)){
-		record->tail++;
-		record->tail %= MAX30102_STORAGE_SIZE;
-	}
-}
-
-/*-----------------------------------------------------------*/
-
-uint32_t __attribute__((unused))max30102_ver3_getFIFORed(max30102_record *record){
-	return (record->red_sample[record->tail]);
-}
-
-/*-----------------------------------------------------------*/
-
-uint32_t __attribute__((unused))Max30102_ver3_getFIFOIR(max30102_record *record){
-	return (record->ir_sample[record->tail]);
-}
 
 #ifdef __cplusplus
 }
