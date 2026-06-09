@@ -300,7 +300,7 @@ void max30102_read_fifo_ver1(max30102_t *obj){
 /*-----------------------------------------------------------*/
 
 __attribute__((unused))
-uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples){
+uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint16_t max_samples){
 	uint8_t wr_ptr = 0; // Vi tri ghi tiep theo - khi tang den 31 roi ghi tiep, no se vong ve 0
 	uint8_t rd_ptr = 0; // Vi tri doc tiep theo -> Khong tang thi khong doc duoc data
 
@@ -334,14 +334,14 @@ uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uin
 
 		// Tach tung byte raw data sample thanh mau 3 byte cho IR va 3 byte cho RED
 		if(record->activeLeds > 0){ // RED (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
-			red_buf[i] = ((uint32_t)(dataRead[0] << 16) |   // Byte 1
+			obj->_red_samples[i] = ((uint32_t)(dataRead[0] << 16) |   // Byte 1
 						 (uint32_t)(dataRead[1] << 8) | 	// Byte 2
 						 (uint32_t)(dataRead[2]))       	// Byte 3
 						 & 0x3FFFF; // bit mask 18-bit
 		}
 
 		if(record->activeLeds > 1){ // IR (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
-			ir_buf[i] = ((uint32_t)(dataRead[3] << 16) | // Byte 1
+			obj->_ir_samples[i] = ((uint32_t)(dataRead[3] << 16) | // Byte 1
 						(uint32_t)(dataRead[4] << 8) |   // Byte 2
 						(uint32_t)(dataRead[5])) 		 // Byte 3
 						& 0x3FFFF; // bit mask 18-bit
@@ -383,13 +383,13 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
 
 				// Nhay qua tung mau (voi i = 0, 1,...,31)
 				if(record->activeLeds >= 1){ // RED
-					obj->_ir_samples[i] = ((uint32_t)(data_temp[index] << 16) |
+					obj->_red_samples[i] = ((uint32_t)(data_temp[index] << 16) |
 								(uint32_t)(data_temp[index + 1] << 8) |
 								(uint32_t)(data_temp[index + 2])) & 0x3FFFF;
 
 				}
 				if(record->activeLeds >= 2){ // RED + IR
-					obj->_red_samples[i] = ((uint32_t)(data_temp[index + 3] << 16) |
+					obj->_ir_samples[i] = ((uint32_t)(data_temp[index + 3] << 16) |
 								(uint32_t)(data_temp[index + 4] << 8) |
 								(uint32_t)(data_temp[index + 5])) & 0x3FFFF; //18-bit data
 				}

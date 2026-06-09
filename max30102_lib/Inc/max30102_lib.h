@@ -354,8 +354,6 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
  * Doc 1 sample (6 bytes) moi vong for
  *
  * @param obj - Con tro tro toi doi tuong max30102_t
- * @param ir_buf - Buffer chua du lieu cua IR lay tu fifo
- * @param red_buf - Buffer chua du lieu cua RED lay tu fifo
  * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
  *
  * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
@@ -363,7 +361,7 @@ uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uin
  * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
  */
 __attribute__((unused))
-uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint32_t *ir_buf, uint32_t *red_buf, uint16_t max_samples);
+uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint16_t max_samples);
 
 /**
  * @brief Ham kiem tra trang thai thanh ghi (DEBUG)
