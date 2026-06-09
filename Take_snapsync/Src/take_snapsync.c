@@ -102,6 +102,24 @@ __attribute__((always_inline)) static inline bool sync_match(sync_slot_t *slot){
 
 /*-----------------------------------------------------------*/
 
+#ifdef DEBUG_SWV_ITM
+/* Ham thuc hien detect xem sensor task gui den voi bao nhieu samples (chi xem sensor nao co block be hon 31) */
+__attribute__((always_inline))
+static inline void sync_swv_debug_count(sync_slot_t *slot){
+	if(slot->ecg.count < 31 ||
+	   slot->ppg.count < 31 ||
+	   slot->pcg.count < 31){
+		SWV_LOG("[SYNC] ECG_count= %u PPG_count=%u PCG_count= %u\r\n",
+				slot->ecg.count,
+				slot->ppg.count,
+				slot->pcg.count);
+	}
+	/* Note: Da debug duoc thu pham gay count cua cam bien doi luc tut xuong 1,27 la PPG !*/
+}
+#endif // DEBUG_SWV_ITM
+
+/*-----------------------------------------------------------*/
+
 HAL_StatusTypeDef Sync_init(void){
 	// Tao Queue cho Sync task
 	osMailQDef(syncQueueName, SYNC_QUEUE_LENGTH, sensor_block_t);
@@ -180,6 +198,10 @@ void Sync_Task(void const *pvParameter){
 
 				out.sample_id_sync = slot.ecg.sample_id;
 				out.timestamp_sync = slot.ecg.timestamp;
+
+#if defined(DEBUG_SWV_ITM) && defined(SENSOR_BINARY_PACKET) /* Debug dung SWV cho Binary Packet */
+				sync_swv_debug_count(&slot);
+#endif // DEBUG_SWV_ITM
 				out.count_sync = MIN(MIN(slot.ecg.count, slot.ppg.count), slot.pcg.count);
 
 				// STM32 toi uu cho memcpy tot hon
@@ -201,12 +223,14 @@ void Sync_Task(void const *pvParameter){
 			else{
 #ifdef SYNC_BLOCK_COUNT_DEBUG  /* Thay vi in log thi chi dung 1 bien de ghi lai so lan xay ra mismatch */
 				g_mismatched_block_count++;
-#elif DEBUG_SWV_ITM /* Debug dung SWV */
+
+#elif defined(DEBUG_SWV_ITM) && defined(SENSOR_BINARY_PACKET) /* Debug dung SWV cho Binary Packet */
 				SWV_LOG("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
 						slot.ecg.sample_id,
 						slot.ppg.sample_id,
 						slot.pcg.sample_id);
-#else /* Debug dung UART */
+
+#elif defined(SENSOR_LOGGER_USING) && !defined(SENSOR_BINARY_PACKET) /* Debug dung UART cho ASCII */
 				uart_printf("[SYNC] Mismatch ! ECG_id= %lu, PPG_id= %lu, PCG_id= %lu\r\n",
 						slot.ecg.sample_id,
 						slot.ppg.sample_id,
