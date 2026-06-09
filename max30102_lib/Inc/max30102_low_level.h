@@ -17,11 +17,11 @@ extern "C" {
 #include "main.h"
 
 #define MAX30102_I2C_ADDR 					0x57 // Dia chi I2C 8-bit
-#define MAX30102_I2C_TIMEOUT 				1000
+#define MAX30102_I2C_TIMEOUT 				1000 // Blocking mode
 
-#define MAX30102_BYTES_PER_LED 				3 //Moi LED chiem 3 bytes
-#define MAX30102_SAMPLE_LEN_MAX 			32
-#define MAX30102_STORAGE_SIZE 				4 //Do dai moi sample lay tu Register: 32-bit (4 bytes)
+#define MAX30102_BYTES_PER_LED 				3 	// Moi LED chiem 3 bytes
+#define MAX30102_SAMPLE_LEN_MAX 			32 	// FIFO toi da 32 samples
+#define MAX30102_STORAGE_SIZE 				4 	// Do dai moi sample lay tu Register: 32-bit (4 bytes)
 
 #define MAX30102_INTERRUPT_STATUS_1 		0x00
 #define MAX30102_INTERRUPT_STATUS_2 		0x01
@@ -70,14 +70,14 @@ extern "C" {
 #define MAX30102_DIE_TEMP_CONFIG 			0x21
 #define MAX30102_DIE_TEMP_EN 				1
 
+/* Struct luu data cua MAX30102 va cac bien tuong tac voi I2C */
 typedef struct max30102_t {
-    uint32_t _ir_samples[32]; //Fifo toi da 32 samples
-    uint32_t _red_samples[32];
+	/* Khong can set la volatile vi 2 bien nay khong co DMA, ISR,... can thiep */
+    uint32_t _ir_samples[MAX30102_SAMPLE_LEN_MAX];  /* Mang chua data IR cua MAX30102 duoc CPU ghi den (khong load tu RAM) */
+    uint32_t _red_samples[MAX30102_SAMPLE_LEN_MAX]; /* Mang chua data RED cua MAX30102 duoc CPU ghi den */
     I2C_HandleTypeDef *_ui2c;
     uint8_t _interrupt_flag;
 } max30102_t;
-
-extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 /**
  * @brief Write buffer of buflen bytes to a register of the MAX30102.
@@ -91,6 +91,7 @@ HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uin
 
 /**
  * @brief Read buflen bytes from a register of the MAX30102 and store to buffer.
+ * (I2C blocking mode)
  *
  * @param obj Pointer to max30102_t object instance.
  * @param reg Register address to read from.

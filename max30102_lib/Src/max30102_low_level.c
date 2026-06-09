@@ -10,10 +10,10 @@ extern "C" {
 #endif // __cplusplus
 
 #include "max30102_low_level.h"
-#include "main.h"
-#include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+
+extern void uart_printf(const char *fmt,...); // Logger.h - muon dung ham do thi khai bao extern
 
 HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen){
 	if(obj == NULL || obj->_ui2c == NULL) return HAL_ERROR;
@@ -30,6 +30,8 @@ HAL_StatusTypeDef max30102_write(max30102_t *obj, uint8_t reg, uint8_t *buf, uin
     }
     return HAL_OK;
 }
+
+/*-----------------------------------------------------------*/
 
 HAL_StatusTypeDef max30102_read(max30102_t *obj, uint8_t reg, uint8_t *buf, uint16_t buflen){
     uint8_t reg_addr = reg;
