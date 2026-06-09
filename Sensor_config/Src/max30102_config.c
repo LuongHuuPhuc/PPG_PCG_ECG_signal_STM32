@@ -11,15 +11,14 @@ extern "C" {
 
 #include "max30102_config.h"
 #include "max30102_low_level.h" // max30102_t
-#include "max30102_lib.h" // max30102_record
+#include "max30102_lib.h" 		// max30102_record
+#include "string.h"
 
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
 #include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
 
 //====== VARIABLES DEFINITION ======
 
-volatile uint32_t ir_buffer[MAX_FIFO_SAMPLE] = {0};
-volatile uint32_t red_buffer[MAX_FIFO_SAMPLE] = {0};
 max30102_t max30102_obj;
 max30102_record record;
 
@@ -27,7 +26,6 @@ osSemaphoreId max30102_semId = NULL;
 osThreadId max30102_taskId = NULL;
 
 // Extern protocol variables
-extern I2C_HandleTypeDef hi2c1;
 extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
 extern void uart_printf(const char *fmt,...);
 
@@ -50,7 +48,7 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 	max30102_init(&max30102_obj, i2c);
 
 	// Scan dia chi I2C co tren bus
-	Logger_i2c_scanner(&hi2c1);
+	Logger_i2c_scanner(i2c);
 
 	for(uint8_t retry = 0; retry < 3; retry++){
 		max30102_reset(&max30102_obj);
@@ -94,18 +92,13 @@ void Max30102_task(void const *pvParameter){
 		if(osSemaphoreWait(max30102_semId, 100) == osOK){ // Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
 			/* Doc data tu FIFO roi dua no vao buffer qua I2C */
-			uint8_t num_samples = (uint8_t)max30102_read_fifo_ver2_2(
-					&max30102_obj,
-					&record,
-					(uint32_t*)ir_buffer,
-					(uint32_t*)red_buffer,
-					MAX_FIFO_SAMPLE);
+			uint8_t num_samples = (uint8_t)max30102_read_fifo_ver2_2(&max30102_obj, &record, MAX_FIFO_SAMPLE);
 
 			/* Copy vao block buffer */
 			if(num_samples > 0){
 				for(uint8_t i = 0; i < num_samples; i++){
-					block.ppg.ir[i] = ir_buffer[i];
-//					block.ppg.red[i] = red_buffer[i];
+					block.ppg.ir[i] = max30102_obj._ir_samples[i];
+//					block.ppg.red[i] = max30102_obj._red_samples[i];
 				}
 
 				block.type = SENSOR_PPG;
