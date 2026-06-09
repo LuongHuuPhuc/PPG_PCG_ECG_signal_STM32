@@ -28,6 +28,8 @@ extern "C" {
  * - SWV su dung khoi ITM (Instrumentation Trace Macrocell) de tiep nhan
  * du lieu. Phan mem cau hinh ITM de nhan cac luong du lieu (vd: printf())
  * va dong goi chung thanh cac luong du lieu
+ *
+ * @note GPIO PB3 la output data cua SWV -> Noi voi SWO pin tren ST-Link
  */
 HAL_StatusTypeDef SWV_Init(void);
 #define SWV_LOG(...) printf(__VA_ARGS__)
