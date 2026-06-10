@@ -319,14 +319,14 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
  * @brief Ham doc so lan FIFO bi oveflow data
  *
  * @param[in] obj Con tro toi doi tuong struct max30102_t
- * @param[out] ovf_out Bien luu gia tri doc duoc trong ham
+ * @retval Gia tri doc duoc tai OVF_COUNTER
  *
  * @note
  * Khi FIFO full, samples se khong duoc day them vao FIFO ma bi mat di
  * Thanh ghi OVF_COUNTER se dem so lan samples bi mat.
  * Neu MCU chua kip doc data ma cam bien tiep tuc day mau moi vao, cac mau cu se bi ghi de -> ovf se tang len (tu 0 -> 31)
  */
-void max30102_read_overflow_counter(max30102_t *obj, uint8_t ovf_out);
+uint8_t max30102_read_overflow_counter(max30102_t *obj);
 
 /**
  * @brief Clear all FIFO pointers in the sensor.

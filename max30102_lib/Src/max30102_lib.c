@@ -264,9 +264,12 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
 
 /*-----------------------------------------------------------*/
 
-void max30102_read_overflow_counter(max30102_t *obj, uint8_t ovf_out){
+uint8_t max30102_read_overflow_counter(max30102_t *obj){
+	uint8_t ovf_out = 0; /* Bien check FIFO overflow (5-bits: 0 -> 31) */
+
 	// Gia tri thanh ghi OVF_COUNTER la 5-bits (dem tu 0 -> 31 neu phat hien overflow)
 	max30102_read(obj, MAX30102_OVF_COUNTER, &ovf_out, 1);
+	return ovf_out;
 }
 
 /*-----------------------------------------------------------*/
@@ -291,8 +294,7 @@ uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t m
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
 
 #ifdef DEBUG_SWV_ITM
-	uint8_t ovf = 0; /* Bien check FIFO overflow (5-bits: 0 -> 31) */
-	max30102_read_overflow_counter(obj, ovf); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
+	uint8_t ovf = max30102_read_overflow_counter(obj); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
 
 	/* Debug su dung SWV thay cho UART khi truyen Binary Packet */
 	 SWV_LOG("[DEBUG] wr_ptr =%u, rd_ptr =%u, ovf=%u\r\n", wr_ptr, rd_ptr, ovf);
