@@ -34,10 +34,10 @@ extern "C" {
 #define MAX30102_INTERRUPT_DIE_TEMP_RDY 	1
 
 #define MAX30102_FIFO_WR_PTR 				0x04 // 5-bits [4:0] trong FIFO Write Pointer
-#define MAX30102_OVF_COUNTER 				0x05
+#define MAX30102_OVF_COUNTER 				0x05 // 5-bits [4:0] trong Over Flow Counter (0 -> 31)
 #define MAX30102_FIFO_RD_PTR 				0x06 // 5-bits [4:0] trong FIFO Read Pointer
 
-#define MAX30102_FIFO_DATA 					0x07
+#define MAX30102_FIFO_DATA 					0x07 // 8-bits [7:0] trong FIFO Data Register
 
 #define MAX30102_FIFO_CONFIG 				0x08
 #define MAX30102_FIFO_CONFIG_SMP_AVE		5 // 3-bits bat dau tu bit5 [7:5]
