@@ -109,7 +109,7 @@ static inline void sync_swv_debug_count(sync_slot_t *slot){
 	if(slot->ecg.count < 31 ||
 	   slot->ppg.count < 31 ||
 	   slot->pcg.count < 31){
-		SWV_LOG("[SYNC] ECG_count= %u PPG_count=%u PCG_count= %u\r\n",
+		SWV_LOG("[SYNC] Count drop detected: ECG_count= %u PPG_count=%u PCG_count= %u\r\n",
 				slot->ecg.count,
 				slot->ppg.count,
 				slot->pcg.count);
