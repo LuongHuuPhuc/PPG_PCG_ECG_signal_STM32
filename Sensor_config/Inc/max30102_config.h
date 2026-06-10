@@ -46,6 +46,7 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c);
  *
  * @note Task khong dung interrupt ma dung TIMER de trigger
  * TIMER ban semaphore sau moi 32ms de task thuc hien xu ly
+ * (PPG khong dung DMA -> du lieu duoc tao cham hon so voi PCG va ECG)
  */
 void Max30102_task(void const *pvParameter);
 

@@ -17,6 +17,10 @@ extern "C" {
 #include "Sensor_config.h" // Su dung struct `sensor_block_t` va `sensor_type_t`
 #include "take_snapsync.h" // Sensor task -> Sync task (ho tro macros & global_sync_snapshot)
 
+#ifdef DEBUG_SWV_ITM
+#include "SWV_debug.h"
+#endif // DEBUG_SWV_ITM
+
 //====== VARIABLES DEFINITION ======
 
 max30102_t max30102_obj;
@@ -60,7 +64,7 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 		ret |= HAL_ERROR;
 	}
 
-	//Sensor settings
+	// Sensor config settings
 	max30102_set_led_pulse_width(&max30102_obj, max30102_pw_118_us);
 	max30102_set_adc_resolution(&max30102_obj, max30102_adc_18_bit);
 	max30102_set_sampling_rate(&max30102_obj, max30102_sr_1000); // 1ms/sample => Fixed sample rate
@@ -68,8 +72,9 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 	max30102_set_led_current_red(&max30102_obj, 8.0f);
 	max30102_set_led_mode(&max30102_obj, &record, max30102_spo2);
 
-	max30102_set_a_full(&max30102_obj, 1);
-	max30102_set_ppg_rdy(&max30102_obj, 1);
+	// Interrupt settings (disable)
+	max30102_set_a_full(&max30102_obj, 0);
+	max30102_set_ppg_rdy(&max30102_obj, 0);
 
 	// FIFO settings (Phai de sau cung khong se bi ghi de)
 	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 0); // Gia tri mong muon: 0x10
@@ -92,10 +97,18 @@ void Max30102_task(void const *pvParameter){
 		if(osSemaphoreWait(max30102_semId, 100) == osOK){ // Take semaphore tu TIM3 sau du 32 sample (32ms) ung voi 32 counter_max
 
 			/* Doc data tu FIFO roi dua no vao buffer qua I2C */
-			uint8_t num_samples = (uint8_t)max30102_read_fifo_ver2_2(&max30102_obj, &record, MAX_FIFO_SAMPLE);
+			uint8_t num_samples = (uint8_t)max30102_read_fifo(&max30102_obj, &record, MAX_FIFO_SAMPLE);
 
 			/* Copy vao block buffer */
 			if(num_samples > 0){
+
+#ifdef DEBUG_SWV_ITM
+				/* Neu co block nao be hon 31 samples */
+				if(num_samples < 31){
+					SWV_LOG("[MAX30102] Tick=%lu sid=%lu num_samples=%u\r\n", osKernelSysTick(), global_sync_snapshot.sample_id, num_samples);
+				}
+#endif // DEBUG_SWV_ITM
+
 				for(uint8_t i = 0; i < num_samples; i++){
 					block.ppg.ir[i] = max30102_obj._ir_samples[i];
 //					block.ppg.red[i] = max30102_obj._red_samples[i];
