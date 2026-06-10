@@ -9,6 +9,10 @@
 #include <string.h>
 #include "max30102_low_level.h"
 
+#ifdef DEBUG_SWV_ITM
+#include "SWV_debug.h"
+#endif // DEBUG_SWV_ITM
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -95,7 +99,7 @@ uint8_t max30102_has_interrupt(max30102_t *obj){
 
 /*-----------------------------------------------------------*/
 
-void max30102_interrupt_handler(max30102_t *obj){
+void max30102_interrupt_handler(max30102_t *obj, max30102_record *record){
     uint8_t reg[2] = {0x00};
     // Interrupt flag in registers 0x00 and 0x01 are cleared on read
     max30102_read(obj, MAX30102_INTERRUPT_STATUS_1, reg, 2);
@@ -103,7 +107,7 @@ void max30102_interrupt_handler(max30102_t *obj){
     if ((reg[0] >> MAX30102_INTERRUPT_A_FULL) & 0x01)
     {
         // FIFO almost full
-        max30102_read_fifo_ver1(obj);
+    	max30102_read_fifo_on_interrupt(obj, record);
     }
 
     if ((reg[0] >> MAX30102_INTERRUPT_PPG_RDY) & 0x01)
@@ -260,6 +264,13 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
 
 /*-----------------------------------------------------------*/
 
+void max30102_read_overflow_counter(max30102_t *obj, uint8_t ovf_out){
+	// Gia tri thanh ghi OVF_COUNTER la 5-bits (dem tu 0 -> 31 neu phat hien overflow)
+	max30102_read(obj, MAX30102_OVF_COUNTER, &ovf_out, 1);
+}
+
+/*-----------------------------------------------------------*/
+
 HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj){
     uint8_t val = 0x00;
     max30102_write(obj, MAX30102_FIFO_WR_PTR, &val, 3);
@@ -271,103 +282,41 @@ HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj){
 
 /*-----------------------------------------------------------*/
 
-__attribute__((unused))
-void max30102_read_fifo_ver1(max30102_t *obj){
-    // First transaction: Get the FIFO_WR_PTR
-    uint8_t wr_ptr = 0, rd_ptr = 0;
-    max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1);
-    max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1);
-
-    int8_t num_samples = (wr_ptr - rd_ptr) & 0x1F; // Bit mask
-
-    if (num_samples < 1)
-    {
-        num_samples += 32;
-    }
-
-    // Second transaction: Read NUM_SAMPLES_TO_READ samples from the FIFO
-    for (int8_t i = 0; i < num_samples; i++)
-    {
-        uint8_t sample[6];
-        max30102_read(obj, MAX30102_FIFO_DATA, sample, 6);
-        uint32_t ir_sample = ((uint32_t)(sample[0] << 16) | (uint32_t)(sample[1] << 8) | (uint32_t)(sample[2])) & 0x3ffff;
-        uint32_t red_sample = ((uint32_t)(sample[3] << 16) | (uint32_t)(sample[4] << 8) | (uint32_t)(sample[5])) & 0x3ffff;
-        obj->_ir_samples[i] = ir_sample;
-        obj->_red_samples[i] = red_sample;
-    }
-}
-
-/*-----------------------------------------------------------*/
-
-__attribute__((unused))
-uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint16_t max_samples){
-	uint8_t wr_ptr = 0; // Vi tri ghi tiep theo - khi tang den 31 roi ghi tiep, no se vong ve 0
-	uint8_t rd_ptr = 0; // Vi tri doc tiep theo -> Khong tang thi khong doc duoc data
+uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t max_samples){
+	uint8_t wr_ptr = 0; 	/* Bien ghi - ghi du lieu moi nhat cua cam bien vao FIFO */
+	uint8_t rd_ptr = 0; 	/* Bien doc - doc du lieu hien tai cua MCU */
+	int16_t num_samples;	/* Bien luu tong so mau trong FIFO */
 
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
 	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
 
-	// Neu wr_ptr == rd_ptr thi num_sample = 0
-	uart_printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
+#ifdef DEBUG_SWV_ITM
+	uint8_t ovf = 0; /* Bien check FIFO overflow (5-bits: 0 -> 31) */
+	max30102_read_overflow_counter(obj, ovf); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
 
-	// Tinh so mau trong FIFO - Doc 32 sample tu FIFO can 5-bits (2^5 = 32 samples)
-	uint8_t num_samples;
-	if(wr_ptr >= rd_ptr){
-		num_samples = (uint8_t)(wr_ptr - rd_ptr);
-	}else{
-		num_samples = 32 + wr_ptr - rd_ptr;
-	}
+	/* Debug su dung SWV thay cho UART khi truyen Binary Packet */
+	 SWV_LOG("[DEBUG] wr_ptr =%u, rd_ptr =%u, ovf=%u\r\n", wr_ptr, rd_ptr, ovf);
+#endif
 
-	if(num_samples > max_samples) num_samples = max_samples;
+	/**
+	 * Khi con tro ghi = con tro doc, co 2 truong hop:
+	 * -> FIFO empty (0): Khi do MCU da doc sach toan bo du lieu truoc do, lam con tro doc duoi kip con tro ghi (Doc nhanh, Ghi khong kip)
+	 * -> FIFO full (32): Khi do con tro ghi quay vong duoi kip con tro doc (Ghi nhanh, Doc khong kip)
+	 * Neu cau hinh FIFO, set fifo_a_full = 0 -> FIFO empty = 0 moi interrupt doc FIFO.
+	 * Neu MCU chua kip doc data ma cam bien tiep tuc day mau moi vao, cac mau cu se bi ghi de -> ovf se tang len (tu 0 -> 31)
+	 * Trong he thong hien tai, bien nay chi co 2 gia tri "0" hoac "1" chu khong chay tu 0 -> 31.
+	 * Tuc la khi ovf = 1 (bi overflow 1 sample) thi ngay lap tuc tro ve 0 -> Khong overflow qua nhieu
+	 */
+	 num_samples = (wr_ptr == rd_ptr) ? 32 : ((int16_t)(wr_ptr - rd_ptr) & 0x1F); // FIFO depth = 32 (dung bit mask nhanh hon)
+	 // num_samples = (wr_ptr == rd_ptr) ? 32 : ((int16_t)(wr_ptr - rd_ptr + 32) % 32);
+
+	/* Neu khong doc duoc sample nao -> return 0 luon */
 	if(num_samples == 0) return 0;
 
-	const uint8_t bytesPerSample = record->activeLeds * MAX30102_BYTES_PER_LED;
-
-	// Tong so byte can doc cho 2 kenh IR va RED (FIFO co the chua toi 192 bytes cho 32 sample, moi sample 6 bytes)
-//	uint16_t TotalBytesToRead = (uint16_t)(bytesPerSample * num_samples);
-
-	uint8_t dataRead[bytesPerSample]; // Array luu gia tri 1 sample (6 bytes)
-	for(uint8_t i = 0; i < num_samples; i++){
-
-		// Doc 6 byte 1 lan
-		MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, dataRead, bytesPerSample));
-
-		// Tach tung byte raw data sample thanh mau 3 byte cho IR va 3 byte cho RED
-		if(record->activeLeds > 0){ // RED (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
-			obj->_red_samples[i] = ((uint32_t)(dataRead[0] << 16) |   // Byte 1
-						 (uint32_t)(dataRead[1] << 8) | 	// Byte 2
-						 (uint32_t)(dataRead[2]))       	// Byte 3
-						 & 0x3FFFF; // bit mask 18-bit
-		}
-
-		if(record->activeLeds > 1){ // IR (3 bytes = 24-bits -> Res 18-bits nen bo di 6 bit)
-			obj->_ir_samples[i] = ((uint32_t)(dataRead[3] << 16) | // Byte 1
-						(uint32_t)(dataRead[4] << 8) |   // Byte 2
-						(uint32_t)(dataRead[5])) 		 // Byte 3
-						& 0x3FFFF; // bit mask 18-bit
-		}
-	}
-
-	return num_samples; //Tra ve so mau da doc
-}
-
-/*-----------------------------------------------------------*/
-
-uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint16_t max_samples){
-	uint8_t wr_ptr = 0, rd_ptr = 0;
-
-	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
-	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
-
-	/* Debug su dung SWV thong qua printf */
-	// printf("[DEBUG] wr_ptr = %u, rd_ptr = %u\r\n", wr_ptr, rd_ptr);
-
-	// Tinh so mau trong FIFO
-	int16_t num_samples = (int16_t)(wr_ptr - rd_ptr) & 0x1F; // FIFO depth = 32
-
-	if(num_samples < 1) num_samples += 32;
+	/* Neu samples doc duoc lon hon 32 */
 	if(num_samples > max_samples) num_samples = max_samples;
-	if(num_samples == 0) return 0;
+
+	/* Neu sample doc duoc gia tri co nghia (khoang 0->31) */
 	if(num_samples > 0){
 		uint16_t bytesToRead = (uint16_t)(record->activeLeds * MAX30102_BYTES_PER_LED * num_samples);
 

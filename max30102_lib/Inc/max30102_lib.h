@@ -173,8 +173,9 @@ uint8_t max30102_has_interrupt(max30102_t *obj);
  * @brief Read interrupt status registers (0x00 and 0x01) and perform corresponding tasks.
  *
  * @param obj Pointer to max30102_t object instance.
+ * @param record Pointer to max30102_record object instance
  */
-void max30102_interrupt_handler(max30102_t *obj);
+void max30102_interrupt_handler(max30102_t *obj, max30102_record *record);
 
 /**
  * @brief Shutdown the sensor.
@@ -307,12 +308,25 @@ void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
  * @param obj Con tro toi doi tuong cua struct max30102_t
  * @param smp_ave So mau trung binh sau do moi sinh interrupt de push vao FIFO
  * @param roll_over_en Cho phep ghi de FIFO neu FIFO day (0 - enable, 1 - disable)
- * @param fifo_a_full So sample empty trong FIFO truoc khi interrupt sinh ra de doc du lieu
+ * @param fifo_a_full So sample empty trong FIFO truoc khi interrupt sinh ra de doc du lieu (0->15)
+ * 		  (0 -> FIFO gan nhu full moi interrupt)
  *
  * Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
- *
  */
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full);
+
+/**
+ * @brief Ham doc so lan FIFO bi oveflow data
+ *
+ * @param[in] obj Con tro toi doi tuong struct max30102_t
+ * @param[out] ovf_out Bien luu gia tri doc duoc trong ham
+ *
+ * @note
+ * Khi FIFO full, samples se khong duoc day them vao FIFO ma bi mat di
+ * Thanh ghi OVF_COUNTER se dem so lan samples bi mat.
+ * Neu MCU chua kip doc data ma cam bien tiep tuc day mau moi vao, cac mau cu se bi ghi de -> ovf se tang len (tu 0 -> 31)
+ */
+void max30102_read_overflow_counter(max30102_t *obj, uint8_t ovf_out);
 
 /**
  * @brief Clear all FIFO pointers in the sensor.
@@ -322,46 +336,26 @@ void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8
 HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
 
 /**
- * @brief Read FIFO content and store to buffer in max30102_t object instance.
- *
- * @param obj Pointer to max30102_t object instance.
- * @retval In ra data luon, khong tra ve gi ca
- */
-__attribute__((unused))
-void max30102_read_fifo_ver1(max30102_t *obj);
-
-/**
- * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.2)
- *
- * @warning Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read) roi moi vao vong for
+ * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc
+ * Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read) roi moi vao vong for
  *
  * @param obj - Con tro tro toi doi tuong max30102_t
  * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
  *
- * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
- * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
- * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
+ * @note
+ * Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
+ * Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
+ * Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
  *
  * @retval `num_samples` - So mau doc duoc
  */
-uint16_t max30102_read_fifo_ver2_2(max30102_t *obj, max30102_record *record, uint16_t max_samples);
+uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t max_samples);
 
 /**
- * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (VER 2.1)
- * @retval `num_samples` - So mau doc duoc
- *
- * @warning Khong on dinh (van mat mau)
- * Doc 1 sample (6 bytes) moi vong for
- *
- * @param obj - Con tro tro toi doi tuong max30102_t
- * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
- *
- * @note Bit order co LSB luon ben phai, MSB luon ben trai va tuan theo Endianess la Little-Endian
- * \note Byte 1 [17:16], Byte 2[15:8], Byte 3[7:0]
- * \note Vi tri [23:18] khong su dung do do phan giai toi da cua max30102 la 18-bits nen khong the du 24-bits
+ * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc (with external interrupt)
  */
 __attribute__((unused))
-uint16_t max30102_read_fifo_ver2_1(max30102_t *obj, max30102_record *record, uint16_t max_samples);
+uint16_t max30102_read_fifo_on_interrupt(max30102_t *obj, max30102_record *record);
 
 /**
  * @brief Ham kiem tra trang thai thanh ghi (DEBUG)
