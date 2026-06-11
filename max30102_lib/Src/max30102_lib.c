@@ -274,53 +274,90 @@ uint8_t max30102_read_overflow_counter(max30102_t *obj){
 
 /*-----------------------------------------------------------*/
 
-HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj){
+void max30102_clear_fifo(max30102_t *obj){
     uint8_t val = 0x00;
-    max30102_write(obj, MAX30102_FIFO_WR_PTR, &val, 3);
-    max30102_write(obj, MAX30102_FIFO_RD_PTR, &val, 3);
-    max30102_write(obj, MAX30102_OVF_COUNTER, &val, 3);
+    max30102_write(obj, MAX30102_FIFO_WR_PTR, &val, 1);
+    max30102_write(obj, MAX30102_FIFO_RD_PTR, &val, 1);
+    max30102_write(obj, MAX30102_OVF_COUNTER, &val, 1);
+}
 
-    return HAL_OK;
+/*-----------------------------------------------------------*/
+
+uint8_t max30102_get_write_pointer(max30102_t *obj){
+	uint8_t data = 0;
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &data, 1));
+	return data;
+}
+
+/*-----------------------------------------------------------*/
+
+uint8_t max30102_get_read_pointer(max30102_t *obj){
+	uint8_t data = 0; 	/* Bien doc - doc du lieu hien tai cua MCU */
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &data, 1));
+	return data;
+}
+
+/*-----------------------------------------------------------*/
+
+void max30102_burst_read_reg(max30102_t *obj, uint8_t from_reg, uint8_t n, uint8_t *out_buf){
+	MAXLOWLEVELCHECKFUNC(max30102_read(obj, from_reg, out_buf, n));
+}
+
+/*-----------------------------------------------------------*/
+
+uint16_t max30102_fifo_available(max30102_t *obj, uint8_t *wr, uint8_t *rd){
+	// uint8_t wr_ptr = max30102_get_write_pointer(obj); /* Con tro ghi - ghi du lieu moi nhat cua cam bien vao FIFO */
+	// uint8_t rd_ptr = max30102_get_read_pointer(obj); /* Con tro doc - doc du lieu hien tai cua MCU */
+
+	/* Burst Read doc luon 1 lan 3 thanh ghi lien tiep tai tu WR_PTR 0x04 thay vi doc tung cai nhu tren */
+	uint8_t fifo_reg[3] = {0};
+	max30102_burst_read_reg(obj, MAX30102_FIFO_WR_PTR, 3, fifo_reg);
+
+	uint8_t wr_ptr = fifo_reg[0];
+	// uint8_t ovf_count = fifo_reg[1]; // Neu muon doc Overflow counter
+	uint8_t rd_ptr = fifo_reg[2];
+
+	if(wr != NULL) *wr = wr_ptr;
+	if(rd != NULL) *rd = rd_ptr;
+
+	/**
+	 * wr_ptr == rd_ptr co the co 2 TH: 1 la FIFO empty, 2 la FIFO full
+	 * Nen khong the mac dinh de num_samples doc duoc tu FIFO = 32
+	 * Day chinh la van de cua circular buffer. Nhung he thong nay,
+	 * neu luc 2 con tro doc-ghi bang nhau ma khong set no bang 32 ma
+	 * lai tinh bang phep tru roi bit mask -> Loi ngay lap tuc
+	 * -> Chung to moi lan wr_ptr = rd_ptr la luc FIFO day !
+	 */
+	return (wr_ptr == rd_ptr) ? 32 : ((int16_t)(wr_ptr - rd_ptr) & 0x1F);
+	// return (uint16_t)((wr_ptr - rd_ptr) & 0x1F); // FIFO depth = 32 (dung bit mask nhanh hon)
 }
 
 /*-----------------------------------------------------------*/
 
 uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t max_samples){
-	uint8_t wr_ptr = 0; 	/* Bien ghi - ghi du lieu moi nhat cua cam bien vao FIFO */
-	uint8_t rd_ptr = 0; 	/* Bien doc - doc du lieu hien tai cua MCU */
-	int16_t num_samples;	/* Bien luu tong so mau trong FIFO */
-
-	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_WR_PTR, &wr_ptr, 1));
-	MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_RD_PTR, &rd_ptr, 1));
+	int16_t num_samples = 0;	/* Bien luu tong so mau trong FIFO */
 
 #ifdef DEBUG_SWV_ITM
-	uint8_t ovf = max30102_read_overflow_counter(obj); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
-
-	/* Debug su dung SWV thay cho UART khi truyen Binary Packet */
-	 SWV_LOG("[DEBUG] wr_ptr =%u, rd_ptr =%u, ovf=%u\r\n", wr_ptr, rd_ptr, ovf);
-#endif
-
-	/**
-	 * Khi con tro ghi = con tro doc, co 2 truong hop:
-	 * -> FIFO empty (0): Khi do MCU da doc sach toan bo du lieu truoc do, lam con tro doc duoi kip con tro ghi (Doc nhanh, Ghi khong kip)
-	 * -> FIFO full (32): Khi do con tro ghi quay vong duoi kip con tro doc (Ghi nhanh, Doc khong kip)
-	 * Neu cau hinh FIFO, set fifo_a_full = 0 -> FIFO empty = 0 moi interrupt doc FIFO.
-	 * Neu MCU chua kip doc data ma cam bien tiep tuc day mau moi vao, cac mau cu se bi ghi de -> ovf se tang len (tu 0 -> 31)
-	 * Trong he thong hien tai, bien nay chi co 2 gia tri "0" hoac "1" chu khong chay tu 0 -> 31.
-	 * Tuc la khi ovf = 1 (bi overflow 1 sample) thi ngay lap tuc tro ve 0 -> Khong overflow qua nhieu
-	 */
-	 num_samples = (wr_ptr == rd_ptr) ? 32 : ((int16_t)(wr_ptr - rd_ptr) & 0x1F); // FIFO depth = 32 (dung bit mask nhanh hon)
-	 // num_samples = (wr_ptr == rd_ptr) ? 32 : ((int16_t)(wr_ptr - rd_ptr + 32) % 32);
+	int16_t actual_samples = 0;
+	uint8_t rd_ptr_before = 0;
+	uint8_t wr_ptr_before = 0;
+	num_samples = max30102_fifo_available(obj, &wr_ptr_before, &rd_ptr_before);
+#else
+	num_samples = max30102_fifo_available(obj, NULL, NULL);
+#endif // DEBUG_SWV_ITM
 
 	/* Neu khong doc duoc sample nao -> return 0 luon */
 	if(num_samples == 0) return 0;
+
+	/* Wrap condition (mac du dung bit mask 0x1F thi khong am) */
+	if(num_samples < 0) num_samples += 32;
 
 	/* Neu samples doc duoc lon hon 32 */
 	if(num_samples > max_samples) num_samples = max_samples;
 
 	/* Neu sample doc duoc gia tri co nghia (khoang 0->31) */
 	if(num_samples > 0){
-		uint16_t bytesToRead = (uint16_t)(record->activeLeds * MAX30102_BYTES_PER_LED * num_samples);
+		uint16_t bytesToRead = (uint16_t)(record->activeLeds * MAX30102_BYTES_PER_LED * num_samples); // max 192 bytes
 
 		if(bytesToRead > 0){
 			uint8_t data_temp[bytesToRead];
@@ -328,26 +365,74 @@ uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t m
 			// Doc 1 lan toan bo du lieu trong FIFO thay vi doc tung lan
 			MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, data_temp, bytesToRead));
 
+#ifdef DEBUG_SWV_ITM
+			/* Doc lai rd_ptr sau khi I2C read xong de biet thuc su da doc duoc bao nhieu */
+			uint8_t rd_ptr_after = max30102_get_read_pointer(obj);
+
+			/* Tinh so samples thuc su da doc duoc */
+			actual_samples = ((int16_t)(rd_ptr_after - rd_ptr_before) & 0x1F);
+			if(actual_samples == 0) actual_samples = 32;
+
+			/* Dung actual_samples thay cho num_samples de parse */
+			if(actual_samples > max_samples) actual_samples = max_samples;
+
+			uint8_t ovf = max30102_read_overflow_counter(obj); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
+
+			/* Debug su dung SWV thay cho UART khi truyen Binary Packet */
+			SWV_LOG("[DEBUG] wr_ptr_before=%u, rd_ptr_before=%u, rd_ptr_after=%u, ovf=%u, calc=%d, actual=%d\r\n",
+					wr_ptr_before, rd_ptr_before, rd_ptr_after, ovf, num_samples, actual_samples);
+#endif // DEBUG_SWV_ITM
+
+			/**
+			 * DEBUG NOTE:
+			 * He thong chay muọt, binh thuong nhung dot nhien con tro doc nhay loan:
+			 * [DEBUG] wr_ptr_before=26, rd_ptr_before=25, rd_ptr_after=26, ovf=0, calc=1, actual=1
+			 * [DEBUG] wr_ptr_before=25, rd_ptr_before=26, rd_ptr_after=25, ovf=0, calc=31, actual=31
+			 * [DEBUG] wr_ptr_before=25, rd_ptr_before=25, rd_ptr_after=30, ovf=0, calc=32, actual=5
+			 * [DEBUG] wr_ptr_before=25, rd_ptr_before=30, rd_ptr_after=25, ovf=0, calc=27, actual=27
+			 * -> Kha nang phan cung bi Clock drift cho MCU dung clock tu thach anh con MAX dung internall oscillator (RC)
+			 * nen co sai so lon. O tan so 1000Hz (1ms/sample), su lech pha giua 2 clock tich luy dan sau moi chu ky 32ms
+			 * Cu sau 1 thoi gian, pha cua MCU va cam bien trung khit (Race Condition). Cam bien nap mau moi de len len
+			 * con tro ngay luc MCU chuan bi doc I2C, gay va cham va nhay loan xa con tro.
+			 * -> Ket qua: Phan cung bao hut mau dot ngot (tut xuong num_sample = 1, sau do lai vot len 27 de xa bo dem)
+			 *
+			 * Giai quyet: Software Padding samples
+			 * - Tuan thu phan cung: I2C chi doc dung so byte chip dang bao (khong ep/ghi de thanh ghi bay ba)
+			 * - Cuu luong Sync: Ep vong lap giai ma luon chay du 32 samples. Neu phan cung bi hut do lech pha
+			 * phan mem se tu dong kich hoat co che Padding (sao chep mau lien truoc vao cho trong)
+			 * - Ham luon return 32 de giu block size co dinh, triet tieu hoan toan loi Drop sample
+			 */
+
 			// Chuyen tung mau raw data thanh mau IR va RED
-			for(int8_t i = 0; i < num_samples; i++){
-				int index = i * record->activeLeds * MAX30102_BYTES_PER_LED;
+			for(int8_t i = 0; i < MAX30102_SAMPLE_LEN_MAX; i++){
+				if(i < num_samples){
+					int index = i * record->activeLeds * MAX30102_BYTES_PER_LED;
 
-				// Nhay qua tung mau (voi i = 0, 1,...,31)
-				if(record->activeLeds >= 1){ // RED
-					obj->_red_samples[i] = ((uint32_t)(data_temp[index] << 16) |
-								(uint32_t)(data_temp[index + 1] << 8) |
-								(uint32_t)(data_temp[index + 2])) & 0x3FFFF;
+					// Nhay qua tung mau (voi i = 0, 1,...,31)
+					if(record->activeLeds >= 1){ // RED
+						obj->_red_samples[i] = ((uint32_t)(data_temp[index] << 16) |
+									(uint32_t)(data_temp[index + 1] << 8) |
+									(uint32_t)(data_temp[index + 2])) & 0x3FFFF;
 
+					}
+					if(record->activeLeds >= 2){ // RED + IR
+						obj->_ir_samples[i] = ((uint32_t)(data_temp[index + 3] << 16) |
+									(uint32_t)(data_temp[index + 4] << 8) |
+									(uint32_t)(data_temp[index + 5])) & 0x3FFFF; //18-bit data
+					}
 				}
-				if(record->activeLeds >= 2){ // RED + IR
-					obj->_ir_samples[i] = ((uint32_t)(data_temp[index + 3] << 16) |
-								(uint32_t)(data_temp[index + 4] << 8) |
-								(uint32_t)(data_temp[index + 5])) & 0x3FFFF; //18-bit data
+
+				/* Neu bi thieu mau (i >= num_sample): Copy cac mau lien truoc de dap vao o trong (Padding) */
+				else{
+					if(i > 0){
+						obj->_red_samples[i] = obj->_red_samples[i - 1];
+						obj->_ir_samples[i] = obj->_ir_samples[i - 1];
+					}
 				}
 			}
 		}
 	}
-	return num_samples; //Tra ve so mau da doc
+	return MAX30102_SAMPLE_LEN_MAX; //Tra ve so mau da doc
 }
 
 /*-----------------------------------------------------------*/

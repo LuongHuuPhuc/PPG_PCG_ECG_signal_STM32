@@ -330,16 +330,56 @@ uint8_t max30102_read_overflow_counter(max30102_t *obj);
 
 /**
  * @brief Clear all FIFO pointers in the sensor.
- *
  * @param obj Pointer to max30102_t object instance.
  */
-HAL_StatusTypeDef max30102_clear_fifo(max30102_t *obj);
+void max30102_clear_fifo(max30102_t *obj);
+
+/**
+ *
+ */
+uint8_t max30102_get_write_pointer(max30102_t *obj);
+
+/**
+ *
+ */
+uint8_t max30102_get_read_pointer(max30102_t *obj);
+
+/**
+ * @brief Ham doc gia tri tai n thanh ghi lien tiep (burst read)
+ * Giup doc 1 lan duy nhat, giam transaction cua I2C
+ *
+ * @param obj Con tro tro toi doi tuong co kieu max30102_t
+ * @param from_reg Vi tri thanh ghi dau tien can doc
+ * @param n so thanh ghi ke tiep can doc
+ * @param out_buf buffer luu gia tri doc duoc (output)
+ */
+void max30102_burst_read_reg(max30102_t *obj, uint8_t from_reg, uint8_t n, uint8_t *out_buf);
+
+/**
+ * @brief Ham kiem tra so sample trong FIFO
+ *
+ * @param obj Con tro tro toi doi tuong co kieu max30102_t
+ * @param wr Con tro luu gia tri wr_ptr doc duoc trong ham (neu muon doc o noi khac). NULL neu khong dung
+ * @param rd Con tro luu gia tri rd_ptr doc duoc trong ham (neu muon doc o noi khac). NULL neu khong dung
+ *
+ * Moi lan ghi data vao FIFO, con tro ghi lai tang len
+ * Moi lan doc data tai thanh ghi FIFO, con tro doc lai tang len
+ *
+ * Khi con tro ghi (wr_ptr) = con tro doc (rd_ptr), co 2 truong hop:
+ * -> FIFO empty (0): Khi do MCU da doc sach toan bo du lieu truoc do, lam con tro doc duoi kip con tro ghi (Doc nhanh, Ghi khong kip)
+ * -> FIFO full (32): Khi do con tro ghi quay vong duoi kip con tro doc (Ghi nhanh, Doc khong kip)
+ * Neu cau hinh FIFO, set fifo_a_full = 0 -> FIFO empty = 0 moi interrupt doc FIFO.
+ *
+ * @retval 0: FIFO empty, !=0: FIFO co data
+ */
+uint16_t max30102_fifo_available(max30102_t *obj, uint8_t *wr, uint8_t *rd);
 
 /**
  * @brief Ham nay doc gia tri FIFO roi tra ve so mau da doc
  * Doc lien tuc toan bo du lieu trong FIFO 1 lan (Burst Read) roi moi vao vong for
  *
  * @param obj - Con tro tro toi doi tuong max30102_t
+ * @param record Con tro toi doi tuong kieu max30102_record
  * @param max_samples - So mau toi da (Bang voi kich thuoc cua FIFO) - moi sample 6 byte (3 byte IR + 3 byte RED)
  *
  * @note
