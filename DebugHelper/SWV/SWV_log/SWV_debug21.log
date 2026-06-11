@@ -1,0 +1,263 @@
+**********************************************
+	Thu Jun 11 20:56:46 2026
+	Device Name: STM32F401xD/E
+**********************************************
+	>>>>>> Reception Started <<<<<<
+
+APP] SWV debug OK !
+[DEBUG] wr_ptr_before=15, rd_ptr_before=0, rd_ptr_after=15, ovf=0, calc=15, actual=15
+[MAX30102] Tick=3 sid=0 num_samples=15
+�[SYNC] Mismatch ! ECG_id= 1, PPG_id= 0, PCG_id= 1
+��[DEBUG] wr_ptr_before=14, rd_ptr_before=15, rd_ptr_after=14, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 1, PPG_id= 2, PCG_id= 2
+��[DEBUG] wr_ptr_before=13, rd_ptr_before=14, rd_ptr_after=13, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 11, PPG_id= 12, PCG_id= 12
+[DEBUG] wr_ptr_before=12, rd_ptr_before=13, rd_ptr_after=12, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 21, PPG_id= 22, PCG_id= 22
+[DEBUG] wr_ptr_before=11, rd_ptr_before=12, rd_ptr_after=11, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 30, PPG_id= 31, PCG_id= 31
+��[DEBUG] wr_ptr_before=10, rd_ptr_before=11, rd_ptr_after=10, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 38, PPG_id= 39, PCG_id= 38
+��[DEBUG] wr_ptr_before=9, rd_ptr_before=10, rd_ptr_after=9, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 48, PPG_id= 49, PCG_id= 48
+��[DEBUG] wr_ptr_before=8, rd_ptr_before=9, rd_ptr_after=8, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 57 �PPG_id= 58, PCG_id= 57
+�[DEBUG] wr_ptr_before=7, rd_ptr_before=8, rd_ptr_after=7, ovf=0, calc=31, actual=31
+[��S�YNC] Mismatch ! ECG_id= 66, PPG_id= 67, PCG_id= 66
+��[DEBUG] wr_ptr_before=6, rd_ptr_before=7, rd_ptr_after=6, ovf=0, calc=31, actual=31
+[��S�YNC] Mismatch ! ECG_id= 75, PPG_id= 76, PCG_id= 75
+��[DEBUG] wr_ptr_be�fore=5, rd_ptr_before=6, rd_ptr_after=5, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 85, PPG_id= 86, PCG_id= 85
+��[DEBUG] wr_ptr_be�fore=4, rd_ptr_before=5, rd_ptr_after=4, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 94, PPG_id= 95, PCG_id= 94
+��[DEBUG] wr_ptr_before=3, rd_ptr_before=4, rd_ptr_after=3, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 103, PPG_id= 104, PCG_id= 103
+��[DEBUG] wr_ptr_before=2, rd_ptr_before=3, rd_ptr_after=2, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 112, PPG_id= 113, PCG_id= 112
+��[DEBUG] wr_ptr_before=1, rd_ptr_before=2, rd_ptr_after=1, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 121, PPG_id= 122, PCG_id= 121
+��[DEBUG] wr_ptr_before=0, rd_ptr_before=1, rd_ptr_after=0, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 129, PPG_id= 130, PCG_id= 129
+��[DEBUG] wr_ptr_before=31, rd_ptr_before=0, rd_ptr_after=31, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 138, PPG_id= 139, PCG_id= 138
+��[DEBUG] wr_ptr_before=30, rd_ptr_before=31, rd_ptr_after=30, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 147, PPG_id= 148, PCG_id= 147
+��[DEBUG] wr_ptr_before=29, rd_ptr_before=30, rd_ptr_after=29, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 156, PPG_id= 157, PCG_id= 156
+��[DEBUG] wr_ptr_before=28, rd_ptr_before=29, rd_ptr_after=28, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 165, PPG_id= 166, PCG_id= 165
+��[DEBUG] wr_ptr_before=27, rd_ptr_before=28, rd_ptr_after=27, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 174, PPG_id= 175, PCG_id= 174
+��[DEBUG] wr_ptr_before=28, rd_ptr_before=27, rd_ptr_after=28, ovf=0, calc=1, actual=1
+[MAX30102] Tick=5666 sid=177 num_samples=1
+[SYNC] Mismatch ! ECG_id= 176, PPG_id= 177, PCG_id= 176
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] wr_ptr_before=27, rd_ptr_before=28, rd_ptr_after=27, ovf=0, calc=31, actual=31
+[DEBUG] wr_ptr_before=26, rd_ptr_before=27, rd_ptr_after=26, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 183, PPG_id= 184, PCG_id= 183
+��[DEBUG] wr_ptr_before=25, rd_ptr_before=26, rd_ptr_after=25, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 191, PPG_id= 192, PCG_id= 191
+��[DEBUG] wr_ptr_before=24, rd_ptr_before=25, rd_ptr_after=24, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 200, PPG_id= 201, PCG_id= 200
+��[DEBUG] wr_ptr_before=23, rd_ptr_before=24, rd_ptr_after=23, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 209, PPG_id= 210, PCG�_id= 209
+[DEBUG] wr_ptr_before=22, rd_ptr_before=23, rd_ptr_after=22, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 218, PPG_id= 219, PCG_id= 218
+��[DEBUG] wr_ptr_before=21, rd_ptr_before=22, rd_ptr_after=21, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 226, PPG_id= 227, PCG_id= 226
+��[DEBUG] wr_ptr_be�fore=20, rd_ptr_before=21, rd_ptr_after=20, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 235, PPG_id= 236, PCG_id= 236
+��[DEBUG] wr_ptr_be�fore=19, rd_ptr_before=20, rd_ptr_after=19, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 244, PPG_id= 245, PCG_id= 245
+��[DEBUG] wr_ptr_be�fore=18, rd_ptr_before=19, rd_ptr_after=18, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 253, PPG_id= 254, PCG_id= 254
+��[DEBUG] wr_ptr_before=17, rd_ptr_before=18, rd_ptr_after=17, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 262, PPG_id= 263, PCG_id= 263
+��[DEBUG] wr_ptr_before=16, rd_ptr_before=17, rd_ptr_after=16, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 270, PPG_id= 271, PCG_id= 271
+��[DEBUG] wr_ptr_before=15, rd_ptr_before=16, rd_ptr_after=15, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 279, PPG_id= 280, PCG_id= 280
+[DEBUG] wr_ptr_before=14, rd_ptr_before=15, rd_ptr_after=14, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 288, PPG_id= 289, PCG_id= 289
+[DEBUG] wr_ptr_before=13, rd_ptr_before=14, rd_ptr_after=13, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 297, PPG_id= 298, PCG_id= 298
+[DEBUG] wr_ptr_before=12, rd_ptr_before=13, rd_ptr_after=12, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 306, PPG_id= 307, PCG_id= 307
+[DEBUG] wr_ptr_before=11, rd_ptr_before=12, rd_ptr_after=11, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 314, PPG_id= 315, PCG_id= 315
+[DEBUG] wr_ptr_before=10, rd_ptr_before=11, rd_ptr_after=10, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 323, PPG_id= 324, PCG_id= 324
+[DEBUG] wr_ptr_before=9, rd_ptr_before=10, rd_ptr_after=9, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 333, PPG_id= 334, PCG_id= 334
+[DEBUG] wr_ptr_before=8, rd_ptr_before=9, rd_ptr_after=8, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 341, PPG_id= 342, PCG_id= 342
+��[DEBUG] wr_ptr_before=7, rd_ptr_before=8, rd_ptr_after=7, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 349, PPG_id= 350, PCG_id= 349
+��[DEBUG] wr_ptr_before=6, rd_ptr_before=7, rd_ptr_after=6, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 358, PPG_id= 359, PCG_id= 358
+��[DEBUG] wr_ptr_before=5, rd_ptr_before=6, rd_ptr_after=5, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 367, PPG_id=3�68, PCG_id= 367
+[DEBUG] wr_ptr_before=4, rd_ptr_before=5, rd_ptr_after=4, ovf=0, calc=31, actual=31
+[��S�YNC] Mismatch ! ECG_id= 376, PPG_id= 377, PCG_id= 376
+��[DEBUG] wr_ptr_before=3, rd_ptr_before=4, rd_ptr_after=3, ovf=0, calc=31, actual=31
+[��S�YNC] Mismatch ! ECG_id= 385, PPG_id= 386, PCG_id= 385
+��[DEBUG] wr_ptr_be�fore=2, rd_ptr_before=3, rd_ptr_after=2, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 393, PPG_id= 394, PCG_id= 393
+��[DEBUG] wr_ptr_be�fore=1, rd_ptr_before=2, rd_ptr_after=1, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 402, PPG_id= 403, PCG_id= 402
+��[DEBUG] wr_ptr_before=0, rd_ptr_before=1, rd_ptr_after=0, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 411, PPG_id= 412, PCG_id= 411
+��[DEBUG] wr_ptr_before=31, rd_ptr_before=0, rd_ptr_after=31, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 420, PPG_id= 421, PCG_id= 420
+��[DEBUG] wr_ptr_before=30, rd_ptr_before=31, rd_ptr_after=30, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 428, PPG_id= 429, PCG_id= 428
+��[DEBUG] wr_ptr_before=29, rd_ptr_before=30, rd_ptr_after=29, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 437, PPG_id= 438, PCG_id= 437
+��[DEBUG] wr_ptr_before=28, rd_ptr_before=29, rd_ptr_after=28, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 446, PPG_id= 447, PCG_id= 446
+��[DEBUG] wr_ptr_before=27, rd_ptr_before=28, rd_ptr_after=27, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 454, PPG_id= 455, PCG_id= 454
+��[DEBUG] wr_ptr_before=26, rd_ptr_before=27, rd_ptr_after=26, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 463, PPG_id= 464, PCG_id= 463
+��[DEBUG] wr_ptr_before=25, rd_ptr_before=26, rd_ptr_after=25, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 472, PPG_id= 473, PCG_id= 472
+��[DEBUG] wr_ptr_before=24, rd_ptr_before=25, rd_ptr_after=24, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 481, PPG_id= 482, PCG_id= 481
+��[DEBUG] wr_ptr_before=23, rd_ptr_before=24, rd_ptr_after=23, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 490, PPG_id= 491, PCG_id= 490
+��[DEBUG] wr_ptr_before=22, rd_ptr_before=23, rd_ptr_after=22, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 499, PPG_id= 500, PCG_id= 499
+��[DEBUG] wr_ptr_before=21, rd_ptr_before=22, rd_ptr_after=21, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 507, PPG_id= 508, PCG_id= 507
+��[DEBUG] wr_ptr_before=20, rd_ptr_before=21, rd_ptr_after=20, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 516, PPG_id= 517, PCG_id= 516
+��[DEBUG] wr_ptr_before=19, rd_ptr_before=20, rd_ptr_after=19, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= �525, PPG_id= 526, PCG_id= 525
+�[DEBUG] wr_ptr_before=18, rd_ptr_before=19, rd_ptr_after=18, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 534, PPG_id= 535, PCG_id= 534
+��[DEBUG] wr_ptr_before=17, rd_ptr_before=18, rd_ptr_after=17, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 543, PPG_id= 544, PCG_id= 543
+��[DEBUG] wr_ptr_be�fore=16, rd_ptr_before=17, rd_ptr_after=16, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 552, PPG_id= 553, PCG_id= 553
+��[DEBUG] wr_ptr_be�fore=15, rd_ptr_before=16, rd_ptr_after=15, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 561, PPG_id= 562, PCG_id= 562
+��[DEBUG] wr_ptr_before=14, rd_ptr_before=15, rd_ptr_after=14, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 569, PPG_id= 570, PCG_id= 570
+��[DEBUG] wr_ptr_before=13, rd_ptr_before=14, rd_ptr_after=13, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 578, PPG_id= 579, PCG_id= 579
+��[DEBUG] wr_ptr_before=12, rd_ptr_before=13, rd_ptr_after=12, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 587, PPG_id= 588, PCG_id= 588
+[DEBUG] wr_ptr_before=11, rd_ptr_before=12, rd_ptr_after=11, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 596, PPG_id= 597, PCG_id= 597
+[DEBUG] wr_ptr_before=10, rd_ptr_before=11, rd_ptr_after=10, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 605, PPG_id= 606, PCG_id= 606
+[DEBUG] wr_ptr_before=9, rd_ptr_before=10, rd_ptr_after=9, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 614, PPG_id= 615, PCG_id= 615
+[DEBUG] wr_ptr_before=8, rd_ptr_before=9, rd_ptr_after=8, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 623, PPG_id= 624, PCG_id= 624
+[DEBUG] wr_ptr_before=7, rd_ptr_before=8, rd_ptr_after=7, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 632, PPG_id= 633, PCG_id= 633
+[DEBUG] wr_ptr_before=6, rd_ptr_before=7, rd_ptr_after=6, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 641, PPG_id= 642, PCG_id= 642
+[DEBUG] wr_ptr_before=7, rd_ptr_before=6, rd_ptr_after=7, ovf=0, calc=1, actual=1
+[MAX30102] Tick=20642 sid=645 num_samples=1
+[SYNC] Mismatch ! ECG_id= 644, PPG_id= 645, PCG_id= 645
+[S�YNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] wr_ptr_before=6, rd_ptr_before=7, rd_ptr_after=6, ovf=0, calc=31, actual=31
+���z[DEBUG] wr_ptr_before=5, rd_ptr_before=6, rd_ptr_after=5, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 650, PPG_id= 651, PCG_id= 651
+��[DEBUG] wr_ptr_before=4, rd_ptr_before=5, rd_ptr_after=4, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 659, PPG_id= 660, PCG_id= 659
+��[DEBUG] wr_ptr_before=3, rd_ptr_before=4, rd_ptr_after=3, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 667, PPG_id= 668, PCG_id= 667
+��[DEBUG] wr_ptr_before=2, rd_ptr_before=3, rd_ptr_after=2, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 676, PPG_id= 677, PCG_id= 676�
+[DEBUG] wr_ptr_before=1, rd_ptr_before=2, rd_ptr_after=1, ovf=0, calc=31, actual=31
+[��SYNC] Mi�smatch ! ECG_id= 685, PPG_id= 686, PCG_id= 685
+��[DEBUG] wr_ptr_before=0, rd_ptr_before=1, rd_ptr_after=0, ovf=0, calc=31, actual=31
+[��S�YNC] Mismatch ! ECG_id= 694, PPG_id= 695, PCG_id= 694
+��[DEBUG] wr_ptr_be�fore=31, rd_ptr_before=0, rd_ptr_after=31, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 703, PPG_id= 704, PCG_id= 703
+��[DEBUG] wr_ptr_be�fore=30, rd_ptr_before=31, rd_ptr_after=30, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 712, PPG_id= 713, PCG_id= 712
+��[DEBUG] wr_ptr_be�fore=29, rd_ptr_before=30, rd_ptr_after=29, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 721, PPG_id= 722, PCG_id= 721
+��[DEBUG] wr_ptr_before=28, rd_ptr_before=29, rd_ptr_after=28, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 730, PPG_id= 731, PCG_id= 730
+��[DEBUG] wr_ptr_before=27, rd_ptr_before=28, rd_ptr_after=27, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 738, PPG_id= 739, PCG_id= 738
+��[DEBUG] wr_ptr_before=26, rd_ptr_before=27, rd_ptr_after=26, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 747, PPG_id= 748, PCG_id= 747
+��[DEBUG] wr_ptr_before=25, rd_ptr_before=26, rd_ptr_after=25, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 756, PPG_id= 757, PCG_id= 756
+��[DEBUG] wr_ptr_before=24, rd_ptr_before=25, rd_ptr_after=24, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 765, PPG_id= 766, PCG_id= 765
+��[DEBUG] wr_ptr_before=23, rd_ptr_before=24, rd_ptr_after=23, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 773, PPG_id= 774, PCG_id= 773
+��[DEBUG] wr_ptr_before=22, rd_ptr_before=23, rd_ptr_after=22, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 782, PPG_id= 783, PCG_id= 782
+��[DEBUG] wr_ptr_before=21, rd_ptr_before=22, rd_ptr_after=21, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 791, PPG_id= 792, PCG_id= 791
+��[DEBUG] wr_ptr_before=20, rd_ptr_before=21, rd_ptr_after=20, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 801, PPG_id= 802, PCG_id= 801
+��[DEBUG] wr_ptr_before=19, rd_ptr_before=20, rd_ptr_after=19, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 809, PPG_id= 810, PCG_id= 809
+��[DEBUG] wr_ptr_before=18, rd_ptr_before=19, rd_ptr_after=18, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 817, PPG_id= 818, PCG_id= 817
+��[DEBUG] wr_ptr_before=17, rd_ptr_before=18, rd_ptr_after=17, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 825, PPG_id= 826, PCG_id= 825
+��[DEBUG] wr_ptr_before=16, rd_ptr_before=17, rd_ptr_after=16, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 834, PPG_id= 3�5, PCG_id= 834
+[DEBUG] wr_ptr_before=15, rd_ptr_before=16, rd_ptr_after=15, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 843, PPG_id= 844, PCG_id= 843
+��[DEBUG] wr_ptr_before=14, rd_ptr_before=15, rd_ptr_after=14, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 852, PPG_id= 853, PCG_id= 852
+��[DEBUG] wr_ptr_be�fore=13, rd_ptr_before=14, rd_ptr_after=13, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 861, PPG_id= 862, PCG_id= 862
+��[DEBUG] wr_ptr_be�fore=12, rd_ptr_before=13, rd_ptr_after=12, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 869, PPG_id= 870, PCG_id= 870
+��[DEBUG] wr_ptr_before=11, rd_ptr_before=12, rd_ptr_after=11, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 878, PPG_id= 879, PCG_id= 879
+��[DEBUG] wr_ptr_before=10, rd_ptr_before=11, rd_ptr_after=10, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 887, PPG_id= 888, PCG_id= 888
+��[DEBUG] wr_ptr_before=9, rd_ptr_before=10, rd_ptr_after=9, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 896, PPG_id= 897, PCG_id= 897
+��[DEBUG] wr_ptr_before=8, rd_ptr_before=9, rd_ptr_after=8, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 905, PPG_id= 906, PCG_id= 906
+[DEBUG] wr_ptr_before=7, rd_ptr_before=8, rd_ptr_after=7, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 913, PPG_id= 914, PCG_id= 914
+[DEBUG] wr_ptr_before=6, rd_ptr_before=7, rd_ptr_after=6, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 922, PPG_id= 923, PCG_id= 923
+[DEBUG] wr_ptr_before=5, rd_ptr_before=6, rd_ptr_after=5, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 930, PPG_id= 931, PCG_id= 931
+[DEBUG] wr_ptr_before=4, rd_ptr_before=5, rd_ptr_after=4, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 939, PPG_id= 940, PCG_id= 940
+[DEBUG] wr_ptr_before=3, rd_ptr_before=4, rd_ptr_after=3, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 948, PPG_id= 949, PCG_id= 949
+[DEBUG] wr_ptr_before=2, rd_ptr_before=3, rd_ptr_after=2, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 957, PPG_id= 958, PCG_id= 958
+[DEBUG] wr_ptr_before=1, rd_ptr_before=2, rd_ptr_after=1, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 965, PPG_id= 966, PCG_id= 966
+��[DEBUG] wr_ptr_before=0, rd_ptr_before=1, rd_ptr_after=0, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 974, PPG_id= 975, PCG_id= 974
+��[DEBUG] wr_ptr_before=1, rd_ptr_before=0, rd_ptr_after=1, ovf=0, calc=1, actual=1
+[��MAX30102] Tick=31233 sid=976 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] wr_ptr_before=0, rd_ptr_before=1, rd_ptr_after=0, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 982, PPG_id= 983, PCG_id= 982
+��[DEBUG] wr_ptr_before=31, rd_ptr_before=0, rd_ptr_after=31, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 991, PPG_d�= 992, PCG_id= 991
+[DEBUG] wr_ptr_before=30, rd_ptr_before=31, rd_ptr_after=30, ovf=0, calc=31, actual=31
+[S�YNC] Mismatch ! ECG_id= 1000, PPG_id= 1001, PCG_id= 1000
+��[DEBUG] wr_ptr_before=29, rd_ptr_before=30, rd_ptr_after=29, ovf=0, calc=31, actual=31
+[S�YNC] Mismatch ! ECG_id= 1009, PPG_id= 1010, PCG_id= 1009
+��[DEBUG] wr_ptr_be�fore=28, rd_ptr_before=29, rd_ptr_after=28, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 1017, PPG_id= 1018, PCG_id= 1017
+��[DEBUG] wr_ptr_be�fore=27, rd_ptr_before=28, rd_ptr_after=27, ovf=0, calc=31, actual=31
+[��SYNC] Mismatch ! ECG_id= 1026, PPG_id= 1027, PCG_id= 1026
+��[DEBUG] wr_ptr_before=26, rd_ptr_before=27, rd_ptr_after=26, ovf=0, calc=31, actual=31
+[SYNC] Mismatch ! ECG_id= 1035, PPG_id= 1036, PCG_id= 1035
+��[DEBUG] wr_ptr_before=25, rd_
+	>>>>>> Reception Ended <<<<<<
+**********************************************
+

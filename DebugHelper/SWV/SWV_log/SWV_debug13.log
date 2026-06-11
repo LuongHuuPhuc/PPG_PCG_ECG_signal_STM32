@@ -1,0 +1,759 @@
+**********************************************
+	Wed Jun 10 18:21:08 2026
+	Device Name: STM32F401xD/E
+**********************************************
+	>>>>>> Reception Started <<<<<<
+
+[APP] SWV debug OK !
+[DEBUG] wr_ptr = 0, rd_ptr = 8
+MAX30102] Tick=4 sid=0 num_samples=24
+�[DEBUG] wr_ptr = 16, rd_ptr = 0
+MAX30102] Tick=35 sid=1 num_samples=16
+SYNC] Count drop detected: ECG_count= 32 PPG_count=16 PCG_count= 32
+���z[DEBUG] wr_ptr = 16, rd_ptr = 16
+�[DEBUG] wr_ptr = 15, rd_ptr = 16
+SYNC] Mismatch ! ECG_id= 2, PPG_id= 3, PCG_id= 3
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 5, PPG_id= 6, PCG_id= 6
+��[DEBUG] wr_ptr = 15, rd_ptr = 21
+MAX30102] Tick=229 sid=7 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 8, PPG_id= 9, PCG_id= 9
+��[DEBUG] wr_ptr = 15, rd_ptr = 21
+MAX30102] Tick=325 sid=10 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 14, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 11, PPG_id= 12, PCG_id= 12
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 14, PPG_id= 15, PCG_id= 15
+��[D�EBUG] wr_ptr = 14, rd_ptr = 20
+MAX30102] Tick=517 sid=16 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 17, PPG_id= 18, PCG_id= 18
+��[D�EBUG] wr_ptr = 14, rd_ptr = 20
+MAX30102] Tick=613 sid=19 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 20, PPG_id= 21, PCG_id= 21
+��[D�EBUG] wr_ptr = 13, rd_ptr = 19
+MAX30102] Tick=709 sid=22 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+SYNC] Mismatch ! ECG_id= 24, PPG_id= 25, PCG_id= 25
+�[DEBUG] wr_ptr = 13, rd_ptr = 19
+MAX30102] Tick=836 sid=26 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+SYNC] Mismatch ! ECG_id= 27, PPG_id=28, PCG_id= 28
+[DEBUG] wr_ptr = 13, rd_ptr = 18
+MAX30102] Tick=932 sid=29 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 12, rd_ptr = 13
+SYNC] Mismatch ! ECG_id= 30, PPG_id= 31, PCG_id= 31
+��[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+SYNC] Mismatch ! ECG_id= 33, PPG_id= 34, PCG_id= 34
+��[DEBUG] wr_ptr = 12, rd_ptr = 17
+MAX30102] Tick=1124 sid=35 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+SYNC] Mismatch ! ECG_id= 36, PPG_id= 37, PCG_id= 36
+��[DEBUG] wr_ptr = 12, rd_ptr = 17
+MAX30102] Tick=1220 sid=38 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 11, rd_ptr = 12
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 41, PPG_id= 42, PCG_id= 41
+��[DEBUG] wr_ptr = 11, rd_ptr = 16
+MAX30102] Tick=1380 sid=43 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 44, PPG_id= 45, PCG_id= 44
+��[DEBUG] wr_ptr = 11, rd_ptr = 16
+MAX30102] Tick=1476 sid=46 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 10, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 47, PPG_id= 48, PCG_id= 47
+��[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 50, PPG_id= 51, PCG_id= 50
+��[DEBUG] wr_ptr = 10, rd_ptr = 15
+MAX30102] Tick=1668 sid=52 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 53, PPG_id= 54, PCG_id= 53
+��[DEBUG] wr_ptr = 10, rd_ptr = 15
+MAX30102] Tick=1764 sid=55 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 9, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 56, PPG_id= 57, PCG_id= 56
+��[DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 59, PPG_id= 60, PCG_id= 59
+��[DEBUG] wr_ptr = 9, rd_ptr = 14
+MAX30102] Tick=1956 sid=61 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 62, PPG_id= 63, PCG_id= 62
+��[DEBUG] wr_ptr = 9, rd_ptr = 14
+MAX30102] Tick=2052 sid=64 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 8, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 65, PPG_id= 66, PCG_id= 65
+��[DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+SYNC] Mismatch ! ECG_id=6�8, PPG_id= 69, PCG_id= 68
+�[DEBUG] wr_ptr = 8, rd_ptr = 13
+MAX30102] Tick=2244 sid=70 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+SYNC] Misma�tch ! ECG_id= 71, PPG_id= 72, PCG_id= 71
+�[DEBUG] wr_ptr = 8, rd_ptr = 13
+MAX30102] Tick=2340 sid=73 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 7, rd_ptr = 8
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+SYNC] Mismatch ! ECG_id= 76, PPG_id= 77, PCG_id= 76
+��[D�EBUG] wr_ptr = 7, rd_ptr = 12
+MAX30102] Tick=2500 sid=78 num_samples=27
+SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+SYNC] Mismatch ! ECG_id= 79, PPG_id= 80, PCG_id= 79
+��[DEBUG] wr_ptr = 7, rd_ptr = 13
+MAX30102] Tick=2596 sid=81 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 6, rd_ptr = 7
+SYNC] Mismatch ! ECG_id= 82, PPG_id= 83, PCG_id= 82
+��[DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+SYNC] Mismatch ! ECG_id= 85, PPG_id= 86, PCG_id= 85
+��[DEBUG] wr_ptr = 6, rd_ptr = 12
+MAX30102] Tick=2788 sid=87 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+SYNC] Mismatch ! ECG_id= 88, PPG_id= 89, PCG_id= 88
+��[DEBUG] wr_ptr = 6, rd_ptr = 12
+MAX30102] Tick=2884 sid=90 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 5, rd_ptr = 6
+SYNC] Mismatch ! ECG_id= 91, PPG_id= 92, PCG_id= 91
+��[DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 94, PPG_id= 95, PCG_id= 94
+��[DEBUG] wr_ptr = 5, rd_ptr = 11
+MAX30102] Tick=3076 sid=96 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 97, PPG_id= 98, PCG_id= 97
+��[DEBUG] wr_ptr = 5, rd_ptr = 11
+MAX30102] Tick=3172 sid=99 num_samples=26
+SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 4, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 100, PPG_id= 101, PCG_id= 100
+��[DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 103, PPG_id= 104, PCG_id= 103
+��[D�EBUG] wr_ptr = 4, rd_ptr = 10
+MAX30102] Tick=3364 sid=105 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 106, PPG_id= 107, PCG_id= 106
+��[D�EBUG] wr_ptr = 4, rd_ptr = 10
+MAX30102] Tick=3460 sid=108 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 3, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 109, PPG_id= 110, PCG_id= 109
+��[DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 112, PPG_id= 113, PCG_id= 112
+��[D�EBUG] wr_ptr = 3, rd_ptr = 9
+MAX30102] Tick=3652 sid=114 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 115, PPG_id= 116, PCG_id= 115
+��[D�EBUG] wr_ptr = 3, rd_ptr = 9
+MAX30102] Tick=3748 sid=117 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 2, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 118, PPG_id= 119, PCG_id= 118
+��[DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+SYNC] Mismatch ! ECG_id= 121, PPG_id= 122, PCG_id= 121
+��[D�EBUG] wr_ptr = 2, rd_ptr = 8
+MAX30102] Tick=3940 sid=123 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+SYNC] Mismatch ! ECG_id= 124, PPG_id= 125, PCG_id= 124
+��[D�EBUG] wr_ptr = 2, rd_ptr = 8
+MAX30102] Tick=4036 sid=126 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 1, rd_ptr = 2
+SYNC] Mismatch ! ECG_id= 127, PPG_id= 128, PCG_id= 127
+��[DEBUG] wr_ptr = 1, rd_ptr = 1
+�[DEBUG] wr_ptr = 1, rd_ptr = 1
+�[DEBUG] wr_ptr = 1, rd_ptr = 1
+SYNC] Mismatch ! ECG_id= 130, PPG_id= 131, PCG_id= 130
+��[D�EBUG] wr_ptr = 1, rd_ptr = 7
+MAX30102] Tick=4228 sid=132 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 1, rd_ptr = 1
+�[DEBUG] wr_ptr = 1, rd_ptr = 1
+SYNC] Mismatch ! ECG_id= 133, PPG_id= 134, PCG_id= 133
+��[D�EBUG] wr_ptr = 1, rd_ptr = 7
+MAX30102] Tick=4324 sid=135 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 1, rd_ptr = 1
+�[DEBUG] wr_ptr = 0, rd_ptr = 1
+SYNC] Mismatch ! ECG_id= 136, PPG_id= 137, PCG_id= 136
+��[DEBUG] wr_ptr = 0, rd_ptr = 0
+�[DEBUG] wr_ptr = 0, rd_ptr = 0
+�[DEBUG] wr_ptr = 0, rd_ptr = 0
+SYNC] Mismatch ! ECG_id= 139, PPG_id= 140, PCG_id= 139
+��[D�EBUG] wr_ptr = 0, rd_ptr = 6
+MAX30102] Tick=4516 sid=141 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 0, rd_ptr = 0
+�[DEBUG] wr_ptr = 0, rd_ptr = 0
+SYNC] Mismatch ! ECG_id= 142, PPG_id= 143, PCG_id= 142
+��[D�EBUG] wr_ptr = 0, rd_ptr = 6
+MAX30102] Tick=4612 sid=144 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 0, rd_ptr = 0
+�[DEBUG] wr_ptr = 31, rd_ptr = 0
+SYNC] Mismatch ! ECG_id= 145, PPG_id= 146, PCG_id= 145
+��[DEBUG] wr_ptr = 31, rd_ptr = 31
+�[DEBUG] wr_ptr = 31, rd_ptr = 31
+�[DEBUG] wr_ptr = 31, rd_ptr = 31
+SYNC] Mismatch ! ECG_id= 148, PPG_id= 149, PCG_id= 148
+��[D�EBUG] wr_ptr = 31, rd_ptr = 5
+MAX30102] Tick=4804 sid=150 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 31, rd_ptr = 31
+�[DEBUG] wr_ptr = 31, rd_ptr = 31
+SYNC] Mismatch ! ECG_id= 151, PPG_id= 152, PCG_id= 151
+��[D�EBUG] wr_ptr = 31, rd_ptr = 5
+MAX30102] Tick=4900 sid=153 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 31, rd_ptr = 31
+�[DEBUG] wr_ptr = 30, rd_ptr = 31
+SYNC] Mismatch ! ECG_id= 154, PPG_id= 155, PCG_id= 154
+��[DEBUG] wr_ptr = 30, rd_ptr = 30
+�[DEBUG] wr_ptr = 30, rd_ptr = 30
+�[DEBUG] wr_ptr = 30, rd_ptr = 30
+SYNC] Mismatch ! ECG_id= 157, PPG_id= 158, PCG_id= 157
+��[D�EBUG] wr_ptr = 30, rd_ptr = 4
+MAX30102] Tick=5092 sid=159 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 30, rd_ptr = 30
+�[DEBUG] wr_ptr = 30, rd_ptr = 30
+SYNC] Mismatch ! ECG_id= 160, PPG_id= 161, PCG_id= 160
+��[D�EBUG] wr_ptr = 30, rd_ptr = 3
+MAX30102] Tick=5189 sid=162 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 30, rd_ptr = 30
+�[DEBUG] wr_ptr = 29, rd_ptr = 30
+SYNC] Mismatch ! ECG_id= 163, PPG_id= 164, PCG_id= 163
+��[DEBUG] wr_ptr = 29, rd_ptr = 29
+�[DEBUG] wr_ptr = 29, rd_ptr = 29
+�[DEBUG] wr_ptr = 29, rd_ptr = 29
+SYNC] Mismatch ! ECG_id= 166, PPG_id= 167, PCG_id= 166
+��[D�EBUG] wr_ptr = 29, rd_ptr = 3
+MAX30102] Tick=5380 sid=168 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 29, rd_ptr = 29
+�[DEBUG] wr_ptr = 29, rd_ptr = 29
+SYNC] Mismatch ! ECG_id= 169, PPG_id= 170, PCG_id= 169
+��[D�EBUG] wr_ptr = 29, rd_ptr = 2
+MAX30102] Tick=5477 sid=171 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 28, rd_ptr = 29
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+SYNC] Mismatch ! ECG_id= 174, PPG_id= 175, PCG_id= 174
+��[D�EBUG] wr_ptr = 28, rd_ptr = 2
+MAX30102] Tick=5636 sid=176 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 29, rd_ptr = 28
+AX30102] Tick=5665 sid=177 num_samples=1
+SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] wr_ptr = 28, rd_ptr = 29
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+�[DEBUG] wr_ptr = 28, rd_ptr = 28
+SYNC] Mismatch ! ECG_id= 180, PPG_id= 181, PCG_id= 180
+��[DEBUG] wr_ptr = 27, rd_ptr = 28
+�[DEBUG] wr_ptr = 27, rd_ptr = 1
+MAX30102] Tick=5860 sid=183 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 27, rd_ptr = 27
+�[DEBUG] wr_ptr = 27, rd_ptr = 27
+SYNC] Mismatch ! ECG_id= 184, PPG_id= 185, PCG_id= 184
+��[DEBUG] wr_ptr = 27, rd_ptr = 0
+MAX30102] Tick=5956 sid=186 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 27, rd_ptr = 27
+�[DEBUG] wr_ptr = 27, rd_ptr = 27
+SYNC] Mismatch ! ECG_id= 187, PPG_id= 188, PCG_id= 187
+��[DEBUG] wr_ptr = 27, rd_ptr = 0
+MAX30102] Tick=6052 sid=189 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 26, rd_ptr = 27
+�[DEBUG] wr_ptr = 26, rd_ptr = 26
+�[DEBUG] wr_ptr = 26, rd_ptr = 26
+�[DEBUG] wr_ptr = 26, rd_ptr = 26
+SYNC] Mismatch ! ECG_id= 192, PPG_id= 193, PCG_id= 192
+��[DEBUG] wr_ptr = 26, rd_ptr = 31
+MAX30102] Tick=6212 sid=194 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 26, rd_ptr = 26
+�[DEBUG] wr_ptr = 26, rd_ptr = 26
+SYNC] Mismatch ! ECG_id= 195, PPG_id= 196, PCG_id= 195
+��[DEBUG] wr_ptr = 26, rd_ptr = 31
+MAX30102] Tick=6308 sid=197 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 26, rd_ptr = 26
+�[DEBUG] wr_ptr = 25, rd_ptr = 26
+SYNC] Mismatch ! ECG_id= 198, PPG_id= 199, PCG_id= 198
+��[DEBUG] wr_ptr = 25, rd_ptr = 25
+�[DEBUG] wr_ptr = 25, rd_ptr = 25
+�[DEBUG] wr_ptr = 25, rd_ptr = 25
+SYNC] Mismatch ! ECG_id= 201, PPG_id= 202, PCG_id= 201
+��[DEBUG] wr_ptr = 25, rd_ptr = 30
+MAX30102] Tick=6500 sid=203 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 25, rd_ptr = 25
+�[DEBUG] wr_ptr = 25, rd_ptr = 25
+SYNC] Mismatch ! ECG_id= 204, PPG_id= 205, PCG_id= 204
+��[DEBUG] wr_ptr = 25, rd_ptr = 30
+MAX30102] Tick=6596 sid=206 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 24, rd_ptr = 25
+�[DEBUG] wr_ptr = 24, rd_ptr = 24
+�[DEBUG] wr_ptr = 24, rd_ptr = 24
+�[DEBUG] wr_ptr = 24, rd_ptr = 24
+SYNC] Mismatch ! ECG_id= 209, PPG_id= 210, PCG_id= 209
+��[DEBUG] wr_ptr = 24, rd_ptr = 29
+MAX30102] Tick=6756 sid=211 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 24, rd_ptr = 24
+�[DEBUG] wr_ptr = 24, rd_ptr = 24
+SYNC] Mismatch ! ECG_id= 212, PPG_id= 213, PCG_id= 212
+��[DEBUG] wr_ptr = 24, rd_ptr = 29
+MAX30102] Tick=6852 sid=214 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 24, rd_ptr = 24
+�[DEBUG] wr_ptr = 23, rd_ptr = 24
+SYNC] Mismatch ! ECG_id= 215, PPG_id= 216, PCG_id= 215
+��[DEBUG] wr_ptr = 23, rd_ptr = 23
+�[DEBUG] wr_ptr = 23, rd_ptr = 23
+�[DEBUG] wr_ptr = 23, rd_ptr = 23
+SYNC] Mismatch ! ECG_id= 218, PPG_id= 219, PCG_id= 218�
+[D�EBUG] wr_ptr = 23, rd_ptr = 28
+MAX30102] Tick=7044 sid=220 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 23, rd_ptr = 23
+�[DEBUG] wr_ptr = 23, rd_ptr = 23
+SYNC] Mismatch ! ECG_id= 221, PPG_id=2�22, PCG_id= 221
+[D�EBUG] wr_ptr = 23, rd_ptr = 28
+MAX30102] Tick=7140 sid=223 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[EBUG] wr_ptr = 23, rd_ptr = 23
+�[DEBUG] wr_ptr = 22, rd_ptr = 23
+SYNC] Mismatch ! ECG_id= 224, PPG_id �225, PCG_id= 224
+[DEBUG] wr_ptr = 22, rd_ptr = 22
+�[DEBUG] wr_ptr = 22, rd_ptr = 22
+�[DEBUG] wr_ptr = 22, rd_ptr = 22
+SYNC] Mi�smatch ! ECG_id= 227, PPG_id= 228, PCG_id= 227
+��[D�EBUG] wr_ptr = 22, rd_ptr = 27
+MAX30102] Tick=7332 sid=229 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 22, rd_ptr = 22
+�[DEBUG] wr_ptr = 22, rd_ptr = 22
+SYNC] Mismatch ! ECG_id= 230, PPG_id= 231, PCG_id= 230
+��[D�EBUG] wr_ptr = 22, rd_ptr = 27
+MAX30102] Tick=7428 sid=232 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[D�EBUG] wr_ptr = 22, rd_ptr = 22
+�[DEBUG] wr_ptr = 21, rd_ptr = 22
+SYNC] Mismatch ! ECG_id= 233, PPG_id= 234, PCG_id= 233
+��[DEBUG] wr_ptr = 21, rd_ptr = 21
+�[DEBUG] wr_ptr = 21, rd_ptr = 21
+�[DEBUG] wr_ptr = 21, rd_ptr = 21
+SYNC] Mismatch ! ECG_id= 236, PPG_id= 237, PCG_id= 237
+��[D�EBUG] wr_ptr = 21, rd_ptr = 27
+MAX30102] Tick=7620 sid=238 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 21, rd_ptr = 21
+�[DEBUG] wr_ptr = 21, rd_ptr = 21
+SYNC] Mismatch ! ECG_id= 239, PPG_id= 240, PCG_id= 240
+��[D�EBUG] wr_ptr = 21, rd_ptr = 27
+MAX30102] Tick=7716 sid=241 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 21, rd_ptr = 21
+�[DEBUG] wr_ptr = 20, rd_ptr = 21
+SYNC] Mismatch ! ECG_id= 242, PPG_id= 243, PCG_id= 243
+��[DEBUG] wr_ptr = 20, rd_ptr = 20
+�[DEBUG] wr_ptr = 20, rd_ptr = 20
+�[DEBUG] wr_ptr = 20, rd_ptr = 20
+SYNC] Mismatch ! ECG_id= 245, PPG_id= 246, PCG_id= 246
+��[D�EBUG] wr_ptr = 20, rd_ptr = 26
+MAX30102] Tick=7908 sid=247 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 20, rd_ptr = 20
+�[DEBUG] wr_ptr = 20, rd_ptr = 20
+SYNC] Mismatch ! ECG_id= 248, PPG_id= 249, PCG_id= 249
+��[D�EBUG] wr_ptr = 20, rd_ptr = 26
+MAX30102] Tick=8004 sid=250 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 20, rd_ptr = 20
+�[DEBUG] wr_ptr = 19, rd_ptr = 20
+SYNC] Mismatch ! ECG_id= 251, PPG_id= 252, PCG_id= 252
+��[DEBUG] wr_ptr = 19, rd_ptr = 19
+�[DEBUG] wr_ptr = 19, rd_ptr = 19
+�[DEBUG] wr_ptr = 19, rd_ptr = 19
+SYNC] Mismatch ! ECG_id= 254, PPG_id= 255, PCG_id= 255
+��[D�EBUG] wr_ptr = 19, rd_ptr = 25
+MAX30102] Tick=8197 sid=256 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 19, rd_ptr = 19
+�[DEBUG] wr_ptr = 19, rd_ptr = 19
+SYNC] Mismatch ! ECG_id= 257, PPG_id= 258, PCG_id= 258
+��[D�EBUG] wr_ptr = 19, rd_ptr = 24
+MAX30102] Tick=8293 sid=259 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 18, rd_ptr = 19
+�[DEBUG] wr_ptr = 18, rd_ptr = 18
+�[DEBUG] wr_ptr = 18, rd_ptr = 18
+�[DEBUG] wr_ptr = 18, rd_ptr = 18
+SYNC] Mismatch ! ECG_id= 262, PPG_id= 263, PCG_id= 263
+��[D�EBUG] wr_ptr = 18, rd_ptr = 24
+MAX30102] Tick=8453 sid=264 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 18, rd_ptr = 18
+�[DEBUG] wr_ptr = 18, rd_ptr = 18
+SYNC] Mismatch ! ECG_id= 265, PPG_id= 266, PCG_id= 266
+��[D�EBUG] wr_ptr = 18, rd_ptr = 24
+MAX30102] Tick=8549 sid=267 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 18, rd_ptr = 18
+�[DEBUG] wr_ptr = 17, rd_ptr = 18
+SYNC] Mismatch ! ECG_id= 268, PPG_id= 269, PCG_id= 269
+��[DEBUG] wr_ptr = 17, rd_ptr = 17
+�[DEBUG] wr_ptr = 17, rd_ptr = 17
+�[DEBUG] wr_ptr = 17, rd_ptr = 17
+SYNC] Mismatch ! ECG_id= 271, PPG_id= 272, PCG_id= 272
+��[D�EBUG] wr_ptr = 17, rd_ptr = 23
+MAX30102] Tick=8741 sid=273 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 17, rd_ptr = 17
+�[DEBUG] wr_ptr = 17, rd_ptr = 17
+SYNC] Mismatch ! ECG_id= 274, PPG_id= 275, PCG_id= 275
+��[D�EBUG] wr_ptr = 17, rd_ptr = 23
+MAX30102] Tick=8837 sid=276 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 17, rd_ptr = 17
+�[DEBUG] wr_ptr = 16, rd_ptr = 17
+SYNC] Mismatch ! ECG_id= 277, PPG_id= 278, PCG_id= 278
+�[DEBUG] wr_ptr = 16, rd_ptr = 16
+�[DEBUG] wr_ptr = 16, rd_ptr = 16
+�[DEBUG] wr_ptr = 16, rd_ptr = 16
+SYNC] Mismatch ! ECG_id= 280, PPG_id= 281, PCG_id= 281
+��[D�EBUG] wr_ptr = 16, rd_ptr = 22
+MAX30102] Tick=9029 sid=282 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 16, rd_ptr = 16
+�[DEBUG] wr_ptr = 16, rd_ptr = 16
+SYNC] Mismatch ! ECG_id= 283, PPG_id= 284, PCG_id= 284
+��[D�EBUG] wr_ptr = 16, rd_ptr = 22
+MAX30102] Tick=9125 sid=285 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 16, rd_ptr = 16
+�[DEBUG] wr_ptr = 15, rd_ptr = 16
+SYNC] Mismatch ! ECG_id= 286, PPG_id= 287, PCG_id= 287
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 289, PPG_id= 290, PCG_id= 290
+��[D�EBUG] wr_ptr = 15, rd_ptr = 21
+MAX30102] Tick=9317 sid=291 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 15, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 292, PPG_id= 293, PCG_id= 293
+��[D�EBUG] wr_ptr = 15, rd_ptr = 21
+MAX30102] Tick=9413 sid=294 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 15, rd_ptr = 15
+�[DEBUG] wr_ptr = 14, rd_ptr = 15
+SYNC] Mismatch ! ECG_id= 295, PPG_id= 296, PCG_id= 296
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 298, PPG_id= 299, PCG_id= 299
+��[D�EBUG] wr_ptr = 14, rd_ptr = 20
+MAX30102] Tick=9605 sid=300 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 14, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 301, PPG_id= 302, PCG_id= 302
+��[D�EBUG] wr_ptr = 14, rd_ptr = 20
+MAX30102] Tick=9701 sid=303 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 14, rd_ptr = 14
+�[DEBUG] wr_ptr = 13, rd_ptr = 14
+SYNC] Mismatch ! ECG_id= 304, PPG_id= 305, PCG_id= 305
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+SYNC] Mismatch ! ECG_id= 307, PPG_id= 308, PCG_id= 308
+��[D�EBUG] wr_ptr = 13, rd_ptr = 19
+MAX30102] Tick=9893 sid=309 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 13, rd_ptr = 13
+�[DEBUG] wr_ptr = 13, rd_ptr = 13
+SYNC] Mismatch ! ECG_id= 310, PPG_id= 311, PCG_id= 311
+��[D�EBUG] wr_ptr = 13, rd_ptr = 19
+MAX30102] Tick=9989 sid=312 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 12, rd_ptr = 13
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+SYNC] Mismatch ! ECG_id= 315, PPG_id= 316, PCG_id= 316
+��[D�EBUG] wr_ptr = 12, rd_ptr = 18
+MAX30102] Tick=10149 sid=317 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 12, rd_ptr = 12
+SYNC] Mismatch ! ECG_id= 318, PPG_id= 319, PCG_id= 319
+��[D�EBUG] wr_ptr = 12, rd_ptr = 18
+MAX30102] Tick=10245 sid=320 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 12, rd_ptr = 12
+�[DEBUG] wr_ptr = 11, rd_ptr = 12
+SYNC] Mismatch ! ECG_id= 321, PPG_id= 322, PCG_id= 322
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 324, PPG_id= 325, PCG_id= 325
+��[D�EBUG] wr_ptr = 11, rd_ptr = 17
+MAX30102] Tick=10437 sid=326 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 327, PPG_id= 328, PCG_id= 328
+��[D�EBUG] wr_ptr = 11, rd_ptr = 17
+MAX30102] Tick=10533 sid=329 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 10, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 330, PPG_id= 331, PCG_id= 331
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 11, rd_ptr = 10
+AX30102] Tick=10657 sid=333 num_samples=1
+[SYNC] Mismatch ! ECG_id= 332, PPG_id= 333, PCG_id= 333
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] wr_ptr = 10, rd_ptr = 11
+�[DEBUG] wr_ptr = 10, rd_ptr = 16
+MAX30102] Tick=10724 sid=335 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+���z[DEBUG] wr_ptr = 11, rd_ptr = 10
+AX30102] Tick=10752 sid=336 num_samples=1
+SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+�[DEBUG] wr_ptr = 11, rd_ptr = 11
+SYNC] Mismatch ! ECG_id= 338, PG_id= 339, PCG_id= 339
+�[DEBUG] wr_ptr = 11, rd_ptr = 16
+MAX30102] Tick=10884 sid=340 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 10, rd_ptr = 11
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 342, PPG_id= 343, PCG_id= 343
+[DEBUG] wr_ptr = 10, rd_ptr = 15
+MAX30102] Tick=11012 sid=344 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 10, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 345, PPG_id= 346, PCG_id= 346
+��[DEBUG] wr_ptr = 10, rd_ptr = 15
+MAX30102] Tick=11108 sid=347 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+���z[DEBUG] wr_ptr = 10, rd_ptr = 10
+�[DEBUG] wr_ptr = 9, rd_ptr = 10
+SYNC] Mismatch ! ECG_id= 348, PPG_id= 349, PCG_id= 348
+��[DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 351, PPG_id= 352, PCG_id= 351
+��[DEBUG] wr_ptr = 9, rd_ptr = 14
+MAX30102] Tick=11300 sid=353 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 9, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 354, PPG_id= 355, PCG_id= 354
+��[DEBUG] wr_ptr = 9, rd_ptr = 14
+MAX30102] Tick=11396 sid=356 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 9, rd_ptr = 9
+�[DEBUG] wr_ptr = 8, rd_ptr = 9
+SYNC] Mismatch ! ECG_id= 357, PPG_id= 358, PCG_id= 357
+��[DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+SYNC] Mismatch ! ECG_id= 360, PPG_id= 361, PCG_id= 360
+��[DEBUG] wr_ptr = 8, rd_ptr = 13
+MAX30102] Tick=11588 sid=362 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 8, rd_ptr = 8
+SYNC] Mismatch ! ECG_id= 363, PPG_id= 364, PCG_id= 363
+��[DEBUG] wr_ptr = 8, rd_ptr = 13
+MAX30102] Tick=11684 sid=365 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 8, rd_ptr = 8
+�[DEBUG] wr_ptr = 7, rd_ptr = 8
+SYNC] Mismatch ! ECG_id= 366, PPG_id= 367, PCG_id= 366
+��[DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+SYNC] Mismatch ! ECG_id= 369, PPG_id= 370, PCG_id= 369
+��[DEBUG] wr_ptr = 7, rd_ptr = 12
+MAX30102] Tick=11876 sid=371 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 7, rd_ptr = 7
+�[DEBUG] wr_ptr = 7, rd_ptr = 7
+SYNC] Mismatch ! ECG_id= 372, PPG_id= 373, PCG_id= 372
+��[DEBUG] wr_ptr = 7, rd_ptr = 12
+MAX30102] Tick=11972 sid=374 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 6, rd_ptr = 7
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+SYNC] Mismatch ! ECG_id= 377, PPG_id= 38�, PCG_id= 377
+[DEBUG] wr_ptr = 6, rd_ptr = 11
+MAX30102] Tick=12132 sid=379 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 6, rd_ptr = 6
+SYNC] Mismatch ! ECG_id=3�80, PPG_id= 381, PCG_id= 380
+�[DEBUG] wr_ptr = 6, rd_ptr = 11
+MAX30102] Tick=12228 sid=382 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 6, rd_ptr = 6
+�[DEBUG] wr_ptr = 5, rd_ptr = 6
+SYNC] Mismatch ! ECG_id= �383, PPG_id= 384, PCG_id= 383
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 386, PPG_id= 387, PCG_id= 386
+��[D�EBUG] wr_ptr = 5, rd_ptr = 10
+MAX30102] Tick=12420 sid=388 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 5, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 389, PPG_id= 390, PCG_id= 389
+��[D�EBUG] wr_ptr = 5, rd_ptr = 10
+MAX30102] Tick=12516 sid=391 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 5, rd_ptr = 5
+�[DEBUG] wr_ptr = 4, rd_ptr = 5
+SYNC] Mismatch ! ECG_id= 392, PPG_id= 393, PCG_id= 392
+��[DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 395, PPG_id= 396, PCG_id= 395
+��[D�EBUG] wr_ptr = 4, rd_ptr = 10
+MAX30102] Tick=12708 sid=397 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 4, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 398, PPG_id= 399, PCG_id= 398
+��[D�EBUG] wr_ptr = 4, rd_ptr = 9
+MAX30102] Tick=12804 sid=400 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 4, rd_ptr = 4
+�[DEBUG] wr_ptr = 3, rd_ptr = 4
+SYNC] Mismatch ! ECG_id= 401, PPG_id= 402, PCG_id= 401
+��[DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 404, PPG_id= 405, PCG_id= 404
+��[D�EBUG] wr_ptr = 3, rd_ptr = 9
+MAX30102] Tick=12996 sid=406 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 3, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 407, PPG_id= 408, PCG_id= 407
+��[D�EBUG] wr_ptr = 3, rd_ptr = 8
+MAX30102] Tick=13092 sid=409 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] wr_ptr = 3, rd_ptr = 3
+�[DEBUG] wr_ptr = 2, rd_ptr = 3
+SYNC] Mismatch ! ECG_id= 410, PPG_id= 411, PCG_id= 410
+��[DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+SYNC] Mismatch ! ECG_id= 413, PPG_id= 414, PCG_id= 413
+��[D�EBUG] wr_ptr = 2, rd_ptr = 8
+MAX30102] Tick=13284 sid=415 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] wr_ptr = 2, rd_ptr = 2
+�[DEBUG] wr_ptr = 2, rd_ptr = 2
+SYNC] Mismatch ! ECG_id= 416, PPG_id= 417, PCG_id= 416
+��[D�EBUG] wr_ptr = 2, rd_ptr = 7
+MAX30102] Tick=13381 sid=418 num_samples=27
+
+	>>>>>> Reception Ended <<<<<<
+**********************************************
+

@@ -1,0 +1,28 @@
+**********************************************
+	Thu Jun 11 22:22:26 2026
+	Device Name: STM32F401xD/E
+**********************************************
+	>>>>>> Reception Started <<<<<<
+
+[APP] SWV debug OK !
+[APP] SWV debug OK !
+[APP] SWV debug OK !
+[YNC] Count drop detected: Tick=68 sid=2 | ECG_count= 32 PPG_count=26 PCG_count= 32
+[SYNC] Count drop detected: Tick=2350 sid=73 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=2445 sid=76 | ECG_count= 32 PPG_count=27 PCG_count= 32
+[SYNC] Count drop detected: Tick=9027 sid=282 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=9124 sid=285 | ECG_count= 32 PPG_count=27 PCG_count= 32
+[SYNC] Count drop detected: Tick=15656 sid=489 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=15752 sid=492 | ECG_count= 32 PPG_count=27 PCG_count= 32
+[SYNC] Count drop detected: Tick=19554 sid=611 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=19652 sid=614 | ECG_count= 32 PPG_count=26 PCG_count= 32
+[SYNC] Count drop detected: Tick=20642 sid=645 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=20740 sid=648 | ECG_count= 32 PPG_count=27 PCG_count= 32
+[SYNC] Count drop detected: Tick=30626 sid=957 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=30724 sid=960 | ECG_count= 32 PPG_count=27 PCG_count= 32
+[SYNC] Count drop detected: Tick=35624 sid=1113 | ECG_count= 32 PPG_count=1 PCG_count= 32
+[SYNC] Count drop detected: Tick=35720 sid=1116 | ECG_count= 32 PPG_count=27 PCG_count= 32
+
+	>>>>>> Reception Ended <<<<<<
+**********************************************
+

@@ -1,0 +1,1938 @@
+**********************************************
+	Thu Jun 11 20:00:59 2026
+	Device Name: STM32F401xD/E
+**********************************************
+	>>>>>> Reception Started <<<<<<
+
+APP] SWV debug OK !
+[DEBUG] First read: wr_ptr=0, rd_ptr=16
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=16, actual=16
+[��MAX30102] Tick=3 sid=0 num_samples=16
+�[DEBUG] First read: wr_ptr=16, rd_ptr=0
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=16, actual=16
+[��MAX30102] Tick=36 sid=1 num_samples=16
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=16 PCG_count= 32
+���z[DEBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=16
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=15
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=14
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=12, rd_ptr=13
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=12
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=11
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=9
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=1, calc=1, actual=1
+[MAX30102] Tick=1953 sid=61 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=15, ovf=0, calc=32,� actual=5
+[DEBUG] First read: wr_ptr=10, rd_ptr=15
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=27, actual=27
+[��MAX30102] Tick=2021 sid=63 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=9
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=8
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=7
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=6
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=5
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=4
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=1, actual=1
+[��MAX30102] Tick=3425 sid=107 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=11, ovf=0, calc=32, actual=6
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=11
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=26, actual=26
+[��MAX30102] Tick=3493 sid=109 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] First read: wr_ptr=5, rd_ptr=5
+DE[DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=5
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr[DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=4
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr[DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=3
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=2
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=3[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=1
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=3[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=0
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=31
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30f=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=30
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DE[DEBUG] First read: wr_ptr=30, rd_ptr=29
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=1, actual=1
+[MAX30102] Tick=5666 sid=177 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=29, rd_ptr=30
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=3, ovf=0, calc=31, actual=5
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=3
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=26, actual=26
+[��MAX30102] Tick=5733 sid=179 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] First read: wr_ptr=30, rd_ptr=29
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=1, actual=1
+[MAX30102] Tick=5762 sid=180 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=3, ovf=0, calc=32, actual=5
+[DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=28
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=27
+DEBUG] Second read: wr�[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=27, rd_ptr=26
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=1, actual=1
+[MAX30102] Tick=7009 sid=219 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=0, ovf=0, calc=32, �actual=5
+[EBUG] First read: wr_ptr=27, rd_ptr=0
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=27, actual=27
+[��MAX30102] Tick=7077 sid=221 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_a[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd�[EBUG] First read: wr_ptr=25, rd_ptr=26
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25[EBUG] First read: wr_ptr=24, rd_ptr=25
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=24
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=23
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=22
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=21
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=20
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=1, actual=1
+[MAX30102] Tick=9345 sid=292 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] First read: wr_ptr=20, rd_ptr=21
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=26, ovf=0, calc=32, actual=6
+���z[EBUG] First read: wr_ptr=20, rd_ptr=26
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=26, actual=26
+[��MAX30102] Tick=9445 sid=295 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_co[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=20
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=19
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=18
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=17
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=16
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=15
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=14
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=13
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=12
+DEBUG] Second read: wr_ptr=11[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=11
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=10, rd�[DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=9
+DEBUG] Second read: wr_ptr=10, [DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=15, ovf=0, calc=32, actual=6
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=15
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf�=0, calc=26, actual=26
+MAX30102] Tick=12677 sid=396 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc�[DEBUG] First read: wr_ptr=8, rd_ptr=9
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=3[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=8
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=3[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=7
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=3[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=6
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=3[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=5
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=3[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=4
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=3[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=3
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=3[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=2
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=3[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=1
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=3[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=0
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=1, actual=1
+[MAX30102] Tick=15202 sid=475 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=6, ovf=0, calc=32, actual=5
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=6
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=27, actual=27
+[��MAX30102] Tick=15270 sid=477 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] First read: wr_ptr=0, rd_ptr=1
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+����[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=0
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=31
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0[DEBUG] First read: wr_ptr=31, rd_ptr=0
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=5, ovf=0, calc=31, actual=5
+���z[D�EBUG] First read: wr_ptr=31, rd_ptr=5
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=26, actual=26
+[��MAX30102] Tick=15717 sid=491 num_samples=26
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=26 PCG_count= 32
+[��DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=30, rd_ptr=31
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=�[D�EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=30
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=29
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=28
+DEBUG] Second read: wr_ptr=27[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=27
+DEBUG] Second read: wr�[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=26, rd�[EBUG] First read: wr_ptr=25, rd_ptr=26
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=25, rd_ptr=25[EBUG] First read: wr_ptr=24, rd_ptr=25
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=24
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=23
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=22
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=22, rd_ptr=21
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=1, actual=1
+[MAX30102] Tick=18337 sid=573 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=28, ovf=0, calc=32, actual=6
+���z[EBUG] First read: wr_ptr=22, rd_ptr=28
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=26, actual=26
+[��MAX30102] Tick=18405 sid=575 num_samples=26
+[[DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=22
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=21
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=20
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=19
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=18
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=17
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=16
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=15
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=15, rd_ptr=14
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=1, calc=1, actual=1
+[MAX30102] Tick=20642 sid=645 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=15
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=19, ovf=0, calc=32, actual=5
+���z[DEBUG] First read: wr_ptr=14, rd_ptr=19
+DEBUG] Second read: wr_ptr=14, rd_ptr_after[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13[DEBUG] First read: wr_ptr=12, rd_ptr=13
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12[DEBUG] First read: wr_ptr=11, rd_ptr=12
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11[DEBUG] First read: wr_ptr=10, rd_ptr=11
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10[DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=10, rd_ptr=9
+DEBUG] Second read: wr_pSYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+[��DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32,� actual=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=14, ovf=0, calc=31, actual=4
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=14
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=27, actual=27
+[��MAX30102] Tick=22149 sid=692 num_samples=27
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=27 PCG_count= 32
+[��DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] Fi[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=9
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=8
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=3[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=7
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=3[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=6
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=3[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=5
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=3[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=4
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=3[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=3
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=3[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=2, rd_ptr=2
+DEBUG] Second read: wr_ptr=2, rd_ptr_after=2, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=2
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=3[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=1, rd_ptr=1
+DEBUG] Second read: wr_ptr=1, rd_ptr_after=1, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=1
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=3[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=0, rd_ptr=0
+DEBUG] Second read: wr_ptr=0, rd_ptr_after=0, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=0
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0,[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=31, rd_ptr=31
+DEBUG] Second read: wr_ptr=31, rd_ptr_after=31, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=31
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=30, rd_ptr=30
+DEBUG] Second read: wr_ptr=30, rd_ptr_after=30, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=30
+DEBUG] Second read: wr_ptr=29[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=29, rd_ptr=29
+DEBUG] Second read: wr_ptr=29, rd_ptr_after=29, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=29
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=28, rd_ptr=28
+DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=28, [DEBUG] Second read: wr_ptr=28, rd_ptr_after=28, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=27, rd_ptr=28
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=27, rd_ptr=27
+DEBUG] Second read: wr_ptr=27, rd_ptr_after=27, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=27
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[[DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=26, rd_ptr=26
+DEBUG] Second read: wr_ptr=26, rd_ptr_after=26, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=26
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=25, rd_ptr=25
+DEBUG] Second read: wr_ptr=25, rd_ptr_after=25, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=25
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32,� a[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=24, rd_ptr=24
+DEBUG] Second read: wr_ptr=24, rd_ptr_after=24, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=24
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=23, rd_ptr=23
+DEBUG] Second read: wr_ptr=23, rd_ptr_after=23, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=23
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32,� actual=32
+[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=22, rd_ptr=22
+DEBUG] Second read: wr_ptr=22, rd_ptr_after=22, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=22
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second re[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=21, rd_ptr=21
+DEBUG] Second read: wr_ptr=21, rd_ptr_after=21, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=21
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=20, rd_ptr=20
+DEBUG] Second read: wr_ptr=20, rd_ptr_after=20, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=20
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=19, rd_ptr=19
+DEBUG] Second read: wr_ptr=19, rd_ptr_after=19, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=19
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=18, rd_ptr=18
+DEBUG] Second read: wr_ptr=18, rd_ptr_after=18, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=18
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=17, rd_ptr=17
+DEBUG] Second read: wr_ptr=17, rd_ptr_after=17, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=17
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=16, rd_ptr=16
+DEBUG] Second read: wr_ptr=16, rd_ptr_after=16, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=16
+DEBUG] Second read: wr_ptr=15[DEBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=15, rd_ptr=15
+DEBUG] Second read: wr_ptr=15, rd_ptr_after=15, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=15
+DEBUG] Second read: wr_ptr=14[DEBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=14, rd_ptr=14
+DEBUG] Second read: wr_ptr=14, rd_ptr_after=14, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=14
+DEBUG] Second read: wr_ptr=13[DEBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13, rd_ptr_after=13, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=13, rd_ptr=13
+DEBUG] Second read: wr_ptr=13[EBUG] First read: wr_ptr=12, rd_ptr=13
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12, rd_ptr_after=12, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=12, rd_ptr=12
+DEBUG] Second read: wr_ptr=12[EBUG] First read: wr_ptr=11, rd_ptr=12
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11[EBUG] First read: wr_ptr=11, rd_ptr=11
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=10, rd_ptr=11
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[EBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=11, rd_ptr=10
+DEBUG] Second read: wr_ptr=11, rd_ptr_after=11, ovf=0, calc=1, actual=1
+[MAX30102] Tick=30626 sid=957 num_samples=1
+[SYNC] Count drop detected: ECG_count= 32 PPG_count=1 PCG_count= 32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=11
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=16, ovf=0, calc=31, actual=5
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=16
+DEBUG] Second read: wr_ptr=10, rd_ptr_after[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=10, rd_ptr=10
+DEBUG] Second read: wr_ptr=10, rd_ptr_after=10, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=9, rd_ptr=10
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[D�EBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=9, rd_ptr=9
+DEBUG] Second read: wr_ptr=9, rd_ptr_after=9, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=9
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=3[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=8, rd_ptr=8
+DEBUG] Second read: wr_ptr=8, rd_ptr_after=8, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=8
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=3[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=7, rd_ptr=7
+DEBUG] Second read: wr_ptr=7, rd_ptr_after=7, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=7
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=3[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=6, rd_ptr=6
+DEBUG] Second read: wr_ptr=6, rd_ptr_after=6, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=6
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_af�[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=5, rd_ptr=5
+DEBUG] Second read: wr_ptr=5, rd_ptr_after=5, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=5
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: [DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act��u�al=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=4, rd_ptr=4
+DEBUG] Second read: wr_ptr=4, rd_ptr_after=4, ovf=0, calc=32, act�ual=32
+[DEBUG] First read: wr_ptr=3, rd_ptr=4
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=31, actual=31
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr=3, rd_ptr_after=3, ovf=0, calc=32, actual=32
+���z[DEBUG] First read: wr_ptr=3, rd_ptr=3
+DEBUG] Second read: wr_ptr
+	>>>>>> Reception Ended <<<<<<
+**********************************************
+
