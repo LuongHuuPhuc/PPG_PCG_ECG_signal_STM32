@@ -1,0 +1,1019 @@
+Listening on COM7 @ 460800...
+Press Ctrl+C to stop
+
+[AUDIO] seq=182 | pcg[0]=    -569 pcg[31]=     662 | total=1 | crc_err=0
+[BIO] seq=182 | ir[0]=     366 ecg[0]=     0 | total=1 | crc_err=0
+[AUDIO] seq=183 | pcg[0]=   -1133 pcg[31]=    1730 | total=2 | crc_err=0
+[BIO] seq=183 | ir[0]=     371 ecg[0]=  4095 | total=2 | crc_err=0
+[AUDIO] seq=184 | pcg[0]=    -702 pcg[31]=    2036 | total=3 | crc_err=0
+[BIO] seq=184 | ir[0]=     365 ecg[0]=   140 | total=3 | crc_err=0
+[AUDIO] seq=185 | pcg[0]=    -865 pcg[31]=    1672 | total=4 | crc_err=0
+[BIO] seq=185 | ir[0]=     363 ecg[0]=  2672 | total=4 | crc_err=0
+[AUDIO] seq=186 | pcg[0]=    2163 pcg[31]=      79 | total=5 | crc_err=0
+[BIO] seq=186 | ir[0]=     369 ecg[0]=  3728 | total=5 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102bbba0073010000670100007501
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101bc800016feffffc301000096ff
+[LOSS] AUDIO: expected seq=187 got seq=188 -> lost=1 packets
+[AUDIO] seq=188 | pcg[0]=    -490 pcg[31]=   -1960 | total=6 | crc_err=0
+[LOSS] BIO: expected seq=187 got seq=188 -> lost=1 packets
+[BIO] seq=188 | ir[0]=     359 ecg[0]=  4040 | total=6 | crc_err=0
+[AUDIO] seq=189 | pcg[0]=      11 pcg[31]=     513 | total=7 | crc_err=0
+[BIO] seq=189 | ir[0]=     359 ecg[0]=   218 | total=7 | crc_err=0
+[AUDIO] seq=190 | pcg[0]=    -596 pcg[31]=     605 | total=8 | crc_err=0
+[BIO] seq=190 | ir[0]=     360 ecg[0]=  2688 | total=8 | crc_err=0
+[AUDIO] seq=191 | pcg[0]=   -2267 pcg[31]=    1703 | total=9 | crc_err=0
+[BIO] seq=191 | ir[0]=     329 ecg[0]=  3776 | total=9 | crc_err=0
+[AUDIO] seq=192 | pcg[0]=     200 pcg[31]=    1678 | total=10 | crc_err=0
+[BIO] seq=192 | ir[0]=     368 ecg[0]=     0 | total=10 | crc_err=0
+[AUDIO] seq=193 | pcg[0]=     905 pcg[31]=   -1884 | total=11 | crc_err=0
+[BIO] seq=193 | ir[0]=     341 ecg[0]=  4032 | total=11 | crc_err=0
+[AUDIO] seq=194 | pcg[0]=     441 pcg[31]=     231 | total=12 | crc_err=0
+[BIO] seq=194 | ir[0]=     375 ecg[0]=   177 | total=12 | crc_err=0
+[AUDIO] seq=195 | pcg[0]=    1188 pcg[31]=   -1438 | total=13 | crc_err=0
+[BIO] seq=195 | ir[0]=     353 ecg[0]=  2624 | total=13 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102c4ba0080010000670100006e01
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101c580006df8ffff59f8ffff1bf8
+[LOSS] AUDIO: expected seq=196 got seq=197 -> lost=1 packets
+[AUDIO] seq=197 | pcg[0]=   -1939 pcg[31]=     718 | total=14 | crc_err=0
+[LOSS] BIO: expected seq=196 got seq=197 -> lost=1 packets
+[BIO] seq=197 | ir[0]=     368 ecg[0]=     0 | total=14 | crc_err=0
+[AUDIO] seq=198 | pcg[0]=    -447 pcg[31]=     424 | total=15 | crc_err=0
+[BIO] seq=198 | ir[0]=     371 ecg[0]=  4020 | total=15 | crc_err=0
+[AUDIO] seq=199 | pcg[0]=    -352 pcg[31]=     856 | total=16 | crc_err=0
+[BIO] seq=199 | ir[0]=     371 ecg[0]=   240 | total=16 | crc_err=0
+[AUDIO] seq=200 | pcg[0]=   -1185 pcg[31]=    1491 | total=17 | crc_err=0
+[BIO] seq=200 | ir[0]=     352 ecg[0]=  2544 | total=17 | crc_err=0
+[AUDIO] seq=201 | pcg[0]=     911 pcg[31]=    -472 | total=18 | crc_err=0
+[BIO] seq=201 | ir[0]=     365 ecg[0]=  3896 | total=18 | crc_err=0
+[AUDIO] seq=202 | pcg[0]=     547 pcg[31]=   -1888 | total=19 | crc_err=0
+[BIO] seq=202 | ir[0]=     368 ecg[0]=     0 | total=19 | crc_err=0
+[AUDIO] seq=203 | pcg[0]=     729 pcg[31]=   -1726 | total=20 | crc_err=0
+[BIO] seq=203 | ir[0]=     355 ecg[0]=  4000 | total=20 | crc_err=0
+[AUDIO] seq=204 | pcg[0]=     228 pcg[31]=    -134 | total=21 | crc_err=0
+[BIO] seq=204 | ir[0]=     357 ecg[0]=   248 | total=21 | crc_err=0
+[AUDIO] seq=205 | pcg[0]=   -2357 pcg[31]=    -653 | total=22 | crc_err=0
+[BIO] seq=205 | ir[0]=     371 ecg[0]=  2496 | total=22 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102ceba00690100005c0100006901
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101cf800097fbffff80fbfffffa06
+[LOSS] AUDIO: expected seq=206 got seq=207 -> lost=1 packets
+[AUDIO] seq=207 | pcg[0]=   -1129 pcg[31]=     421 | total=23 | crc_err=0
+[LOSS] BIO: expected seq=206 got seq=207 -> lost=1 packets
+[BIO] seq=207 | ir[0]=     358 ecg[0]=     0 | total=23 | crc_err=0
+[AUDIO] seq=208 | pcg[0]=     201 pcg[31]=     -24 | total=24 | crc_err=0
+[BIO] seq=208 | ir[0]=     358 ecg[0]=  4048 | total=24 | crc_err=0
+[AUDIO] seq=209 | pcg[0]=     608 pcg[31]=   -1450 | total=25 | crc_err=0
+[BIO] seq=209 | ir[0]=     358 ecg[0]=   288 | total=25 | crc_err=0
+[AUDIO] seq=210 | pcg[0]=     763 pcg[31]=    -713 | total=26 | crc_err=0
+[BIO] seq=210 | ir[0]=     332 ecg[0]=  2448 | total=26 | crc_err=0
+[AUDIO] seq=211 | pcg[0]=     836 pcg[31]=    -738 | total=27 | crc_err=0
+[BIO] seq=211 | ir[0]=     364 ecg[0]=  3968 | total=27 | crc_err=0
+[AUDIO] seq=212 | pcg[0]=      55 pcg[31]=   -2521 | total=28 | crc_err=0
+[BIO] seq=212 | ir[0]=     340 ecg[0]=     0 | total=28 | crc_err=0
+[AUDIO] seq=213 | pcg[0]=   -1685 pcg[31]=    1863 | total=29 | crc_err=0
+[BIO] seq=213 | ir[0]=     361 ecg[0]=  4048 | total=29 | crc_err=0
+[AUDIO] seq=214 | pcg[0]=   -1488 pcg[31]=    2345 | total=30 | crc_err=0
+[BIO] seq=214 | ir[0]=     374 ecg[0]=   318 | total=30 | crc_err=0
+[AUDIO] seq=215 | pcg[0]=    1383 pcg[31]=     884 | total=31 | crc_err=0
+[BIO] seq=215 | ir[0]=     362 ecg[0]=  2392 | total=31 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102d8ba00640100006b0100006201
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa0101d98000c9020000d10600006e04
+[LOSS] AUDIO: expected seq=216 got seq=217 -> lost=1 packets
+[AUDIO] seq=217 | pcg[0]=     713 pcg[31]=   -2144 | total=32 | crc_err=0
+[LOSS] BIO: expected seq=216 got seq=217 -> lost=1 packets
+[BIO] seq=217 | ir[0]=     364 ecg[0]=     0 | total=32 | crc_err=0
+[AUDIO] seq=218 | pcg[0]=    1391 pcg[31]=     463 | total=33 | crc_err=0
+[BIO] seq=218 | ir[0]=     364 ecg[0]=  3952 | total=33 | crc_err=0
+[AUDIO] seq=219 | pcg[0]=     988 pcg[31]=   -1372 | total=34 | crc_err=0
+[BIO] seq=219 | ir[0]=     349 ecg[0]=   372 | total=34 | crc_err=0
+[AUDIO] seq=220 | pcg[0]=    -987 pcg[31]=     659 | total=35 | crc_err=0
+[BIO] seq=220 | ir[0]=     349 ecg[0]=  2416 | total=35 | crc_err=0
+[AUDIO] seq=221 | pcg[0]=   -1952 pcg[31]=       7 | total=36 | crc_err=0
+[BIO] seq=221 | ir[0]=     364 ecg[0]=  4032 | total=36 | crc_err=0
+[AUDIO] seq=222 | pcg[0]=   -1313 pcg[31]=    -572 | total=37 | crc_err=0
+[BIO] seq=222 | ir[0]=     335 ecg[0]=     0 | total=37 | crc_err=0
+[AUDIO] seq=223 | pcg[0]=     749 pcg[31]=    1223 | total=38 | crc_err=0
+[BIO] seq=223 | ir[0]=     369 ecg[0]=  4048 | total=38 | crc_err=0
+[AUDIO] seq=224 | pcg[0]=     273 pcg[31]=    -735 | total=39 | crc_err=0
+[BIO] seq=224 | ir[0]=     337 ecg[0]=   362 | total=39 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102e1ba0073010000750100006a01
+[WARN] Skipped 173 garbage bytes before header
+>>> Garbage= 173 next bytes= aa01aa046808b00cc80fb00fe00ff00f
+[WARN] Skipped 26 garbage bytes before header
+>>> Garbage= 26 next bytes= aa0101e28000f1080000f700000010fd
+[LOSS] AUDIO: expected seq=225 got seq=226 -> lost=1 packets
+[AUDIO] seq=226 | pcg[0]=    2289 pcg[31]=   -1091 | total=40 | crc_err=0
+[LOSS] BIO: expected seq=225 got seq=226 -> lost=1 packets
+[BIO] seq=226 | ir[0]=     358 ecg[0]=  3984 | total=40 | crc_err=0
+[AUDIO] seq=227 | pcg[0]=   -1414 pcg[31]=    -336 | total=41 | crc_err=0
+[BIO] seq=227 | ir[0]=     355 ecg[0]=     0 | total=41 | crc_err=0
+[AUDIO] seq=228 | pcg[0]=     774 pcg[31]=       9 | total=42 | crc_err=0
+[BIO] seq=228 | ir[0]=     355 ecg[0]=  4000 | total=42 | crc_err=0
+[AUDIO] seq=229 | pcg[0]=   -1060 pcg[31]=    1834 | total=43 | crc_err=0
+[BIO] seq=229 | ir[0]=     351 ecg[0]=   464 | total=43 | crc_err=0
+[AUDIO] seq=230 | pcg[0]=    -678 pcg[31]=    -997 | total=44 | crc_err=0
+[BIO] seq=230 | ir[0]=     367 ecg[0]=  2184 | total=44 | crc_err=0
+[AUDIO] seq=231 | pcg[0]=     923 pcg[31]=   -1988 | total=45 | crc_err=0
+[BIO] seq=231 | ir[0]=     342 ecg[0]=  4036 | total=45 | crc_err=0
+[AUDIO] seq=232 | pcg[0]=    -487 pcg[31]=   -1074 | total=46 | crc_err=0
+[BIO] seq=232 | ir[0]=     360 ecg[0]=     0 | total=46 | crc_err=0
+[AUDIO] seq=233 | pcg[0]=    1033 pcg[31]=   -1465 | total=47 | crc_err=0
+[BIO] seq=233 | ir[0]=     373 ecg[0]=  4040 | total=47 | crc_err=0
+[AUDIO] seq=234 | pcg[0]=     986 pcg[31]=     343 | total=48 | crc_err=0
+[BIO] seq=234 | ir[0]=     332 ecg[0]=   474 | total=48 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102ebba006c010000670100007101
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101ec8000c5feffff0f010000f500
+[LOSS] AUDIO: expected seq=235 got seq=236 -> lost=1 packets
+[AUDIO] seq=236 | pcg[0]=    -315 pcg[31]=    1101 | total=49 | crc_err=0
+[LOSS] BIO: expected seq=235 got seq=236 -> lost=1 packets
+[BIO] seq=236 | ir[0]=     353 ecg[0]=  4048 | total=49 | crc_err=0
+[AUDIO] seq=237 | pcg[0]=   -2547 pcg[31]=    1062 | total=50 | crc_err=0
+[BIO] seq=237 | ir[0]=     353 ecg[0]=     0 | total=50 | crc_err=0
+[AUDIO] seq=238 | pcg[0]=    -244 pcg[31]=   -1012 | total=51 | crc_err=0
+[BIO] seq=238 | ir[0]=     346 ecg[0]=  4052 | total=51 | crc_err=0
+[AUDIO] seq=239 | pcg[0]=    1949 pcg[31]=     923 | total=52 | crc_err=0
+[BIO] seq=239 | ir[0]=     354 ecg[0]=   536 | total=52 | crc_err=0
+[AUDIO] seq=240 | pcg[0]=    -803 pcg[31]=     391 | total=53 | crc_err=0
+[BIO] seq=240 | ir[0]=     367 ecg[0]=  2028 | total=53 | crc_err=0
+[AUDIO] seq=241 | pcg[0]=    1986 pcg[31]=   -2221 | total=54 | crc_err=0
+[BIO] seq=241 | ir[0]=     357 ecg[0]=  4024 | total=54 | crc_err=0
+[AUDIO] seq=242 | pcg[0]=    1117 pcg[31]=     269 | total=55 | crc_err=0
+[BIO] seq=242 | ir[0]=     367 ecg[0]=     0 | total=55 | crc_err=0
+[AUDIO] seq=243 | pcg[0]=   -1700 pcg[31]=    1477 | total=56 | crc_err=0
+[BIO] seq=243 | ir[0]=     360 ecg[0]=  4036 | total=56 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102f4ba006b010000680100006501
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101f580002bfeffff8c0000001702
+[LOSS] AUDIO: expected seq=244 got seq=245 -> lost=1 packets
+[AUDIO] seq=245 | pcg[0]=    -469 pcg[31]=    2025 | total=57 | crc_err=0
+[LOSS] BIO: expected seq=244 got seq=245 -> lost=1 packets
+[BIO] seq=245 | ir[0]=     366 ecg[0]=  1918 | total=57 | crc_err=0
+[AUDIO] seq=246 | pcg[0]=    1142 pcg[31]=    -390 | total=58 | crc_err=0
+[BIO] seq=246 | ir[0]=     362 ecg[0]=  4048 | total=58 | crc_err=0
+[AUDIO] seq=247 | pcg[0]=    1372 pcg[31]=     713 | total=59 | crc_err=0
+[BIO] seq=247 | ir[0]=     362 ecg[0]=     0 | total=59 | crc_err=0
+[AUDIO] seq=248 | pcg[0]=     742 pcg[31]=   -2007 | total=60 | crc_err=0
+[BIO] seq=248 | ir[0]=     357 ecg[0]=  4040 | total=60 | crc_err=0
+[AUDIO] seq=249 | pcg[0]=     727 pcg[31]=   -3090 | total=61 | crc_err=0
+[BIO] seq=249 | ir[0]=     358 ecg[0]=   616 | total=61 | crc_err=0
+[AUDIO] seq=250 | pcg[0]=    -949 pcg[31]=     863 | total=62 | crc_err=0
+[BIO] seq=250 | ir[0]=     356 ecg[0]=  1840 | total=62 | crc_err=0
+[AUDIO] seq=251 | pcg[0]=   -1747 pcg[31]=    -169 | total=63 | crc_err=0
+[BIO] seq=251 | ir[0]=     360 ecg[0]=  4052 | total=63 | crc_err=0
+[AUDIO] seq=252 | pcg[0]=    -663 pcg[31]=     373 | total=64 | crc_err=0
+[BIO] seq=252 | ir[0]=     365 ecg[0]=     0 | total=64 | crc_err=0
+[AUDIO] seq=253 | pcg[0]=      54 pcg[31]=    1470 | total=65 | crc_err=0
+[BIO] seq=253 | ir[0]=     359 ecg[0]=  4032 | total=65 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa0102feba0075010000680100007001
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa0101ff80008c0a0000710700004905
+[LOSS] AUDIO: expected seq=254 got seq=255 -> lost=1 packets
+[AUDIO] seq=255 | pcg[0]=    2700 pcg[31]=    -171 | total=66 | crc_err=0
+[LOSS] BIO: expected seq=254 got seq=255 -> lost=1 packets
+[BIO] seq=255 | ir[0]=     369 ecg[0]=  1626 | total=66 | crc_err=0
+[AUDIO] seq=0 | pcg[0]=     670 pcg[31]=    -352 | total=67 | crc_err=0
+[BIO] seq=0 | ir[0]=     369 ecg[0]=  4048 | total=67 | crc_err=0
+[AUDIO] seq=1 | pcg[0]=    -786 pcg[31]=    -825 | total=68 | crc_err=0
+[BIO] seq=1 | ir[0]=     353 ecg[0]=     0 | total=68 | crc_err=0
+[AUDIO] seq=2 | pcg[0]=    -150 pcg[31]=     111 | total=69 | crc_err=0
+[BIO] seq=2 | ir[0]=     360 ecg[0]=  4032 | total=69 | crc_err=0
+[AUDIO] seq=3 | pcg[0]=   -3138 pcg[31]=     777 | total=70 | crc_err=0
+[BIO] seq=3 | ir[0]=     363 ecg[0]=   756 | total=70 | crc_err=0
+[AUDIO] seq=4 | pcg[0]=     332 pcg[31]=     419 | total=71 | crc_err=0
+[BIO] seq=4 | ir[0]=     367 ecg[0]=  1680 | total=71 | crc_err=0
+[AUDIO] seq=5 | pcg[0]=    -130 pcg[31]=    1310 | total=72 | crc_err=0
+[BIO] seq=5 | ir[0]=     365 ecg[0]=  4095 | total=72 | crc_err=0
+[AUDIO] seq=6 | pcg[0]=     490 pcg[31]=    -714 | total=73 | crc_err=0
+[BIO] seq=6 | ir[0]=     356 ecg[0]=     0 | total=73 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010207ba006b010000510100008301
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa0101088000be00000092fcffffd0f7
+[LOSS] AUDIO: expected seq=7 got seq=8 -> lost=1 packets
+[AUDIO] seq=8 | pcg[0]=     190 pcg[31]=     350 | total=74 | crc_err=0
+[LOSS] BIO: expected seq=7 got seq=8 -> lost=1 packets
+[BIO] seq=8 | ir[0]=     359 ecg[0]=   781 | total=74 | crc_err=0
+[AUDIO] seq=9 | pcg[0]=   -1309 pcg[31]=   -1662 | total=75 | crc_err=0
+[BIO] seq=9 | ir[0]=     348 ecg[0]=  1546 | total=75 | crc_err=0
+[AUDIO] seq=10 | pcg[0]=   -1347 pcg[31]=     969 | total=76 | crc_err=0
+[BIO] seq=10 | ir[0]=     348 ecg[0]=  4080 | total=76 | crc_err=0
+[AUDIO] seq=11 | pcg[0]=   -2313 pcg[31]=    2133 | total=77 | crc_err=0
+[BIO] seq=11 | ir[0]=     352 ecg[0]=     0 | total=77 | crc_err=0
+[AUDIO] seq=12 | pcg[0]=     162 pcg[31]=    -999 | total=78 | crc_err=0
+[BIO] seq=12 | ir[0]=     363 ecg[0]=  4036 | total=78 | crc_err=0
+[AUDIO] seq=13 | pcg[0]=    1000 pcg[31]=     205 | total=79 | crc_err=0
+[BIO] seq=13 | ir[0]=     351 ecg[0]=   860 | total=79 | crc_err=0
+[AUDIO] seq=14 | pcg[0]=     117 pcg[31]=     644 | total=80 | crc_err=0
+[BIO] seq=14 | ir[0]=     355 ecg[0]=  1428 | total=80 | crc_err=0
+[AUDIO] seq=15 | pcg[0]=     480 pcg[31]=   -2025 | total=81 | crc_err=0
+[BIO] seq=15 | ir[0]=     343 ecg[0]=  4008 | total=81 | crc_err=0
+[AUDIO] seq=16 | pcg[0]=     158 pcg[31]=   -1095 | total=82 | crc_err=0
+[BIO] seq=16 | ir[0]=     357 ecg[0]=     0 | total=82 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010211ba0071010000680100006101
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa01011280001cf6ffffa3feffff0a03
+[LOSS] AUDIO: expected seq=17 got seq=18 -> lost=1 packets
+[AUDIO] seq=18 | pcg[0]=   -2532 pcg[31]=     612 | total=83 | crc_err=0
+[LOSS] BIO: expected seq=17 got seq=18 -> lost=1 packets
+[BIO] seq=18 | ir[0]=     366 ecg[0]=   917 | total=83 | crc_err=0
+[AUDIO] seq=19 | pcg[0]=    -614 pcg[31]=     587 | total=84 | crc_err=0
+[BIO] seq=19 | ir[0]=     366 ecg[0]=  1348 | total=84 | crc_err=0
+[AUDIO] seq=20 | pcg[0]=    -385 pcg[31]=     527 | total=85 | crc_err=0
+[BIO] seq=20 | ir[0]=     362 ecg[0]=  4048 | total=85 | crc_err=0
+[AUDIO] seq=21 | pcg[0]=    -164 pcg[31]=    -520 | total=86 | crc_err=0
+[BIO] seq=21 | ir[0]=     361 ecg[0]=     0 | total=86 | crc_err=0
+[AUDIO] seq=22 | pcg[0]=    1536 pcg[31]=   -1455 | total=87 | crc_err=0
+[BIO] seq=22 | ir[0]=     360 ecg[0]=  4016 | total=87 | crc_err=0
+[AUDIO] seq=23 | pcg[0]=    1734 pcg[31]=   -1411 | total=88 | crc_err=0
+[BIO] seq=23 | ir[0]=     357 ecg[0]=   989 | total=88 | crc_err=0
+[AUDIO] seq=24 | pcg[0]=    1325 pcg[31]=    2452 | total=89 | crc_err=0
+[BIO] seq=24 | ir[0]=     359 ecg[0]=  1256 | total=89 | crc_err=0
+[AUDIO] seq=25 | pcg[0]=   -2087 pcg[31]=    2935 | total=90 | crc_err=0
+[BIO] seq=25 | ir[0]=     354 ecg[0]=  4016 | total=90 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01021aba00670100006a0100005b01
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa01011b800083faffff1600000034ff
+[LOSS] AUDIO: expected seq=26 got seq=27 -> lost=1 packets
+[AUDIO] seq=27 | pcg[0]=   -1405 pcg[31]=     606 | total=91 | crc_err=0
+[LOSS] BIO: expected seq=26 got seq=27 -> lost=1 packets
+[BIO] seq=27 | ir[0]=     361 ecg[0]=  4032 | total=91 | crc_err=0
+[AUDIO] seq=28 | pcg[0]=     -79 pcg[31]=     -40 | total=92 | crc_err=0
+[BIO] seq=28 | ir[0]=     361 ecg[0]=  1072 | total=92 | crc_err=0
+[AUDIO] seq=29 | pcg[0]=    2656 pcg[31]=    -212 | total=93 | crc_err=0
+[BIO] seq=29 | ir[0]=     354 ecg[0]=  1152 | total=93 | crc_err=0
+[AUDIO] seq=30 | pcg[0]=     145 pcg[31]=    -322 | total=94 | crc_err=0
+[BIO] seq=30 | ir[0]=     355 ecg[0]=  4056 | total=94 | crc_err=0
+[AUDIO] seq=31 | pcg[0]=    -859 pcg[31]=   -1731 | total=95 | crc_err=0
+[BIO] seq=31 | ir[0]=     340 ecg[0]=     0 | total=95 | crc_err=0
+[AUDIO] seq=32 | pcg[0]=   -1644 pcg[31]=     552 | total=96 | crc_err=0
+[BIO] seq=32 | ir[0]=     353 ecg[0]=  4004 | total=96 | crc_err=0
+[AUDIO] seq=33 | pcg[0]=      -9 pcg[31]=    1351 | total=97 | crc_err=0
+[BIO] seq=33 | ir[0]=     359 ecg[0]=  1124 | total=97 | crc_err=0
+[AUDIO] seq=34 | pcg[0]=    1194 pcg[31]=    1291 | total=98 | crc_err=0
+[BIO] seq=34 | ir[0]=     364 ecg[0]=  1032 | total=98 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010223ba006a010000740100006d01
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa010124800035080000e6060000e702
+[LOSS] AUDIO: expected seq=35 got seq=36 -> lost=1 packets
+[AUDIO] seq=36 | pcg[0]=    2101 pcg[31]=      93 | total=99 | crc_err=0
+[LOSS] BIO: expected seq=35 got seq=36 -> lost=1 packets
+[BIO] seq=36 | ir[0]=     362 ecg[0]=     0 | total=99 | crc_err=0
+[AUDIO] seq=37 | pcg[0]=    3030 pcg[31]=     381 | total=100 | crc_err=0
+[BIO] seq=37 | ir[0]=     362 ecg[0]=  4016 | total=100 | crc_err=0
+[AUDIO] seq=38 | pcg[0]=   -1591 pcg[31]=    1373 | total=101 | crc_err=0
+[BIO] seq=38 | ir[0]=     356 ecg[0]=  1064 | total=101 | crc_err=0
+[AUDIO] seq=39 | pcg[0]=   -3865 pcg[31]=   -6163 | total=102 | crc_err=0
+[BIO] seq=39 | ir[0]=     364 ecg[0]=   897 | total=102 | crc_err=0
+[AUDIO] seq=40 | pcg[0]=    8072 pcg[31]=   -1754 | total=103 | crc_err=0
+[BIO] seq=40 | ir[0]=     359 ecg[0]=  3904 | total=103 | crc_err=0
+[AUDIO] seq=41 | pcg[0]=   -2493 pcg[31]=     285 | total=104 | crc_err=0
+[BIO] seq=41 | ir[0]=     362 ecg[0]=     0 | total=104 | crc_err=0
+[AUDIO] seq=42 | pcg[0]=    -466 pcg[31]=    -952 | total=105 | crc_err=0
+[BIO] seq=42 | ir[0]=     364 ecg[0]=  4080 | total=105 | crc_err=0
+[AUDIO] seq=43 | pcg[0]=    1935 pcg[31]=     303 | total=106 | crc_err=0
+[BIO] seq=43 | ir[0]=     374 ecg[0]=  1332 | total=106 | crc_err=0
+[AUDIO] seq=44 | pcg[0]=    -614 pcg[31]=    -987 | total=107 | crc_err=0
+[BIO] seq=44 | ir[0]=     359 ecg[0]=   861 | total=107 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01022dba00610100005b0100006101
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa01012e80004f040000ac0100006f03
+[LOSS] AUDIO: expected seq=45 got seq=46 -> lost=1 packets
+[AUDIO] seq=46 | pcg[0]=    1103 pcg[31]=   -2272 | total=108 | crc_err=0
+[LOSS] BIO: expected seq=45 got seq=46 -> lost=1 packets
+[BIO] seq=46 | ir[0]=     360 ecg[0]=    75 | total=108 | crc_err=0
+[AUDIO] seq=47 | pcg[0]=   -1114 pcg[31]=    2049 | total=109 | crc_err=0
+[BIO] seq=47 | ir[0]=     360 ecg[0]=  4008 | total=109 | crc_err=0
+[AUDIO] seq=48 | pcg[0]=    1942 pcg[31]=    1481 | total=110 | crc_err=0
+[BIO] seq=48 | ir[0]=     356 ecg[0]=  1428 | total=110 | crc_err=0
+[AUDIO] seq=49 | pcg[0]=   -1913 pcg[31]=     619 | total=111 | crc_err=0
+[BIO] seq=49 | ir[0]=     334 ecg[0]=   633 | total=111 | crc_err=0
+[AUDIO] seq=50 | pcg[0]=    2201 pcg[31]=   -1158 | total=112 | crc_err=0
+[BIO] seq=50 | ir[0]=     327 ecg[0]=  3960 | total=112 | crc_err=0
+[AUDIO] seq=51 | pcg[0]=    1096 pcg[31]=   -1155 | total=113 | crc_err=0
+[BIO] seq=51 | ir[0]=     361 ecg[0]=     0 | total=113 | crc_err=0
+[AUDIO] seq=52 | pcg[0]=    2189 pcg[31]=    -720 | total=114 | crc_err=0
+[BIO] seq=52 | ir[0]=     357 ecg[0]=  4008 | total=114 | crc_err=0
+[AUDIO] seq=53 | pcg[0]=   -3012 pcg[31]=   -1515 | total=115 | crc_err=0
+[BIO] seq=53 | ir[0]=     360 ecg[0]=  1648 | total=115 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010236ba005e010000620100005a01
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa0101378000f9f1ffff49fbffff30fd
+[LOSS] AUDIO: expected seq=54 got seq=55 -> lost=1 packets
+[AUDIO] seq=55 | pcg[0]=   -3591 pcg[31]=    3342 | total=116 | crc_err=0
+[LOSS] BIO: expected seq=54 got seq=55 -> lost=1 packets
+[BIO] seq=55 | ir[0]=     354 ecg[0]=  4048 | total=116 | crc_err=0
+[AUDIO] seq=56 | pcg[0]=     793 pcg[31]=      -8 | total=117 | crc_err=0
+[BIO] seq=56 | ir[0]=     354 ecg[0]=     0 | total=117 | crc_err=0
+[AUDIO] seq=57 | pcg[0]=    1167 pcg[31]=     646 | total=118 | crc_err=0
+[BIO] seq=57 | ir[0]=     346 ecg[0]=  3956 | total=118 | crc_err=0
+[AUDIO] seq=58 | pcg[0]=     924 pcg[31]=   -2194 | total=119 | crc_err=0
+[BIO] seq=58 | ir[0]=     354 ecg[0]=  1634 | total=119 | crc_err=0
+[AUDIO] seq=59 | pcg[0]=    -876 pcg[31]=      21 | total=120 | crc_err=0
+[BIO] seq=59 | ir[0]=     371 ecg[0]=   440 | total=120 | crc_err=0
+[AUDIO] seq=60 | pcg[0]=    1570 pcg[31]=   -1717 | total=121 | crc_err=0
+[BIO] seq=60 | ir[0]=     357 ecg[0]=  4056 | total=121 | crc_err=0
+[AUDIO] seq=61 | pcg[0]=    1992 pcg[31]=    1058 | total=122 | crc_err=0
+[BIO] seq=61 | ir[0]=     377 ecg[0]=     0 | total=122 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01023eba00650100006f0100006801
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa01013f8000110300002a040000bb01
+[LOSS] AUDIO: expected seq=62 got seq=63 -> lost=1 packets
+[AUDIO] seq=63 | pcg[0]=     785 pcg[31]=   -1023 | total=123 | crc_err=0
+[LOSS] BIO: expected seq=62 got seq=63 -> lost=1 packets
+[BIO] seq=63 | ir[0]=     365 ecg[0]=  1730 | total=123 | crc_err=0
+[AUDIO] seq=64 | pcg[0]=    -764 pcg[31]=     855 | total=124 | crc_err=0
+[BIO] seq=64 | ir[0]=     364 ecg[0]=   290 | total=124 | crc_err=0
+[AUDIO] seq=65 | pcg[0]=     148 pcg[31]=    -505 | total=125 | crc_err=0
+[BIO] seq=65 | ir[0]=     364 ecg[0]=  4024 | total=125 | crc_err=0
+[AUDIO] seq=66 | pcg[0]=     695 pcg[31]=    1249 | total=126 | crc_err=0
+[BIO] seq=66 | ir[0]=     344 ecg[0]=     0 | total=126 | crc_err=0
+[AUDIO] seq=67 | pcg[0]=     -36 pcg[31]=    1314 | total=127 | crc_err=0
+[BIO] seq=67 | ir[0]=     361 ecg[0]=  3892 | total=127 | crc_err=0
+[AUDIO] seq=68 | pcg[0]=     -87 pcg[31]=     677 | total=128 | crc_err=0
+[BIO] seq=68 | ir[0]=     370 ecg[0]=  1812 | total=128 | crc_err=0
+[AUDIO] seq=69 | pcg[0]=     381 pcg[31]=   -3619 | total=129 | crc_err=0
+[BIO] seq=69 | ir[0]=     344 ecg[0]=   171 | total=129 | crc_err=0
+[AUDIO] seq=70 | pcg[0]=      82 pcg[31]=    4038 | total=130 | crc_err=0
+[BIO] seq=70 | ir[0]=     366 ecg[0]=  4064 | total=130 | crc_err=0
+[AUDIO] seq=71 | pcg[0]=   -3183 pcg[31]=     197 | total=131 | crc_err=0
+[BIO] seq=71 | ir[0]=     363 ecg[0]=     0 | total=131 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010248ba00660100005e0100006801
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa010149800024f3ffff71fcffff2ffd
+[LOSS] AUDIO: expected seq=72 got seq=73 -> lost=1 packets
+[AUDIO] seq=73 | pcg[0]=   -3292 pcg[31]=   -1135 | total=132 | crc_err=0
+[LOSS] BIO: expected seq=72 got seq=73 -> lost=1 packets
+[BIO] seq=73 | ir[0]=     362 ecg[0]=  1940 | total=132 | crc_err=0
+[AUDIO] seq=74 | pcg[0]=    1152 pcg[31]=   -2768 | total=133 | crc_err=0
+[BIO] seq=74 | ir[0]=     362 ecg[0]=    83 | total=133 | crc_err=0
+[AUDIO] seq=75 | pcg[0]=    1498 pcg[31]=   -1914 | total=134 | crc_err=0
+[BIO] seq=75 | ir[0]=     360 ecg[0]=  4052 | total=134 | crc_err=0
+[AUDIO] seq=76 | pcg[0]=     184 pcg[31]=    -414 | total=135 | crc_err=0
+[BIO] seq=76 | ir[0]=     390 ecg[0]=     0 | total=135 | crc_err=0
+[AUDIO] seq=77 | pcg[0]=     725 pcg[31]=    1666 | total=136 | crc_err=0
+[BIO] seq=77 | ir[0]=     355 ecg[0]=  3632 | total=136 | crc_err=0
+[AUDIO] seq=78 | pcg[0]=     113 pcg[31]=    3347 | total=137 | crc_err=0
+[BIO] seq=78 | ir[0]=     350 ecg[0]=  2056 | total=137 | crc_err=0
+[AUDIO] seq=79 | pcg[0]=    -218 pcg[31]=    1452 | total=138 | crc_err=0
+[BIO] seq=79 | ir[0]=     369 ecg[0]=     0 | total=138 | crc_err=0
+[AUDIO] seq=80 | pcg[0]=    2770 pcg[31]=      63 | total=139 | crc_err=0
+[BIO] seq=80 | ir[0]=     371 ecg[0]=  4040 | total=139 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010251ba005d0100006f0100007101
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa010152800072feffffdafeffff98fc
+[LOSS] AUDIO: expected seq=81 got seq=82 -> lost=1 packets
+[AUDIO] seq=82 | pcg[0]=    -398 pcg[31]=     278 | total=140 | crc_err=0
+[LOSS] BIO: expected seq=81 got seq=82 -> lost=1 packets
+[BIO] seq=82 | ir[0]=     360 ecg[0]=  3736 | total=140 | crc_err=0
+[AUDIO] seq=83 | pcg[0]=     -81 pcg[31]=    -791 | total=141 | crc_err=0
+[BIO] seq=83 | ir[0]=     360 ecg[0]=  2208 | total=141 | crc_err=0
+[AUDIO] seq=84 | pcg[0]=     212 pcg[31]=   -1579 | total=142 | crc_err=0
+[BIO] seq=84 | ir[0]=     352 ecg[0]=     0 | total=142 | crc_err=0
+[AUDIO] seq=85 | pcg[0]=    -478 pcg[31]=   -2095 | total=143 | crc_err=0
+[BIO] seq=85 | ir[0]=     364 ecg[0]=  3988 | total=143 | crc_err=0
+[AUDIO] seq=86 | pcg[0]=     954 pcg[31]=    1630 | total=144 | crc_err=0
+[BIO] seq=86 | ir[0]=     373 ecg[0]=     0 | total=144 | crc_err=0
+[AUDIO] seq=87 | pcg[0]=   -2206 pcg[31]=    1976 | total=145 | crc_err=0
+[BIO] seq=87 | ir[0]=     364 ecg[0]=  3640 | total=145 | crc_err=0
+[AUDIO] seq=88 | pcg[0]=    -507 pcg[31]=   -1342 | total=146 | crc_err=0
+[BIO] seq=88 | ir[0]=     356 ecg[0]=  2312 | total=146 | crc_err=0
+[AUDIO] seq=89 | pcg[0]=      37 pcg[31]=   -2061 | total=147 | crc_err=0
+[BIO] seq=89 | ir[0]=     359 ecg[0]=     0 | total=147 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01025aba006a0100006a0100007601
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa01015b8000ca0600009bfeffff8700
+[LOSS] AUDIO: expected seq=90 got seq=91 -> lost=1 packets
+[AUDIO] seq=91 | pcg[0]=    1738 pcg[31]=    -540 | total=148 | crc_err=0
+[LOSS] BIO: expected seq=90 got seq=91 -> lost=1 packets
+[BIO] seq=91 | ir[0]=     358 ecg[0]=     0 | total=148 | crc_err=0
+[AUDIO] seq=92 | pcg[0]=   -1382 pcg[31]=    3037 | total=149 | crc_err=0
+[BIO] seq=92 | ir[0]=     357 ecg[0]=  3636 | total=149 | crc_err=0
+[AUDIO] seq=93 | pcg[0]=   -2162 pcg[31]=    1270 | total=150 | crc_err=0
+[BIO] seq=93 | ir[0]=     357 ecg[0]=  2396 | total=150 | crc_err=0
+[AUDIO] seq=94 | pcg[0]=     722 pcg[31]=   -1354 | total=151 | crc_err=0
+[BIO] seq=94 | ir[0]=     351 ecg[0]=     0 | total=151 | crc_err=0
+[AUDIO] seq=95 | pcg[0]=    1888 pcg[31]=   -1265 | total=152 | crc_err=0
+[BIO] seq=95 | ir[0]=     363 ecg[0]=  4032 | total=152 | crc_err=0
+[AUDIO] seq=96 | pcg[0]=     138 pcg[31]=   -1243 | total=153 | crc_err=0
+[BIO] seq=96 | ir[0]=     356 ecg[0]=     0 | total=153 | crc_err=0
+[AUDIO] seq=97 | pcg[0]=    -453 pcg[31]=    -689 | total=154 | crc_err=0
+[BIO] seq=97 | ir[0]=     382 ecg[0]=  3616 | total=154 | crc_err=0
+[AUDIO] seq=98 | pcg[0]=   -1466 pcg[31]=    1627 | total=155 | crc_err=0
+[BIO] seq=98 | ir[0]=     344 ecg[0]=  2520 | total=155 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010263ba0068010000660100006301
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101648000ed0300000b070000840a
+[LOSS] AUDIO: expected seq=99 got seq=100 -> lost=1 packets
+[AUDIO] seq=100 | pcg[0]=    1005 pcg[31]=   -1576 | total=156 | crc_err=0
+[LOSS] BIO: expected seq=99 got seq=100 -> lost=1 packets
+[BIO] seq=100 | ir[0]=     365 ecg[0]=  4048 | total=156 | crc_err=0
+[AUDIO] seq=101 | pcg[0]=    1978 pcg[31]=     438 | total=157 | crc_err=0
+[BIO] seq=101 | ir[0]=     345 ecg[0]=     0 | total=157 | crc_err=0
+[AUDIO] seq=102 | pcg[0]=   -1696 pcg[31]=    1019 | total=158 | crc_err=0
+[BIO] seq=102 | ir[0]=     345 ecg[0]=  3492 | total=158 | crc_err=0
+[AUDIO] seq=103 | pcg[0]=     201 pcg[31]=     351 | total=159 | crc_err=0
+[BIO] seq=103 | ir[0]=     349 ecg[0]=  2640 | total=159 | crc_err=0
+[AUDIO] seq=104 | pcg[0]=    2484 pcg[31]=    -762 | total=160 | crc_err=0
+[BIO] seq=104 | ir[0]=     356 ecg[0]=     0 | total=160 | crc_err=0
+[AUDIO] seq=105 | pcg[0]=     532 pcg[31]=     753 | total=161 | crc_err=0
+[BIO] seq=105 | ir[0]=     380 ecg[0]=  4048 | total=161 | crc_err=0
+[AUDIO] seq=106 | pcg[0]=     472 pcg[31]=    -151 | total=162 | crc_err=0
+[BIO] seq=106 | ir[0]=     333 ecg[0]=     0 | total=162 | crc_err=0
+[AUDIO] seq=107 | pcg[0]=    -249 pcg[31]=     641 | total=163 | crc_err=0
+[BIO] seq=107 | ir[0]=     355 ecg[0]=  3428 | total=163 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01026cba006c010000510100006801
+[WARN] Skipped 200 garbage bytes before header
+>>> Garbage= 200 next bytes= aa01016d80007b010000850300002102
+[LOSS] AUDIO: expected seq=108 got seq=109 -> lost=1 packets
+[AUDIO] seq=109 | pcg[0]=     379 pcg[31]=    -870 | total=164 | crc_err=0
+[LOSS] BIO: expected seq=108 got seq=109 -> lost=1 packets
+[BIO] seq=109 | ir[0]=     349 ecg[0]=     0 | total=164 | crc_err=0
+[AUDIO] seq=110 | pcg[0]=    2769 pcg[31]=   -1330 | total=165 | crc_err=0
+[BIO] seq=110 | ir[0]=     358 ecg[0]=  4008 | total=165 | crc_err=0
+[AUDIO] seq=111 | pcg[0]=    2045 pcg[31]=   -1038 | total=166 | crc_err=0
+[BIO] seq=111 | ir[0]=     358 ecg[0]=     0 | total=166 | crc_err=0
+[AUDIO] seq=112 | pcg[0]=   -1363 pcg[31]=    1119 | total=167 | crc_err=0
+[BIO] seq=112 | ir[0]=     357 ecg[0]=  3376 | total=167 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010271060077010000670100007001
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101728000a1fdffffccfeffff4c02
+[LOSS] AUDIO: expected seq=113 got seq=114 -> lost=1 packets
+[AUDIO] seq=114 | pcg[0]=    -607 pcg[31]=     555 | total=168 | crc_err=0
+[LOSS] BIO: expected seq=113 got seq=114 -> lost=1 packets
+[BIO] seq=114 | ir[0]=     375 ecg[0]=     0 | total=168 | crc_err=0
+[AUDIO] seq=115 | pcg[0]=     605 pcg[31]=   -2069 | total=169 | crc_err=0
+[BIO] seq=115 | ir[0]=     336 ecg[0]=  4048 | total=169 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010274a8007b010000680100006701
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa0101757c00fefcffffb0faffffeaf5
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa010275ba0068010000670100005f01
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa010176800054faffff13f6ffff2ff5
+[LOSS] AUDIO: expected seq=116 got seq=118 -> lost=2 packets
+[AUDIO] seq=118 | pcg[0]=   -1452 pcg[31]=    -675 | total=170 | crc_err=0
+[LOSS] BIO: expected seq=116 got seq=118 -> lost=2 packets
+[BIO] seq=118 | ir[0]=     364 ecg[0]=  3008 | total=170 | crc_err=0
+[AUDIO] seq=119 | pcg[0]=    -882 pcg[31]=    -620 | total=171 | crc_err=0
+[BIO] seq=119 | ir[0]=     358 ecg[0]=     0 | total=171 | crc_err=0
+[AUDIO] seq=120 | pcg[0]=    -793 pcg[31]=   -1446 | total=172 | crc_err=0
+[BIO] seq=120 | ir[0]=     358 ecg[0]=  4095 | total=172 | crc_err=0
+[AUDIO] seq=121 | pcg[0]=    2162 pcg[31]=    -442 | total=173 | crc_err=0
+[BIO] seq=121 | ir[0]=     354 ecg[0]=     0 | total=173 | crc_err=0
+[AUDIO] seq=122 | pcg[0]=     647 pcg[31]=     943 | total=174 | crc_err=0
+[BIO] seq=122 | ir[0]=     347 ecg[0]=  3188 | total=174 | crc_err=0
+[AUDIO] seq=123 | pcg[0]=     -49 pcg[31]=     570 | total=175 | crc_err=0
+[BIO] seq=123 | ir[0]=     361 ecg[0]=  3264 | total=175 | crc_err=0
+[AUDIO] seq=124 | pcg[0]=    1174 pcg[31]=   -1343 | total=176 | crc_err=0
+[BIO] seq=124 | ir[0]=     347 ecg[0]=     0 | total=176 | crc_err=0
+[AUDIO] seq=125 | pcg[0]=     727 pcg[31]=    -379 | total=177 | crc_err=0
+[BIO] seq=125 | ir[0]=     359 ecg[0]=  4048 | total=177 | crc_err=0
+[WARN] Skipped 136 garbage bytes before header
+>>> Garbage= 136 next bytes= aa01027eba006a010000710100006a01
+[WARN] Skipped 1 garbage bytes before header
+>>> Garbage= 1 next bytes= aa01017f8000dcfcffff44feffff0900
+[LOSS] AUDIO: expected seq=126 got seq=127 -> lost=1 packets
+[AUDIO] seq=127 | pcg[0]=    -804 pcg[31]=     148 | total=178 | crc_err=0
+[LOSS] BIO: expected seq=126 got seq=127 -> lost=1 packets
+[BIO] seq=127 | ir[0]=     363 ecg[0]=  3044 | total=178 | crc_err=0
+[AUDIO] seq=128 | pcg[0]=   -1390 pcg[31]=    2749 | total=179 | crc_err=0
+[BIO] seq=128 | ir[0]=     356 ecg[0]=  3384 | total=179 | crc_err=0
+[AUDIO] seq=129 | pcg[0]=     114 pcg[31]=      28 | total=180 | crc_err=0
+[BIO] seq=129 | ir[0]=     356 ecg[0]=     0 | total=180 | crc_err=0
+[AUDIO] seq=130 | pcg[0]=    1858 pcg[31]=   -1491 | total=181 | crc_err=0
+[BIO] seq=130 | ir[0]=     351 ecg[0]=  4088 | total=181 | crc_err=0
+[AUDIO] seq=131 | pcg[0]=    1691 pcg[31]=   -1642 | total=182 | crc_err=0
+[BIO] seq=131 | ir[0]=     367 ecg[0]=    34 | total=182 | crc_err=0
+[AUDIO] seq=132 | pcg[0]=     -29 pcg[31]=     862 | total=183 | crc_err=0
+[BIO] seq=132 | ir[0]=     380 ecg[0]=  2916 | total=183 | crc_err=0
+[AUDIO] seq=133 | pcg[0]=   -1846 pcg[31]=    1186 | total=184 | crc_err=0
+[BIO] seq=133 | ir[0]=     350 ecg[0]=  3472 | total=184 | crc_err=0
+[AUDIO] seq=134 | pcg[0]=   -1716 pcg[31]=     952 | total=185 | crc_err=0
+[BIO] seq=134 | ir[0]=     360 ecg[0]=     0 | total=185 | crc_err=0
+
+Stopped.
+Listening on COM7 @ 460800...
+Press Ctrl+C to stop
+
+[AUDIO] seq=104 | pcg[0]=    -604 pcg[31]=   -5897 | total=1 | crc_err=0
+[BIO] seq=104 | ir[0]=     296 ecg[0]=  1020 | total=1 | crc_err=0
+[AUDIO] seq=105 | pcg[0]=   -3041 pcg[31]=    -969 | total=2 | crc_err=0
+[BIO] seq=105 | ir[0]=     246 ecg[0]=     0 | total=2 | crc_err=0
+[AUDIO] seq=106 | pcg[0]=    2310 pcg[31]=    5455 | total=3 | crc_err=0
+[BIO] seq=106 | ir[0]=     356 ecg[0]=  3836 | total=3 | crc_err=0
+[AUDIO] seq=107 | pcg[0]=    5591 pcg[31]=    4546 | total=4 | crc_err=0
+[BIO] seq=107 | ir[0]=     394 ecg[0]=  1580 | total=4 | crc_err=0
+[AUDIO] seq=108 | pcg[0]=     644 pcg[31]=   -3633 | total=5 | crc_err=0
+[BIO] seq=108 | ir[0]=     451 ecg[0]=   936 | total=5 | crc_err=0
+[AUDIO] seq=109 | pcg[0]=   -3538 pcg[31]=   -2394 | total=6 | crc_err=0
+[BIO] seq=109 | ir[0]=     215 ecg[0]=  3936 | total=6 | crc_err=0
+[AUDIO] seq=110 | pcg[0]=   -1028 pcg[31]=   -2732 | total=7 | crc_err=0
+[BIO] seq=110 | ir[0]=     288 ecg[0]=     0 | total=7 | crc_err=0
+[AUDIO] seq=111 | pcg[0]=    4900 pcg[31]=     249 | total=8 | crc_err=0
+[BIO] seq=111 | ir[0]=     344 ecg[0]=  3784 | total=8 | crc_err=0
+[AUDIO] seq=112 | pcg[0]=    1215 pcg[31]=       7 | total=9 | crc_err=0
+[BIO] seq=112 | ir[0]=     485 ecg[0]=  1628 | total=9 | crc_err=0
+[AUDIO] seq=113 | pcg[0]=   -3121 pcg[31]=    3981 | total=10 | crc_err=0
+[BIO] seq=113 | ir[0]=     455 ecg[0]=   872 | total=10 | crc_err=0
+[AUDIO] seq=114 | pcg[0]=     211 pcg[31]=    2830 | total=11 | crc_err=0
+[BIO] seq=114 | ir[0]=     203 ecg[0]=  4095 | total=11 | crc_err=0
+[AUDIO] seq=115 | pcg[0]=    -296 pcg[31]=     378 | total=12 | crc_err=0
+[BIO] seq=115 | ir[0]=     254 ecg[0]=     0 | total=12 | crc_err=0
+[AUDIO] seq=116 | pcg[0]=     684 pcg[31]=   -2021 | total=13 | crc_err=0
+[BIO] seq=116 | ir[0]=     295 ecg[0]=  3784 | total=13 | crc_err=0
+[AUDIO] seq=117 | pcg[0]=   -2378 pcg[31]=   -2010 | total=14 | crc_err=0
+[BIO] seq=117 | ir[0]=     306 ecg[0]=  1536 | total=14 | crc_err=0
+[AUDIO] seq=118 | pcg[0]=    2386 pcg[31]=   10457 | total=15 | crc_err=0
+[BIO] seq=118 | ir[0]=     438 ecg[0]=   317 | total=15 | crc_err=0
+[AUDIO] seq=119 | pcg[0]=   -2494 pcg[31]=     277 | total=16 | crc_err=0
+[BIO] seq=119 | ir[0]=     221 ecg[0]=  3816 | total=16 | crc_err=0
+[AUDIO] seq=120 | pcg[0]=   -3956 pcg[31]=    2247 | total=17 | crc_err=0
+[BIO] seq=120 | ir[0]=     223 ecg[0]=     0 | total=17 | crc_err=0
+[AUDIO] seq=121 | pcg[0]=    1640 pcg[31]=    -344 | total=18 | crc_err=0
+[BIO] seq=121 | ir[0]=     286 ecg[0]=  3872 | total=18 | crc_err=0
+[AUDIO] seq=122 | pcg[0]=    2787 pcg[31]=     938 | total=19 | crc_err=0
+[BIO] seq=122 | ir[0]=     311 ecg[0]=  1802 | total=19 | crc_err=0
+[AUDIO] seq=123 | pcg[0]=    1227 pcg[31]=   -2092 | total=20 | crc_err=0
+[BIO] seq=123 | ir[0]=     367 ecg[0]=   716 | total=20 | crc_err=0
+[AUDIO] seq=124 | pcg[0]=   -1851 pcg[31]=    1505 | total=21 | crc_err=0
+[BIO] seq=124 | ir[0]=     484 ecg[0]=  3928 | total=21 | crc_err=0
+[AUDIO] seq=125 | pcg[0]=   -1263 pcg[31]=     -50 | total=22 | crc_err=0
+[BIO] seq=125 | ir[0]=     352 ecg[0]=     0 | total=22 | crc_err=0
+[AUDIO] seq=126 | pcg[0]=   -1822 pcg[31]=    -701 | total=23 | crc_err=0
+[BIO] seq=126 | ir[0]=     174 ecg[0]=  3732 | total=23 | crc_err=0
+[AUDIO] seq=127 | pcg[0]=    1997 pcg[31]=   -3075 | total=24 | crc_err=0
+[BIO] seq=127 | ir[0]=     301 ecg[0]=  1882 | total=24 | crc_err=0
+[AUDIO] seq=128 | pcg[0]=    -450 pcg[31]=   -2844 | total=25 | crc_err=0
+[BIO] seq=128 | ir[0]=     354 ecg[0]=   618 | total=25 | crc_err=0
+[AUDIO] seq=129 | pcg[0]=   -1171 pcg[31]=    4889 | total=26 | crc_err=0
+[BIO] seq=129 | ir[0]=     503 ecg[0]=  4000 | total=26 | crc_err=0
+[AUDIO] seq=130 | pcg[0]=    -103 pcg[31]=   -2110 | total=27 | crc_err=0
+[BIO] seq=130 | ir[0]=     373 ecg[0]=     0 | total=27 | crc_err=0
+[AUDIO] seq=131 | pcg[0]=     833 pcg[31]=    1674 | total=28 | crc_err=0
+[BIO] seq=131 | ir[0]=     178 ecg[0]=  3712 | total=28 | crc_err=0
+[AUDIO] seq=132 | pcg[0]=   -2644 pcg[31]=   -2523 | total=29 | crc_err=0
+[BIO] seq=132 | ir[0]=     238 ecg[0]=  1952 | total=29 | crc_err=0
+[AUDIO] seq=133 | pcg[0]=    -896 pcg[31]=   -1269 | total=30 | crc_err=0
+[BIO] seq=133 | ir[0]=     318 ecg[0]=   506 | total=30 | crc_err=0
+[AUDIO] seq=134 | pcg[0]=    -763 pcg[31]=    3297 | total=31 | crc_err=0
+[BIO] seq=134 | ir[0]=     323 ecg[0]=  3920 | total=31 | crc_err=0
+[AUDIO] seq=135 | pcg[0]=    2728 pcg[31]=     339 | total=32 | crc_err=0
+[BIO] seq=135 | ir[0]=     189 ecg[0]=     0 | total=32 | crc_err=0
+[AUDIO] seq=136 | pcg[0]=   -2128 pcg[31]=    -547 | total=33 | crc_err=0
+[BIO] seq=136 | ir[0]=     189 ecg[0]=  3664 | total=33 | crc_err=0
+[AUDIO] seq=137 | pcg[0]=   -2282 pcg[31]=    1099 | total=34 | crc_err=0
+[BIO] seq=137 | ir[0]=     240 ecg[0]=  2020 | total=34 | crc_err=0
+[AUDIO] seq=138 | pcg[0]=    -781 pcg[31]=     338 | total=35 | crc_err=0
+[BIO] seq=138 | ir[0]=     288 ecg[0]=   452 | total=35 | crc_err=0
+[AUDIO] seq=139 | pcg[0]=    1662 pcg[31]=     490 | total=36 | crc_err=0
+[BIO] seq=139 | ir[0]=     295 ecg[0]=  3936 | total=36 | crc_err=0
+[AUDIO] seq=140 | pcg[0]=    -717 pcg[31]=     268 | total=37 | crc_err=0
+[BIO] seq=140 | ir[0]=     440 ecg[0]=     0 | total=37 | crc_err=0
+[AUDIO] seq=141 | pcg[0]=   -2120 pcg[31]=   -4585 | total=38 | crc_err=0
+[BIO] seq=141 | ir[0]=     509 ecg[0]=  3640 | total=38 | crc_err=0
+[AUDIO] seq=142 | pcg[0]=    1476 pcg[31]=     799 | total=39 | crc_err=0
+[BIO] seq=142 | ir[0]=     286 ecg[0]=  2100 | total=39 | crc_err=0
+[AUDIO] seq=143 | pcg[0]=     961 pcg[31]=    1029 | total=40 | crc_err=0
+[BIO] seq=143 | ir[0]=     198 ecg[0]=   392 | total=40 | crc_err=0
+[AUDIO] seq=144 | pcg[0]=    -627 pcg[31]=    5324 | total=41 | crc_err=0
+[BIO] seq=144 | ir[0]=     389 ecg[0]=  3936 | total=41 | crc_err=0
+[AUDIO] seq=145 | pcg[0]=    2650 pcg[31]=    2383 | total=42 | crc_err=0
+[BIO] seq=145 | ir[0]=     389 ecg[0]=     0 | total=42 | crc_err=0
+[AUDIO] seq=146 | pcg[0]=    -422 pcg[31]=    1898 | total=43 | crc_err=0
+[BIO] seq=146 | ir[0]=     507 ecg[0]=  3648 | total=43 | crc_err=0
+[AUDIO] seq=147 | pcg[0]=    3329 pcg[31]=    2588 | total=44 | crc_err=0
+[BIO] seq=147 | ir[0]=     348 ecg[0]=  2120 | total=44 | crc_err=0
+[AUDIO] seq=148 | pcg[0]=    3010 pcg[31]=   -1566 | total=45 | crc_err=0
+[BIO] seq=148 | ir[0]=     188 ecg[0]=   344 | total=45 | crc_err=0
+[AUDIO] seq=149 | pcg[0]=     980 pcg[31]=    1383 | total=46 | crc_err=0
+[BIO] seq=149 | ir[0]=     260 ecg[0]=  3936 | total=46 | crc_err=0
+[AUDIO] seq=150 | pcg[0]=   -3650 pcg[31]=      46 | total=47 | crc_err=0
+[BIO] seq=150 | ir[0]=     304 ecg[0]=     0 | total=47 | crc_err=0
+[AUDIO] seq=151 | pcg[0]=    1458 pcg[31]=    1413 | total=48 | crc_err=0
+[BIO] seq=151 | ir[0]=     334 ecg[0]=  3592 | total=48 | crc_err=0
+[AUDIO] seq=152 | pcg[0]=    1971 pcg[31]=    1841 | total=49 | crc_err=0
+[BIO] seq=152 | ir[0]=     427 ecg[0]=  2196 | total=49 | crc_err=0
+[AUDIO] seq=153 | pcg[0]=   -2689 pcg[31]=   -4012 | total=50 | crc_err=0
+[BIO] seq=153 | ir[0]=     231 ecg[0]=   275 | total=50 | crc_err=0
+[AUDIO] seq=154 | pcg[0]=     688 pcg[31]=   -5242 | total=51 | crc_err=0
+[BIO] seq=154 | ir[0]=     210 ecg[0]=  3936 | total=51 | crc_err=0
+[AUDIO] seq=155 | pcg[0]=   -4614 pcg[31]=   -4042 | total=52 | crc_err=0
+[BIO] seq=155 | ir[0]=     274 ecg[0]=     0 | total=52 | crc_err=0
+[AUDIO] seq=156 | pcg[0]=    3947 pcg[31]=    -917 | total=53 | crc_err=0
+[BIO] seq=156 | ir[0]=     284 ecg[0]=  3396 | total=53 | crc_err=0
+[AUDIO] seq=157 | pcg[0]=    3531 pcg[31]=    2092 | total=54 | crc_err=0
+[BIO] seq=157 | ir[0]=     325 ecg[0]=  2272 | total=54 | crc_err=0
+[AUDIO] seq=158 | pcg[0]=    1606 pcg[31]=  -25450 | total=55 | crc_err=0
+[BIO] seq=158 | ir[0]=     463 ecg[0]=   145 | total=55 | crc_err=0
+[AUDIO] seq=159 | pcg[0]=   -5012 pcg[31]=    -100 | total=56 | crc_err=0
+[BIO] seq=159 | ir[0]=     441 ecg[0]=  3920 | total=56 | crc_err=0
+[AUDIO] seq=160 | pcg[0]=   -1445 pcg[31]=     963 | total=57 | crc_err=0
+[BIO] seq=160 | ir[0]=     192 ecg[0]=    43 | total=57 | crc_err=0
+[AUDIO] seq=161 | pcg[0]=    -489 pcg[31]=   -1710 | total=58 | crc_err=0
+[BIO] seq=161 | ir[0]=     310 ecg[0]=  3544 | total=58 | crc_err=0
+[AUDIO] seq=162 | pcg[0]=    3227 pcg[31]=   -6332 | total=59 | crc_err=0
+[BIO] seq=162 | ir[0]=     310 ecg[0]=  2360 | total=59 | crc_err=0
+[AUDIO] seq=163 | pcg[0]=   -3809 pcg[31]=   -5851 | total=60 | crc_err=0
+[BIO] seq=163 | ir[0]=     425 ecg[0]=   167 | total=60 | crc_err=0
+[AUDIO] seq=164 | pcg[0]=     996 pcg[31]=    3210 | total=61 | crc_err=0
+[BIO] seq=164 | ir[0]=     482 ecg[0]=  3856 | total=61 | crc_err=0
+[AUDIO] seq=165 | pcg[0]=    3803 pcg[31]=    5575 | total=62 | crc_err=0
+[BIO] seq=165 | ir[0]=     271 ecg[0]=     0 | total=62 | crc_err=0
+[AUDIO] seq=166 | pcg[0]=   -1354 pcg[31]=     538 | total=63 | crc_err=0
+[BIO] seq=166 | ir[0]=     207 ecg[0]=  3512 | total=63 | crc_err=0
+[AUDIO] seq=167 | pcg[0]=   -5482 pcg[31]=   -6331 | total=64 | crc_err=0
+[BIO] seq=167 | ir[0]=     294 ecg[0]=  2352 | total=64 | crc_err=0
+[AUDIO] seq=168 | pcg[0]=    -327 pcg[31]=    4868 | total=65 | crc_err=0
+[BIO] seq=168 | ir[0]=     303 ecg[0]=   130 | total=65 | crc_err=0
+[AUDIO] seq=169 | pcg[0]=    1186 pcg[31]=    1064 | total=66 | crc_err=0
+[BIO] seq=169 | ir[0]=     337 ecg[0]=  3952 | total=66 | crc_err=0
+[AUDIO] seq=170 | pcg[0]=    -203 pcg[31]=    -617 | total=67 | crc_err=0
+[BIO] seq=170 | ir[0]=     187 ecg[0]=     0 | total=67 | crc_err=0
+[AUDIO] seq=171 | pcg[0]=    1113 pcg[31]=   -2477 | total=68 | crc_err=0
+[BIO] seq=171 | ir[0]=     187 ecg[0]=  3496 | total=68 | crc_err=0
+[AUDIO] seq=172 | pcg[0]=   -4016 pcg[31]=    3248 | total=69 | crc_err=0
+[BIO] seq=172 | ir[0]=     237 ecg[0]=  2392 | total=69 | crc_err=0
+[AUDIO] seq=173 | pcg[0]=     887 pcg[31]=    2375 | total=70 | crc_err=0
+[BIO] seq=173 | ir[0]=     308 ecg[0]=    61 | total=70 | crc_err=0
+[AUDIO] seq=174 | pcg[0]=    1088 pcg[31]=   -5254 | total=71 | crc_err=0
+[BIO] seq=174 | ir[0]=     334 ecg[0]=  3936 | total=71 | crc_err=0
+[AUDIO] seq=175 | pcg[0]=   -1031 pcg[31]=   -4054 | total=72 | crc_err=0
+[BIO] seq=175 | ir[0]=     456 ecg[0]=     0 | total=72 | crc_err=0
+[AUDIO] seq=176 | pcg[0]=      60 pcg[31]=    5076 | total=73 | crc_err=0
+[BIO] seq=176 | ir[0]=     449 ecg[0]=  3512 | total=73 | crc_err=0
+[AUDIO] seq=177 | pcg[0]=    1081 pcg[31]=    1283 | total=74 | crc_err=0
+[BIO] seq=177 | ir[0]=     273 ecg[0]=  2480 | total=74 | crc_err=0
+[AUDIO] seq=178 | pcg[0]=    1832 pcg[31]=   -1352 | total=75 | crc_err=0
+[BIO] seq=178 | ir[0]=     222 ecg[0]=    41 | total=75 | crc_err=0
+[AUDIO] seq=179 | pcg[0]=   -5105 pcg[31]=    -923 | total=76 | crc_err=0
+[BIO] seq=179 | ir[0]=     313 ecg[0]=  3928 | total=76 | crc_err=0
+[AUDIO] seq=180 | pcg[0]=    1862 pcg[31]=    5603 | total=77 | crc_err=0
+[BIO] seq=180 | ir[0]=     443 ecg[0]=     0 | total=77 | crc_err=0
+[AUDIO] seq=181 | pcg[0]=    4606 pcg[31]=    1792 | total=78 | crc_err=0
+[BIO] seq=181 | ir[0]=     464 ecg[0]=  3456 | total=78 | crc_err=0
+[AUDIO] seq=182 | pcg[0]=     353 pcg[31]=   -5993 | total=79 | crc_err=0
+[BIO] seq=182 | ir[0]=     245 ecg[0]=  2504 | total=79 | crc_err=0
+[AUDIO] seq=183 | pcg[0]=   -7115 pcg[31]=   -6833 | total=80 | crc_err=0
+[BIO] seq=183 | ir[0]=     252 ecg[0]=     0 | total=80 | crc_err=0
+[AUDIO] seq=184 | pcg[0]=     292 pcg[31]=   -7964 | total=81 | crc_err=0
+[BIO] seq=184 | ir[0]=     277 ecg[0]=  3968 | total=81 | crc_err=0
+[AUDIO] seq=185 | pcg[0]=    3162 pcg[31]=    2000 | total=82 | crc_err=0
+[BIO] seq=185 | ir[0]=     279 ecg[0]=     0 | total=82 | crc_err=0
+[AUDIO] seq=186 | pcg[0]=    1111 pcg[31]=   -4908 | total=83 | crc_err=0
+[BIO] seq=186 | ir[0]=     383 ecg[0]=  3456 | total=83 | crc_err=0
+[AUDIO] seq=187 | pcg[0]=   -1944 pcg[31]=   -2419 | total=84 | crc_err=0
+[BIO] seq=187 | ir[0]=     232 ecg[0]=  2568 | total=84 | crc_err=0
+[AUDIO] seq=188 | pcg[0]=    -740 pcg[31]=    5801 | total=85 | crc_err=0
+[BIO] seq=188 | ir[0]=     232 ecg[0]=     0 | total=85 | crc_err=0
+[AUDIO] seq=189 | pcg[0]=    3811 pcg[31]=    5250 | total=86 | crc_err=0
+[BIO] seq=189 | ir[0]=     264 ecg[0]=  3936 | total=86 | crc_err=0
+[AUDIO] seq=190 | pcg[0]=   -2002 pcg[31]=    -608 | total=87 | crc_err=0
+[BIO] seq=190 | ir[0]=     338 ecg[0]=     0 | total=87 | crc_err=0
+[AUDIO] seq=191 | pcg[0]=    -100 pcg[31]=    -434 | total=88 | crc_err=0
+[BIO] seq=191 | ir[0]=     343 ecg[0]=  3416 | total=88 | crc_err=0
+[AUDIO] seq=192 | pcg[0]=     924 pcg[31]=    3590 | total=89 | crc_err=0
+[BIO] seq=192 | ir[0]=     514 ecg[0]=  2632 | total=89 | crc_err=0
+[AUDIO] seq=193 | pcg[0]=    4114 pcg[31]=    1383 | total=90 | crc_err=0
+[BIO] seq=193 | ir[0]=     429 ecg[0]=     0 | total=90 | crc_err=0
+[AUDIO] seq=194 | pcg[0]=    -646 pcg[31]=   -5731 | total=91 | crc_err=0
+[BIO] seq=194 | ir[0]=     211 ecg[0]=  3936 | total=91 | crc_err=0
+[AUDIO] seq=195 | pcg[0]=   -3617 pcg[31]=    1008 | total=92 | crc_err=0
+[BIO] seq=195 | ir[0]=     267 ecg[0]=     0 | total=92 | crc_err=0
+[AUDIO] seq=196 | pcg[0]=    2917 pcg[31]=    5497 | total=93 | crc_err=0
+[BIO] seq=196 | ir[0]=     503 ecg[0]=  3376 | total=93 | crc_err=0
+[AUDIO] seq=197 | pcg[0]=    2703 pcg[31]=     285 | total=94 | crc_err=0
+[BIO] seq=197 | ir[0]=     503 ecg[0]=  2576 | total=94 | crc_err=0
+[AUDIO] seq=198 | pcg[0]=    -693 pcg[31]=   -5434 | total=95 | crc_err=0
+[BIO] seq=198 | ir[0]=     409 ecg[0]=     0 | total=95 | crc_err=0
+[AUDIO] seq=199 | pcg[0]=     382 pcg[31]=   -1239 | total=96 | crc_err=0
+[BIO] seq=199 | ir[0]=     207 ecg[0]=  4048 | total=96 | crc_err=0
+[AUDIO] seq=200 | pcg[0]=    2015 pcg[31]=    4441 | total=97 | crc_err=0
+[BIO] seq=200 | ir[0]=     261 ecg[0]=     0 | total=97 | crc_err=0
+[AUDIO] seq=201 | pcg[0]=     546 pcg[31]=    2277 | total=98 | crc_err=0
+[BIO] seq=201 | ir[0]=     303 ecg[0]=  3440 | total=98 | crc_err=0
+[AUDIO] seq=202 | pcg[0]=     101 pcg[31]=   -4010 | total=99 | crc_err=0
+[BIO] seq=202 | ir[0]=     289 ecg[0]=  2676 | total=99 | crc_err=0
+[AUDIO] seq=203 | pcg[0]=   -4208 pcg[31]=    1583 | total=100 | crc_err=0
+[BIO] seq=203 | ir[0]=     399 ecg[0]=     0 | total=100 | crc_err=0
+[AUDIO] seq=204 | pcg[0]=    6222 pcg[31]=    5380 | total=101 | crc_err=0
+[BIO] seq=204 | ir[0]=     501 ecg[0]=  3924 | total=101 | crc_err=0
+[AUDIO] seq=205 | pcg[0]=     193 pcg[31]=   -2923 | total=102 | crc_err=0
+[BIO] seq=205 | ir[0]=     244 ecg[0]=     0 | total=102 | crc_err=0
+[AUDIO] seq=206 | pcg[0]=   -3249 pcg[31]=    -407 | total=103 | crc_err=0
+[BIO] seq=206 | ir[0]=     289 ecg[0]=  3360 | total=103 | crc_err=0
+[AUDIO] seq=207 | pcg[0]=   -5032 pcg[31]=    1227 | total=104 | crc_err=0
+[BIO] seq=207 | ir[0]=     311 ecg[0]=  2712 | total=104 | crc_err=0
+[AUDIO] seq=208 | pcg[0]=    2589 pcg[31]=    3918 | total=105 | crc_err=0
+[BIO] seq=208 | ir[0]=     435 ecg[0]=     0 | total=105 | crc_err=0
+[AUDIO] seq=209 | pcg[0]=    1951 pcg[31]=   -4900 | total=106 | crc_err=0
+[BIO] seq=209 | ir[0]=     490 ecg[0]=  3960 | total=106 | crc_err=0
+[AUDIO] seq=210 | pcg[0]=     362 pcg[31]=   -2571 | total=107 | crc_err=0
+[BIO] seq=210 | ir[0]=     214 ecg[0]=     0 | total=107 | crc_err=0
+[AUDIO] seq=211 | pcg[0]=     786 pcg[31]=    2842 | total=108 | crc_err=0
+[BIO] seq=211 | ir[0]=     266 ecg[0]=  3344 | total=108 | crc_err=0
+[AUDIO] seq=212 | pcg[0]=    3198 pcg[31]=    2379 | total=109 | crc_err=0
+[BIO] seq=212 | ir[0]=     298 ecg[0]=  2724 | total=109 | crc_err=0
+[AUDIO] seq=213 | pcg[0]=    4052 pcg[31]=   -2093 | total=110 | crc_err=0
+[BIO] seq=213 | ir[0]=     422 ecg[0]=     0 | total=110 | crc_err=0
+[AUDIO] seq=214 | pcg[0]=   -5014 pcg[31]=   -1813 | total=111 | crc_err=0
+[BIO] seq=214 | ir[0]=     422 ecg[0]=  3944 | total=111 | crc_err=0
+[AUDIO] seq=215 | pcg[0]=   -1114 pcg[31]=    4525 | total=112 | crc_err=0
+[BIO] seq=215 | ir[0]=     203 ecg[0]=     0 | total=112 | crc_err=0
+[AUDIO] seq=216 | pcg[0]=    4972 pcg[31]=    3837 | total=113 | crc_err=0
+[BIO] seq=216 | ir[0]=     250 ecg[0]=  3344 | total=113 | crc_err=0
+[AUDIO] seq=217 | pcg[0]=    2220 pcg[31]=   -3219 | total=114 | crc_err=0
+[BIO] seq=217 | ir[0]=     284 ecg[0]=  2744 | total=114 | crc_err=0
+[AUDIO] seq=218 | pcg[0]=   -5807 pcg[31]=   -1079 | total=115 | crc_err=0
+[BIO] seq=218 | ir[0]=     320 ecg[0]=     0 | total=115 | crc_err=0
+[AUDIO] seq=219 | pcg[0]=    1740 pcg[31]=    3676 | total=116 | crc_err=0
+[BIO] seq=219 | ir[0]=     428 ecg[0]=  3944 | total=116 | crc_err=0
+[AUDIO] seq=220 | pcg[0]=    7342 pcg[31]=   -2581 | total=117 | crc_err=0
+[BIO] seq=220 | ir[0]=     509 ecg[0]=     0 | total=117 | crc_err=0
+[AUDIO] seq=221 | pcg[0]=    -205 pcg[31]=   -5463 | total=118 | crc_err=0
+[BIO] seq=221 | ir[0]=     278 ecg[0]=  3336 | total=118 | crc_err=0
+[AUDIO] seq=222 | pcg[0]=   -3501 pcg[31]=   -2552 | total=119 | crc_err=0
+[BIO] seq=222 | ir[0]=     330 ecg[0]=  2776 | total=119 | crc_err=0
+[AUDIO] seq=223 | pcg[0]=   -1029 pcg[31]=    7510 | total=120 | crc_err=0
+[BIO] seq=223 | ir[0]=     330 ecg[0]=     0 | total=120 | crc_err=0
+[AUDIO] seq=224 | pcg[0]=    3706 pcg[31]=    1028 | total=121 | crc_err=0
+[BIO] seq=224 | ir[0]=     406 ecg[0]=  3928 | total=121 | crc_err=0
+[AUDIO] seq=225 | pcg[0]=   -1014 pcg[31]=   -3492 | total=122 | crc_err=0
+[BIO] seq=225 | ir[0]=     500 ecg[0]=     0 | total=122 | crc_err=0
+[AUDIO] seq=226 | pcg[0]=   -3233 pcg[31]=    -663 | total=123 | crc_err=0
+[BIO] seq=226 | ir[0]=     288 ecg[0]=  3328 | total=123 | crc_err=0
+[AUDIO] seq=227 | pcg[0]=    3837 pcg[31]=    1436 | total=124 | crc_err=0
+[BIO] seq=227 | ir[0]=     232 ecg[0]=  2788 | total=124 | crc_err=0
+[AUDIO] seq=228 | pcg[0]=    4443 pcg[31]=   -1937 | total=125 | crc_err=0
+[BIO] seq=228 | ir[0]=     267 ecg[0]=     0 | total=125 | crc_err=0
+[AUDIO] seq=229 | pcg[0]=   -1652 pcg[31]=   -5208 | total=126 | crc_err=0
+[BIO] seq=229 | ir[0]=     303 ecg[0]=  3936 | total=126 | crc_err=0
+[AUDIO] seq=230 | pcg[0]=   -3145 pcg[31]=    2680 | total=127 | crc_err=0
+[BIO] seq=230 | ir[0]=     374 ecg[0]=     0 | total=127 | crc_err=0
+[AUDIO] seq=231 | pcg[0]=     754 pcg[31]=    3237 | total=128 | crc_err=0
+[BIO] seq=231 | ir[0]=     216 ecg[0]=  3304 | total=128 | crc_err=0
+[AUDIO] seq=232 | pcg[0]=    1257 pcg[31]=   -1778 | total=129 | crc_err=0
+[BIO] seq=232 | ir[0]=     216 ecg[0]=  2812 | total=129 | crc_err=0
+[AUDIO] seq=233 | pcg[0]=   -7237 pcg[31]=   -2592 | total=130 | crc_err=0
+[BIO] seq=233 | ir[0]=     272 ecg[0]=     0 | total=130 | crc_err=0
+[AUDIO] seq=234 | pcg[0]=    -793 pcg[31]=     773 | total=131 | crc_err=0
+[BIO] seq=234 | ir[0]=     328 ecg[0]=  3744 | total=131 | crc_err=0
+[AUDIO] seq=235 | pcg[0]=    3837 pcg[31]=    1980 | total=132 | crc_err=0
+[BIO] seq=235 | ir[0]=     347 ecg[0]=     0 | total=132 | crc_err=0
+[AUDIO] seq=236 | pcg[0]=    1672 pcg[31]=       0 | total=133 | crc_err=0
+[BIO] seq=236 | ir[0]=     502 ecg[0]=  3224 | total=133 | crc_err=0
+[AUDIO] seq=237 | pcg[0]=   -2050 pcg[31]=   -6504 | total=134 | crc_err=0
+[BIO] seq=237 | ir[0]=     412 ecg[0]=  2836 | total=134 | crc_err=0
+[AUDIO] seq=238 | pcg[0]=   -6673 pcg[31]=   -4296 | total=135 | crc_err=0
+[BIO] seq=238 | ir[0]=     188 ecg[0]=    55 | total=135 | crc_err=0
+[AUDIO] seq=239 | pcg[0]=    6513 pcg[31]=    3634 | total=136 | crc_err=0
+[BIO] seq=239 | ir[0]=     272 ecg[0]=  3944 | total=136 | crc_err=0
+[AUDIO] seq=240 | pcg[0]=    6125 pcg[31]=     712 | total=137 | crc_err=0
+[BIO] seq=240 | ir[0]=     346 ecg[0]=     0 | total=137 | crc_err=0
+[AUDIO] seq=241 | pcg[0]=    -604 pcg[31]=    1854 | total=138 | crc_err=0
+[BIO] seq=241 | ir[0]=     502 ecg[0]=  3280 | total=138 | crc_err=0
+[AUDIO] seq=242 | pcg[0]=   -2022 pcg[31]=   -2991 | total=139 | crc_err=0
+[BIO] seq=242 | ir[0]=     381 ecg[0]=  2792 | total=139 | crc_err=0
+[AUDIO] seq=243 | pcg[0]=   -1989 pcg[31]=    3202 | total=140 | crc_err=0
+[BIO] seq=243 | ir[0]=     190 ecg[0]=     0 | total=140 | crc_err=0
+[AUDIO] seq=244 | pcg[0]=    1808 pcg[31]=     258 | total=141 | crc_err=0
+[BIO] seq=244 | ir[0]=     273 ecg[0]=  3904 | total=141 | crc_err=0
+[AUDIO] seq=245 | pcg[0]=    -557 pcg[31]=   -2557 | total=142 | crc_err=0
+[BIO] seq=245 | ir[0]=     304 ecg[0]=     0 | total=142 | crc_err=0
+[AUDIO] seq=246 | pcg[0]=    1912 pcg[31]=   -1788 | total=143 | crc_err=0
+[BIO] seq=246 | ir[0]=     310 ecg[0]=  3312 | total=143 | crc_err=0
+[AUDIO] seq=247 | pcg[0]=    2818 pcg[31]=    3917 | total=144 | crc_err=0
+[BIO] seq=247 | ir[0]=     452 ecg[0]=  2848 | total=144 | crc_err=0
+[AUDIO] seq=248 | pcg[0]=    4834 pcg[31]=    -311 | total=145 | crc_err=0
+[BIO] seq=248 | ir[0]=     250 ecg[0]=     0 | total=145 | crc_err=0
+[AUDIO] seq=249 | pcg[0]=   -2070 pcg[31]=   -3328 | total=146 | crc_err=0
+[BIO] seq=249 | ir[0]=     250 ecg[0]=  3912 | total=146 | crc_err=0
+[AUDIO] seq=250 | pcg[0]=   -2572 pcg[31]=   -1166 | total=147 | crc_err=0
+[BIO] seq=250 | ir[0]=     291 ecg[0]=     0 | total=147 | crc_err=0
+[AUDIO] seq=251 | pcg[0]=    5338 pcg[31]=    4110 | total=148 | crc_err=0
+[BIO] seq=251 | ir[0]=     314 ecg[0]=  3256 | total=148 | crc_err=0
+[AUDIO] seq=252 | pcg[0]=    4126 pcg[31]=    4987 | total=149 | crc_err=0
+[BIO] seq=252 | ir[0]=     457 ecg[0]=  2864 | total=149 | crc_err=0
+[AUDIO] seq=253 | pcg[0]=   -2534 pcg[31]=   -4685 | total=150 | crc_err=0
+[BIO] seq=253 | ir[0]=     494 ecg[0]=     0 | total=150 | crc_err=0
+[AUDIO] seq=254 | pcg[0]=   -5180 pcg[31]=   -1226 | total=151 | crc_err=0
+[BIO] seq=254 | ir[0]=     290 ecg[0]=  3952 | total=151 | crc_err=0
+[AUDIO] seq=255 | pcg[0]=     369 pcg[31]=    1495 | total=152 | crc_err=0
+[BIO] seq=255 | ir[0]=     205 ecg[0]=     0 | total=152 | crc_err=0
+[AUDIO] seq=0 | pcg[0]=    3114 pcg[31]=     212 | total=153 | crc_err=0
+[BIO] seq=0 | ir[0]=     253 ecg[0]=  3296 | total=153 | crc_err=0
+[AUDIO] seq=1 | pcg[0]=    2848 pcg[31]=   -5702 | total=154 | crc_err=0
+[BIO] seq=1 | ir[0]=     493 ecg[0]=  2912 | total=154 | crc_err=0
+[AUDIO] seq=2 | pcg[0]=   -2878 pcg[31]=   -1974 | total=155 | crc_err=0
+[BIO] seq=2 | ir[0]=     493 ecg[0]=     0 | total=155 | crc_err=0
+[AUDIO] seq=3 | pcg[0]=    2399 pcg[31]=    6283 | total=156 | crc_err=0
+[BIO] seq=3 | ir[0]=     268 ecg[0]=  3936 | total=156 | crc_err=0
+[AUDIO] seq=4 | pcg[0]=    -598 pcg[31]=    3347 | total=157 | crc_err=0
+[BIO] seq=4 | ir[0]=     281 ecg[0]=  3936 | total=157 | crc_err=0
+[AUDIO] seq=5 | pcg[0]=    -624 pcg[31]=     492 | total=158 | crc_err=0
+[BIO] seq=5 | ir[0]=     194 ecg[0]=  3264 | total=158 | crc_err=0
+[AUDIO] seq=6 | pcg[0]=       8 pcg[31]=    -605 | total=159 | crc_err=0
+[BIO] seq=6 | ir[0]=     304 ecg[0]=  2920 | total=159 | crc_err=0
+[AUDIO] seq=7 | pcg[0]=    3312 pcg[31]=    -302 | total=160 | crc_err=0
+[BIO] seq=7 | ir[0]=     316 ecg[0]=     0 | total=160 | crc_err=0
+[AUDIO] seq=8 | pcg[0]=    2851 pcg[31]=    -464 | total=161 | crc_err=0
+[BIO] seq=8 | ir[0]=     470 ecg[0]=  3920 | total=161 | crc_err=0
+[AUDIO] seq=9 | pcg[0]=     138 pcg[31]=    3102 | total=162 | crc_err=0
+[BIO] seq=9 | ir[0]=     439 ecg[0]=     0 | total=162 | crc_err=0
+[AUDIO] seq=10 | pcg[0]=    1179 pcg[31]=   -1681 | total=163 | crc_err=0
+[BIO] seq=10 | ir[0]=     233 ecg[0]=  3144 | total=163 | crc_err=0
+[AUDIO] seq=11 | pcg[0]=   -1720 pcg[31]=   -4018 | total=164 | crc_err=0
+[BIO] seq=11 | ir[0]=     288 ecg[0]=  2880 | total=164 | crc_err=0
+[AUDIO] seq=12 | pcg[0]=    -369 pcg[31]=    1912 | total=165 | crc_err=0
+[BIO] seq=12 | ir[0]=     317 ecg[0]=     0 | total=165 | crc_err=0
+[AUDIO] seq=13 | pcg[0]=    1510 pcg[31]=    2995 | total=166 | crc_err=0
+[BIO] seq=13 | ir[0]=     436 ecg[0]=  3904 | total=166 | crc_err=0
+[AUDIO] seq=14 | pcg[0]=    2539 pcg[31]=    1728 | total=167 | crc_err=0
+[BIO] seq=14 | ir[0]=     499 ecg[0]=     0 | total=167 | crc_err=0
+[AUDIO] seq=15 | pcg[0]=   -6791 pcg[31]=    2947 | total=168 | crc_err=0
+[BIO] seq=15 | ir[0]=     287 ecg[0]=  3264 | total=168 | crc_err=0
+[AUDIO] seq=16 | pcg[0]=   -4065 pcg[31]=    2696 | total=169 | crc_err=0
+[BIO] seq=16 | ir[0]=     229 ecg[0]=  2872 | total=169 | crc_err=0
+[AUDIO] seq=17 | pcg[0]=    4125 pcg[31]=   -1466 | total=170 | crc_err=0
+[BIO] seq=17 | ir[0]=     246 ecg[0]=     0 | total=170 | crc_err=0
+[AUDIO] seq=18 | pcg[0]=    5509 pcg[31]=   -3233 | total=171 | crc_err=0
+[BIO] seq=18 | ir[0]=     303 ecg[0]=  3936 | total=171 | crc_err=0
+[AUDIO] seq=19 | pcg[0]=   -7549 pcg[31]=    -285 | total=172 | crc_err=0
+[BIO] seq=19 | ir[0]=     351 ecg[0]=     0 | total=172 | crc_err=0
+[AUDIO] seq=20 | pcg[0]=    2642 pcg[31]=     606 | total=173 | crc_err=0
+[BIO] seq=20 | ir[0]=     351 ecg[0]=  3268 | total=173 | crc_err=0
+[AUDIO] seq=21 | pcg[0]=    3461 pcg[31]=    3388 | total=174 | crc_err=0
+[BIO] seq=21 | ir[0]=     179 ecg[0]=  3032 | total=174 | crc_err=0
+[AUDIO] seq=22 | pcg[0]=    4970 pcg[31]=   -2873 | total=175 | crc_err=0
+[BIO] seq=22 | ir[0]=     257 ecg[0]=     0 | total=175 | crc_err=0
+[AUDIO] seq=23 | pcg[0]=   -5721 pcg[31]=   -3363 | total=176 | crc_err=0
+[BIO] seq=23 | ir[0]=     274 ecg[0]=  4008 | total=176 | crc_err=0
+[AUDIO] seq=24 | pcg[0]=      95 pcg[31]=    1538 | total=177 | crc_err=0
+[BIO] seq=24 | ir[0]=     356 ecg[0]=     0 | total=177 | crc_err=0
+[AUDIO] seq=25 | pcg[0]=    2819 pcg[31]=    -361 | total=178 | crc_err=0
+[BIO] seq=25 | ir[0]=     487 ecg[0]=  3200 | total=178 | crc_err=0
+[AUDIO] seq=26 | pcg[0]=    4161 pcg[31]=    3744 | total=179 | crc_err=0
+[BIO] seq=26 | ir[0]=     395 ecg[0]=  2896 | total=179 | crc_err=0
+[AUDIO] seq=27 | pcg[0]=    -403 pcg[31]=   -3291 | total=180 | crc_err=0
+[BIO] seq=27 | ir[0]=     219 ecg[0]=     0 | total=180 | crc_err=0
+[AUDIO] seq=28 | pcg[0]=   -1286 pcg[31]=      10 | total=181 | crc_err=0
+[BIO] seq=28 | ir[0]=     309 ecg[0]=  3936 | total=181 | crc_err=0
+[AUDIO] seq=29 | pcg[0]=    1833 pcg[31]=   -2810 | total=182 | crc_err=0
+[BIO] seq=29 | ir[0]=     332 ecg[0]=     0 | total=182 | crc_err=0
+[AUDIO] seq=30 | pcg[0]=    -377 pcg[31]=    4879 | total=183 | crc_err=0
+[BIO] seq=30 | ir[0]=     476 ecg[0]=  3256 | total=183 | crc_err=0
+[AUDIO] seq=31 | pcg[0]=    1620 pcg[31]=   -3265 | total=184 | crc_err=0
+[BIO] seq=31 | ir[0]=     422 ecg[0]=  2896 | total=184 | crc_err=0
+[AUDIO] seq=32 | pcg[0]=   -3397 pcg[31]=      71 | total=185 | crc_err=0
+[BIO] seq=32 | ir[0]=     211 ecg[0]=     0 | total=185 | crc_err=0
+[AUDIO] seq=33 | pcg[0]=   -2780 pcg[31]=    -978 | total=186 | crc_err=0
+[BIO] seq=33 | ir[0]=     245 ecg[0]=  3920 | total=186 | crc_err=0
+[AUDIO] seq=34 | pcg[0]=    -931 pcg[31]=    3026 | total=187 | crc_err=0
+[BIO] seq=34 | ir[0]=     261 ecg[0]=     0 | total=187 | crc_err=0
+[AUDIO] seq=35 | pcg[0]=    -211 pcg[31]=    4409 | total=188 | crc_err=0
+[BIO] seq=35 | ir[0]=     318 ecg[0]=  3264 | total=188 | crc_err=0
+[AUDIO] seq=36 | pcg[0]=    -988 pcg[31]=    -268 | total=189 | crc_err=0
+[BIO] seq=36 | ir[0]=     196 ecg[0]=  2864 | total=189 | crc_err=0
+[AUDIO] seq=37 | pcg[0]=   -4128 pcg[31]=   -4446 | total=190 | crc_err=0
+[BIO] seq=37 | ir[0]=     196 ecg[0]=     0 | total=190 | crc_err=0
+[AUDIO] seq=38 | pcg[0]=   -1259 pcg[31]=   -2547 | total=191 | crc_err=0
+[BIO] seq=38 | ir[0]=     254 ecg[0]=  3936 | total=191 | crc_err=0
+[AUDIO] seq=39 | pcg[0]=   -4721 pcg[31]=   -2671 | total=192 | crc_err=0
+[BIO] seq=39 | ir[0]=     265 ecg[0]=     0 | total=192 | crc_err=0
+[AUDIO] seq=40 | pcg[0]=    3243 pcg[31]=   -3865 | total=193 | crc_err=0
+[BIO] seq=40 | ir[0]=     336 ecg[0]=  3272 | total=193 | crc_err=0
+[AUDIO] seq=41 | pcg[0]=    2772 pcg[31]=   -1253 | total=194 | crc_err=0
+[BIO] seq=41 | ir[0]=     406 ecg[0]=  2848 | total=194 | crc_err=0
+[AUDIO] seq=42 | pcg[0]=   -1900 pcg[31]=    -896 | total=195 | crc_err=0
+[BIO] seq=42 | ir[0]=     512 ecg[0]=     0 | total=195 | crc_err=0
+[AUDIO] seq=43 | pcg[0]=   -2055 pcg[31]=    1484 | total=196 | crc_err=0
+[BIO] seq=43 | ir[0]=     274 ecg[0]=  3904 | total=196 | crc_err=0
+[AUDIO] seq=44 | pcg[0]=    2051 pcg[31]=    2920 | total=197 | crc_err=0
+[BIO] seq=44 | ir[0]=     219 ecg[0]=     0 | total=197 | crc_err=0
+[AUDIO] seq=45 | pcg[0]=    3235 pcg[31]=    3892 | total=198 | crc_err=0
+[BIO] seq=45 | ir[0]=     380 ecg[0]=  3272 | total=198 | crc_err=0
+[AUDIO] seq=46 | pcg[0]=    -233 pcg[31]=    1650 | total=199 | crc_err=0
+[BIO] seq=46 | ir[0]=     380 ecg[0]=  2888 | total=199 | crc_err=0
+[AUDIO] seq=47 | pcg[0]=   -1314 pcg[31]=   -5338 | total=200 | crc_err=0
+[BIO] seq=47 | ir[0]=     515 ecg[0]=     0 | total=200 | crc_err=0
+[AUDIO] seq=48 | pcg[0]=   -2098 pcg[31]=     351 | total=201 | crc_err=0
+[BIO] seq=48 | ir[0]=     360 ecg[0]=  3920 | total=201 | crc_err=0
+[AUDIO] seq=49 | pcg[0]=    4085 pcg[31]=    4125 | total=202 | crc_err=0
+[BIO] seq=49 | ir[0]=     203 ecg[0]=     0 | total=202 | crc_err=0
+[AUDIO] seq=50 | pcg[0]=   10639 pcg[31]=   -5115 | total=203 | crc_err=0
+[BIO] seq=50 | ir[0]=     251 ecg[0]=  3280 | total=203 | crc_err=0
+[AUDIO] seq=51 | pcg[0]=    1407 pcg[31]=   -3818 | total=204 | crc_err=0
+[BIO] seq=51 | ir[0]=     275 ecg[0]=  2856 | total=204 | crc_err=0
+[AUDIO] seq=52 | pcg[0]=   -7379 pcg[31]=    6290 | total=205 | crc_err=0
+[BIO] seq=52 | ir[0]=     332 ecg[0]=     0 | total=205 | crc_err=0
+[AUDIO] seq=53 | pcg[0]=   -2163 pcg[31]=    7527 | total=206 | crc_err=0
+[BIO] seq=53 | ir[0]=     467 ecg[0]=  3936 | total=206 | crc_err=0
+[AUDIO] seq=54 | pcg[0]=    3896 pcg[31]=    5730 | total=207 | crc_err=0
+[BIO] seq=54 | ir[0]=     260 ecg[0]=     0 | total=207 | crc_err=0
+[AUDIO] seq=55 | pcg[0]=    4344 pcg[31]=   -5089 | total=208 | crc_err=0
+[BIO] seq=55 | ir[0]=     260 ecg[0]=  3312 | total=208 | crc_err=0
+[AUDIO] seq=56 | pcg[0]=      53 pcg[31]=  -11676 | total=209 | crc_err=0
+[BIO] seq=56 | ir[0]=     282 ecg[0]=  2680 | total=209 | crc_err=0
+[AUDIO] seq=57 | pcg[0]=   -1484 pcg[31]=   -2429 | total=210 | crc_err=0
+[BIO] seq=57 | ir[0]=     282 ecg[0]=     0 | total=210 | crc_err=0
+[AUDIO] seq=58 | pcg[0]=    2870 pcg[31]=    6449 | total=211 | crc_err=0
+[BIO] seq=58 | ir[0]=     440 ecg[0]=  3832 | total=211 | crc_err=0
+[AUDIO] seq=59 | pcg[0]=    9758 pcg[31]=   -1333 | total=212 | crc_err=0
+[BIO] seq=59 | ir[0]=     514 ecg[0]=     0 | total=212 | crc_err=0
+[AUDIO] seq=60 | pcg[0]=   -3654 pcg[31]=   -9127 | total=213 | crc_err=0
+[BIO] seq=60 | ir[0]=     262 ecg[0]=  3408 | total=213 | crc_err=0
+[AUDIO] seq=61 | pcg[0]=   -5245 pcg[31]=    -912 | total=214 | crc_err=0
+[BIO] seq=61 | ir[0]=     235 ecg[0]=  2800 | total=214 | crc_err=0
+[AUDIO] seq=62 | pcg[0]=    4606 pcg[31]=    3854 | total=215 | crc_err=0
+[BIO] seq=62 | ir[0]=     287 ecg[0]=     0 | total=215 | crc_err=0
+[AUDIO] seq=63 | pcg[0]=    4872 pcg[31]=    6016 | total=216 | crc_err=0
+[BIO] seq=63 | ir[0]=     410 ecg[0]=  3936 | total=216 | crc_err=0
+[AUDIO] seq=64 | pcg[0]=    -876 pcg[31]=   -4970 | total=217 | crc_err=0
+[BIO] seq=64 | ir[0]=     512 ecg[0]=     0 | total=217 | crc_err=0
+[AUDIO] seq=65 | pcg[0]=   -9927 pcg[31]=   -3652 | total=218 | crc_err=0
+[BIO] seq=65 | ir[0]=     279 ecg[0]=  3300 | total=218 | crc_err=0
+[AUDIO] seq=66 | pcg[0]=   -1078 pcg[31]=   -1561 | total=219 | crc_err=0
+[BIO] seq=66 | ir[0]=     170 ecg[0]=  2752 | total=219 | crc_err=0
+[AUDIO] seq=67 | pcg[0]=    7473 pcg[31]=   -2654 | total=220 | crc_err=0
+[BIO] seq=67 | ir[0]=     305 ecg[0]=     0 | total=220 | crc_err=0
+[AUDIO] seq=68 | pcg[0]=    5169 pcg[31]=   -2686 | total=221 | crc_err=0
+[BIO] seq=68 | ir[0]=     299 ecg[0]=  3976 | total=221 | crc_err=0
+[AUDIO] seq=69 | pcg[0]=   -4682 pcg[31]=   -4363 | total=222 | crc_err=0
+[BIO] seq=69 | ir[0]=     353 ecg[0]=     0 | total=222 | crc_err=0
+[AUDIO] seq=70 | pcg[0]=   -3748 pcg[31]=     195 | total=223 | crc_err=0
+[BIO] seq=70 | ir[0]=     490 ecg[0]=  3344 | total=223 | crc_err=0
+[AUDIO] seq=71 | pcg[0]=    -531 pcg[31]=    9699 | total=224 | crc_err=0
+[BIO] seq=71 | ir[0]=     261 ecg[0]=  2760 | total=224 | crc_err=0
+[AUDIO] seq=72 | pcg[0]=     917 pcg[31]=    4225 | total=225 | crc_err=0
+[BIO] seq=72 | ir[0]=     261 ecg[0]=     0 | total=225 | crc_err=0
+[AUDIO] seq=73 | pcg[0]=    1427 pcg[31]=   -6765 | total=226 | crc_err=0
+[BIO] seq=73 | ir[0]=     288 ecg[0]=  3928 | total=226 | crc_err=0
+[AUDIO] seq=74 | pcg[0]=   -7843 pcg[31]=   -4337 | total=227 | crc_err=0
+[BIO] seq=74 | ir[0]=     342 ecg[0]=     0 | total=227 | crc_err=0
+[AUDIO] seq=75 | pcg[0]=     872 pcg[31]=   -2463 | total=228 | crc_err=0
+[BIO] seq=75 | ir[0]=     467 ecg[0]=  3328 | total=228 | crc_err=0
+[AUDIO] seq=76 | pcg[0]=    8453 pcg[31]=    6450 | total=229 | crc_err=0
+[BIO] seq=76 | ir[0]=     498 ecg[0]=  2800 | total=229 | crc_err=0
+[AUDIO] seq=77 | pcg[0]=    -927 pcg[31]=    -884 | total=230 | crc_err=0
+[BIO] seq=77 | ir[0]=     270 ecg[0]=     0 | total=230 | crc_err=0
+[AUDIO] seq=78 | pcg[0]=   -1424 pcg[31]=    5401 | total=231 | crc_err=0
+[BIO] seq=78 | ir[0]=     219 ecg[0]=  3936 | total=231 | crc_err=0
+[AUDIO] seq=79 | pcg[0]=    1194 pcg[31]=    1178 | total=232 | crc_err=0
+[BIO] seq=79 | ir[0]=     258 ecg[0]=     0 | total=232 | crc_err=0
+[AUDIO] seq=80 | pcg[0]=    1715 pcg[31]=    1142 | total=233 | crc_err=0
+[BIO] seq=80 | ir[0]=     511 ecg[0]=  3368 | total=233 | crc_err=0
+[AUDIO] seq=81 | pcg[0]=     644 pcg[31]=    2054 | total=234 | crc_err=0
+[BIO] seq=81 | ir[0]=     511 ecg[0]=  2720 | total=234 | crc_err=0
+[AUDIO] seq=82 | pcg[0]=   -8323 pcg[31]=   -3451 | total=235 | crc_err=0
+[BIO] seq=82 | ir[0]=     297 ecg[0]=     0 | total=235 | crc_err=0
+[AUDIO] seq=83 | pcg[0]=   -2737 pcg[31]=    5123 | total=236 | crc_err=0
+[BIO] seq=83 | ir[0]=     199 ecg[0]=  3928 | total=236 | crc_err=0
+[AUDIO] seq=84 | pcg[0]=    1200 pcg[31]=     938 | total=237 | crc_err=0
+[BIO] seq=84 | ir[0]=     293 ecg[0]=     0 | total=237 | crc_err=0
+[AUDIO] seq=85 | pcg[0]=    4156 pcg[31]=   -1979 | total=238 | crc_err=0
+[BIO] seq=85 | ir[0]=     303 ecg[0]=  3392 | total=238 | crc_err=0
+[AUDIO] seq=86 | pcg[0]=   -2477 pcg[31]=   -4046 | total=239 | crc_err=0
+[BIO] seq=86 | ir[0]=     317 ecg[0]=  2696 | total=239 | crc_err=0
+[AUDIO] seq=87 | pcg[0]=   -3292 pcg[31]=   -4064 | total=240 | crc_err=0
+[BIO] seq=87 | ir[0]=     454 ecg[0]=     0 | total=240 | crc_err=0
+[AUDIO] seq=88 | pcg[0]=   -2532 pcg[31]=     718 | total=241 | crc_err=0
+[BIO] seq=88 | ir[0]=     512 ecg[0]=  3940 | total=241 | crc_err=0
+[AUDIO] seq=89 | pcg[0]=    -881 pcg[31]=    5006 | total=242 | crc_err=0
+[BIO] seq=89 | ir[0]=     316 ecg[0]=     0 | total=242 | crc_err=0
+[AUDIO] seq=90 | pcg[0]=    3199 pcg[31]=    5981 | total=243 | crc_err=0
+[BIO] seq=90 | ir[0]=     316 ecg[0]=  3424 | total=243 | crc_err=0
+[AUDIO] seq=91 | pcg[0]=   -1053 pcg[31]=   -3392 | total=244 | crc_err=0
+[BIO] seq=91 | ir[0]=     300 ecg[0]=  2688 | total=244 | crc_err=0
+[AUDIO] seq=92 | pcg[0]=    -973 pcg[31]=    2681 | total=245 | crc_err=0
+[BIO] seq=92 | ir[0]=     426 ecg[0]=     0 | total=245 | crc_err=0
+[AUDIO] seq=93 | pcg[0]=   -5436 pcg[31]=   -2236 | total=246 | crc_err=0
+[BIO] seq=93 | ir[0]=     514 ecg[0]=  3944 | total=246 | crc_err=0
+[AUDIO] seq=94 | pcg[0]=    2155 pcg[31]=    5889 | total=247 | crc_err=0
+[BIO] seq=94 | ir[0]=     306 ecg[0]=     0 | total=247 | crc_err=0
+[AUDIO] seq=95 | pcg[0]=    7101 pcg[31]=    7640 | total=248 | crc_err=0
+
+Stopped.
