@@ -25,6 +25,12 @@ extern "C" {
 
 #ifdef SYNC_INTERMEDIARY_USING /* Su dung sync task lam trung gian */
 
+#ifdef DEBUG_SWV_ITM
+#define SYNC_LOG_ERROR(...) printf(__VA_ARGS__)
+#else
+#define SYNC_LOG_ERROR(...) uart_printf(__VA_ARGS__)
+#endif // DEBUG_SWV_ITM
+
 #define SYNC_QUEUE_LENGTH		35
 
 // Cau truc du lieu cho viec dong bo
@@ -73,7 +79,7 @@ osStatus Sync_mail_send(sensor_block_t *block);
 #define MAIL_SEND_FROM_TASK_TO_SYNC(block) do { \
 	if(Sync_mail_send(&(block)) != osOK){ \
 		/* Neu Sync Task xu ly hoac tran heap cham (kha nang cao se bi cai nay) thi se bi di vao day */ \
-		uart_printf("[SYNC] Mail sent from TASK error !\r\n"); \
+		SYNC_LOG_ERROR("[SYNC] Mail sent from TASK error !\r\n"); \
 	} \
 } while(0)
 
@@ -90,7 +96,6 @@ uint32_t Sync_mismatch_count(void);		/* return: So lan xay ra mismatch */
  * @note Tranh xung dot hay bi ghi de
  */
 __attribute__((unused)) static inline void take_snapshotSYNC(snapshot_sync_t *snap){
-
 	/* Dong bo tham so */
 	snap->sample_id = global_sync_snapshot.sample_id;
 	snap->timestamp = global_sync_snapshot.timestamp;
