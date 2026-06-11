@@ -14,7 +14,8 @@ $$ y[n]=\sum_{k=0}^{N-1} h[k] \cdot x[n-k] $$
 	- $y[n]$: mẫu lọc đầu ra
 	
 ## 2. Đáp ứng xung (Impulse Response)
-- **Khái niệm:** Đáp ứng xung là giá trị đầu ra của hệ thống khi đầu vào là 1 xung lý tưởng, ví dụ như hàm *Delta Dirac*. Nó mô tả cách hệ thống **phản ứng** ngay sau khi nhận một tín hiệu đầu vào đột ngột, giúp xác định đặc tính hoạt động của hệ thống đó 
+- **Khái niệm:** Đáp ứng xung là giá trị đầu ra của hệ thống khi đầu vào là 1 xung lý tưởng, ví dụ như hàm *Delta Dirac*. Nó mô tả cách hệ thống **phản ứng** ngay sau khi nhận một tín hiệu đầu vào đột ngột, giúp xác định đặc tính hoạt động của hệ thống đó.
+- Đáp ứng xung là đặc tính của hệ thống trong **miền THỜI GIAN**.
 - Hàm $h[k]$ chính là đáp ứng xung của bộ lọc
 	- Với FIR: đáp ứng xung chỉ tồn tại trong N mẫu -> **Không hồi tiếp**, không tích lũy lỗi 
 	- Với IIR: đáp ứng kéo dài vô tận do có hồi tiếp
@@ -28,6 +29,7 @@ $$ y[n]=\sum_{k=0}^{N-1} h[k] \cdot x[n-k] $$
 	
 ## 3. Đáp ứng tần số (Frequency Response)
 - Frequency Response (đáp ứng tần số) là phép đo định lượng của phổ tần số đầu ra của một hệ thống hoặc thiết bị khi phản ứng với một kích thích tần số từ môi trường. Có thể hiểu đơn giản là việc thiết bị hoặc hệ thống phản ứng thế nào khi ta đưa vào các tín hiệu có tần số khác nhau (có bị méo, mạnh yếu ra sao)
+- Đáp ứng tần số là đặc tính của hệ thống trong **miền TẦN SỐ**.
 - Đáp ứng tần số của lowpass lý tưởng là hình chữ nhật. Dưới đây là công thức mô tả đáp ứng tần số với 2 cách biểu diễn khác nhau: 
 
 * Biểu diễn trong miền tần số **tuyệt đối** (tần số liên tục hoặc tần số tương tự). Sử dụng biến $f$:
