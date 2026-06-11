@@ -366,14 +366,12 @@ uint16_t max30102_read_fifo(max30102_t *obj, max30102_record *record, uint16_t m
 			MAXLOWLEVELCHECKFUNC(max30102_read(obj, MAX30102_FIFO_DATA, data_temp, bytesToRead));
 
 #ifdef DEBUG_SWV_ITM
-			/* Doc lai rd_ptr sau khi I2C read xong de biet thuc su da doc duoc bao nhieu */
+			/* Doc lai rd_ptr sau khi I2C read xong FIFO de biet thuc su da doc duoc bao nhieu */
 			uint8_t rd_ptr_after = max30102_get_read_pointer(obj);
 
 			/* Tinh so samples thuc su da doc duoc */
 			actual_samples = ((int16_t)(rd_ptr_after - rd_ptr_before) & 0x1F);
 			if(actual_samples == 0) actual_samples = 32;
-
-			/* Dung actual_samples thay cho num_samples de parse */
 			if(actual_samples > max_samples) actual_samples = max_samples;
 
 			uint8_t ovf = max30102_read_overflow_counter(obj); 	/* Doc thanh ghi OVF_COUNTER 0x05 */
