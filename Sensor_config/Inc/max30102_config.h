@@ -20,8 +20,15 @@ extern "C" {
 #include "cmsis_os.h"
 
 // ==== MACROS　====
-#define MAX_FIFO_SAMPLE  32
-#define MAX_ACTIVE_LEDS  2
+#define MAX_FIFO_SAMPLE  		32
+#define MAX_ACTIVE_LEDS  		2
+#define ROLLOVER_ENABLE			1
+#define ROLLOVER_DISABLE		0
+//#define FIFO_A_FULL_SAMPLES		15
+
+#ifndef FIFO_A_FULL_SAMPLES
+#define FIFO_A_FULL_SAMPLES		0
+#endif // FIFO_A_FULL_SAMPLES
 
 // Task & RTOS
 extern osSemaphoreId max30102_semId;

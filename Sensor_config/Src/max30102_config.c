@@ -61,16 +61,25 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 	max30102_set_led_current_red(&max30102_obj, 8.0f);
 	max30102_set_led_mode(&max30102_obj, &record, max30102_spo2);
 
-	// Interrupt settings (disable)
-	max30102_set_a_full(&max30102_obj, 0);
-	max30102_set_ppg_rdy(&max30102_obj, 0);
+	// Interrupt settings (diasble external interrupt)
+	max30102_set_a_full_itrp(&max30102_obj, 0);	 		/* Enable interrupt khi FIFO trong 1 luong sample co dinh */
+	max30102_set_ppg_rdy_itrp(&max30102_obj, 0); 		/* Enable interrupt khi FIFO co sample moi */
+	max30102_set_alc_ovf_itrp(&max30102_obj, 0);		/* Enable interrupt khi xay ra Ambient Overflow */
+	max30102_set_die_temp_rdy_itrp(&max30102_obj, 0);	/* Enable interrupt khi co data nhiet do noi bo cua chip */
 
 	// FIFO settings (Phai de sau cung khong se bi ghi de)
-	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, 1, 0); // Gia tri mong muon: 0x10
+	max30102_set_fifo_config(&max30102_obj, max30102_smp_ave_1, ROLLOVER_DISABLE, FIFO_A_FULL_SAMPLES); // Gia tri mong muon: 0x10
 
 	// Kiem tra trang thai thanh ghi cau hinh
 	max30102_config_register_status_verbose(&max30102_obj);
 	return HAL_OK;
+
+	/**
+	 * @note
+	 * Khi dung co che External Interrupt (ngat cung), thi bat buoc phai disable Roll-Over de ep
+	 * chip ngat chinh xac. Con khong thi enable de data duoc chay lien tuc (neu chay voi toc do cao)
+	 * de luon lay duoc cac sample cua chu ky thuc.
+	 */
 }
 
 /*-----------------------------------------------------------*/
