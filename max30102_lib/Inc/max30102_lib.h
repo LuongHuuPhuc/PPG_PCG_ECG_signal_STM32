@@ -26,7 +26,7 @@ extern "C"{
 	}\
 } while(0)
 
-#define MAX_UNUSED(X) 	__attribute__((unsued)) x
+#define MAX_UNUSED(X) 			__attribute__((unsued)) x
 
 typedef enum max30102_mode_t
 {
@@ -115,39 +115,63 @@ void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c);
 void max30102_reset(max30102_t *obj);
 
 /**
- * @brief Enable A_FULL interrupt.
+ * @brief Bat tat A_FULL_EN interrupt.
+ * Thanh ghi cho phep tao ngat neu con tro ghi thay FIFO co mot khoang trong co dinh
+ * truoc ghi day (phu thuoc vao gia tri 5bits duoc set tai FIFO_A_FULL tai thanh ghi FIFO_CONFIG 0x08)
+ * Khi do gia tri A_FULL trong thanh ghi Interrupt Status 1 (0x00) se duoc phep thay doi
  *
  * @param obj Pointer to max30102_t object instance.
  * @param enable Enable (1) or disable (0).
  */
-void max30102_set_a_full(max30102_t *obj, uint8_t enable);
+void max30102_set_a_full_itrp(max30102_t *obj, uint8_t enable);
 
 /**
- * @brief Enable PPG_RDY interrupt.
+ * @brief Bat-tat PPG_RDY_EN interrupt.
+ * Thanh ghi cho phep tao ngat neu dang co data moi trong FIFO
+ * Khi do gia tri PPG_RDY trong thanh ghi Interrupt Status 1 (0x00) se duoc phep thay doi
  *
  * @param obj Pointer to max30102_t object instance.
  * @param enable Enable (1) or disable (0).
  */
-void max30102_set_ppg_rdy(max30102_t *obj, uint8_t enable);
+void max30102_set_ppg_rdy_itrp(max30102_t *obj, uint8_t enable);
 
 /**
- * @brief Enable ALC_OVF interrupt.
+ * @brief Bat-tat ALC_OVF_EN interrupt.
+ * Thanh ghi nay cho phep tao ngat neu Ambient light (anh sang moi truong) qua lon
+ * den gioi han nhat dinh, gay anh huong den tin hieu thu duoc
+ * Khi do gia tri ALC_OVF trong thanh ghi Interrupt Status 1 (0x00) se duoc phep thay doi
  *
  * @param obj Pointer to max30102_t object instance.
  * @param enable Enable (1) or disable (0).
  */
-void max30102_set_alc_ovf(max30102_t *obj, uint8_t enable);
+void max30102_set_alc_ovf_itrp(max30102_t *obj, uint8_t enable);
 
 /**
- * @brief Enable DIE_TEMP_RDY interrupt.
+ * @brief Enable power ready flag interrupt
+ * Neu phat hien cam bien co su co sut ap do khoi dong hoac do nguyen nhan nao do
+ * khien dien ap duoi muc nguong (brownout), roi lai tang len tren muc nguong, hanh ghi
+ * cho phep tao ngat de bao hieu rang cam bien da duoc cap dien va san sang thu thap data
  *
  * @param obj Pointer to max30102_t object instance.
  * @param enable Enable (1) or disable (0).
  */
-void max30102_set_die_temp_rdy(max30102_t *obj, uint8_t enable);
+void max30102_set_power_ready(max30102_t *obj, uint8_t enable);
+
+/**
+ * @brief Bat-tat DIE_TEMP_RDY_EN (Internal Temperature Ready Flag) interrupt.
+ * Thanh ghi cho phep tao ngat khi cam bien chuyen doi nhiet do noi bo hoan tat
+ * tu tuong tu sang so, giup theo doi nhiet do noi bo cua chip cung nhu hieu chinh
+ * cac phep do SpO2 va bu tru cac sai so do su thay doi cua moi truong gay ra
+ * Khi do gia tri DIE_TEMP_RDY trong thanh ghi Interrupt Status 2 (0x01) se duoc phep thay doi
+ *
+ * @param obj Pointer to max30102_t object instance.
+ * @param enable Enable (1) or disable (0).
+ */
+void max30102_set_die_temp_rdy_itrp(max30102_t *obj, uint8_t enable);
 
 /**
  * @brief Enable temperature measurement.
+ * Thanh ghi cho phep thuc hien cac phep do nhiet do noi bo cua cam bien
  *
  * @param obj Pointer to max30102_t object instance.
  * @param enable Enable (1) or disable (0).
@@ -179,9 +203,11 @@ void max30102_interrupt_handler(max30102_t *obj, max30102_record *record);
 
 /**
  * @brief Shutdown the sensor.
+ * Dua cam bien vao trang thai tiet kiem nang luong. Khi do tat ca thanh ghi
+ * se giu nguyen gia tri, khi do moi ngat cung se bi clear ve 0
  *
  * @param obj Pointer to max30102_t object instance.
- * @param shdn Shutdown bit.
+ * @param shdn Shutdown bit (1 - enable, 0 - disable).
  */
 void max30102_shutdown(max30102_t *obj, uint8_t shdn);
 
@@ -309,9 +335,9 @@ void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
  * @param smp_ave So mau trung binh sau do moi sinh interrupt de push vao FIFO
  * @param roll_over_en Cho phep ghi de FIFO neu FIFO day (0 - enable, 1 - disable)
  * @param fifo_a_full So sample empty trong FIFO truoc khi interrupt sinh ra de doc du lieu (0->15)
- * 		  (0 -> FIFO gan nhu full moi interrupt)
+ * (0 -> FIFO gan nhu full moi interrupt). Can phai enable interrupt thi moi dung duoc.
  *
- * Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
+ * -> Giam do tre (Chi lay 1 mau va khong lay trung binh) + push vao FIFO sau khi doc du 32 mau (32ms)
  */
 void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full);
 
@@ -362,8 +388,27 @@ void max30102_burst_read_reg(max30102_t *obj, uint8_t from_reg, uint8_t n, uint8
  * @param wr Con tro luu gia tri wr_ptr doc duoc trong ham (neu muon doc o noi khac). NULL neu khong dung
  * @param rd Con tro luu gia tri rd_ptr doc duoc trong ham (neu muon doc o noi khac). NULL neu khong dung
  *
- * Moi lan ghi data vao FIFO, con tro ghi lai tang len
- * Moi lan doc data tai thanh ghi FIFO, con tro doc lai tang len
+ * + Moi lan cam bien ghi data vao FIFO, con tro ghi lai tang len -> Dan dau
+ * + Moi lan doc xong data tai FIFO, con tro doc lai tang len -> Di sau
+ *
+ * FIFO: | 0 | 1 | 2 | ... | 29 | 30 | 31 |
+ *
+ * 1. De doc duoc FIFO nhu mong muon thi con tro ghi luc nao cung phai cach con tro doc 1 chu ky FIFO
+ * -> Con tro ghi luon phai di truoc con tro doc 1 vong tinh tien (trai->phai) de duoi kip con tro doc tu phia sau
+ * -> Con tro ghi gio nam ben trai con tro doc va cach nhau 1 khoang be nhat co the (2 con tro cang gan cang tot)
+ * (Neu khoang cach nay lon -> Do MCU doc nhanh het 1 chu ky FIFO, bo xa con tro ghi phia sau/FIFO ghi khong kip)
+ * Neu 2 con tro bang nhau trong TH nay -> doc duoc 1 vong -> FULL FIFO
+ *
+ * 2. Nguoc lai, neu MCU doc nhanh -> con tro doc di 1 het 1 vong duoi kip con tro ghi tu phia sau, FIFO ghi khong kip
+ * -> Con tro ghi gio nam ben phai con tro doc -> Doc duoc it mau (drop)
+ * Neu 2 con tro bang nhau trong TH nay -> MCU doc het du lieu -> EMPTY FIFO -> Luc nay neu MCU van gui xung clock I2C
+ * de co hut them data, sensor se khong tang con tro doc. Thay vao do no dong bang (Freeze) va lien tuc day gia tri cua
+ * sample cu nhat ma no co (NSX lam the tranh con tro doc VUOT QUA con tro ghi -> FIFO se la sample rac !)
+ *
+ * 3. Hien tuong nghen FIFO: xay ra khi con tro ghi chay qua nhanh (do tan so lay mau cao hoac clock drift)
+ * trong khi con tro doc khong kip doc het m sample con lai -> no vo tinh VUOT QUA con tro doc n ô.
+ * -> Luc MCU tinh toan con tro de doc FIFO -> Vo tinh tinh sai lech la FIFO moi chi co n samples,
+ * gay nghen m sample cu trong chip
  *
  * Khi con tro ghi (wr_ptr) = con tro doc (rd_ptr), co 2 truong hop:
  * -> FIFO empty (0): Khi do MCU da doc sach toan bo du lieu truoc do, lam con tro doc duoi kip con tro ghi (Doc nhanh, Ghi khong kip)
