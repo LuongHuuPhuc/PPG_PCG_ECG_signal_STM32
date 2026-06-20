@@ -17,6 +17,7 @@ extern "C" {
 #include "ff.h"
 
 #include "take_snapsync.h" // Lay struct `sensor_sync_block_t`
+#include "ExtButton_handle.h" // Lay global variable `g_sd_backup_allow_flag`
 
 /* Dung object do CubeMX sinh ra trong FATFS/App/fatfs.c */
 
@@ -34,7 +35,7 @@ static bool is_Opened = false;
 char g_line_buffer[MICROSD_MAX_LINE_LEN];  /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 
 /* Them mutex de bao ve API tranh truong hop race condition */
-osThreadId microsd_taskId = NULL;
+static osThreadId microsd_taskId = NULL;
 static osMutexId microsd_mutexId = NULL;
 static osMailQId microsd_queueId = NULL;
 
@@ -308,6 +309,32 @@ sd_status_t MicroSD_WriteLine(const char *fmt,...){
 
 /*-----------------------------------------------------------*/
 
+sd_status_t MicroSD_WriteRaw(const void *data, uint32_t size){
+	UINT bw = 0;
+	FRESULT fr;
+
+	/* Chot an toan he thong */
+	if(!is_Opened) return SD_ERR;
+	if((data == NULL) || (size == 0U)) return SD_INVALID_ARG;
+
+	MicroSD_MUTEXLOCK();
+
+	fr = f_write(&file, data, (UINT)size, &bw);
+
+	MicroSD_MUTEXUNLOCK();
+
+	/* Kiem tra trang thai */
+	if(fr != FR_OK || bw != (UINT)size){
+#ifdef DEBUG_SWV_ITM
+		SWV_LOG("[MICRO_SD] Write data failed (f_write): %d bw=%u\r\n", fr, bw);
+#endif // DEBUG_SWV_ITM
+		return SD_WRITE_FAIL;
+	}
+	return SD_OK;
+}
+
+/*-----------------------------------------------------------*/
+
 sd_status_t MicroSD_Flush(void){
 	FRESULT fr;
 	if(!is_Opened) return SD_ERR;
@@ -320,7 +347,6 @@ sd_status_t MicroSD_Flush(void){
 		MicroSD_MUTEXUNLOCK();
 		return SD_SYNC_FAIL;
 	}
-	uart_printf("[MICRO_SD] Sync data OK (f_sync): %d\r\n", fr);
 	MicroSD_MUTEXUNLOCK();
 	return SD_OK;
 }
@@ -373,6 +399,7 @@ bool MicroSD_IsOpened(void){
 
 /*-----------------------------------------------------------*/
 
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols){
 	uint32_t len = 0U;
 	sd_status_t st;
@@ -394,6 +421,7 @@ sd_status_t MicroSD_WriteCSV_U32(const uint32_t *data, uint16_t num_cols){
 
 /*-----------------------------------------------------------*/
 
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols){
 	uint32_t len = 0U;
 	sd_status_t st;
@@ -415,6 +443,7 @@ sd_status_t MicroSD_WriteCSV_I32(const int32_t *data, uint16_t num_cols){
 
 /*-----------------------------------------------------------*/
 
+__attribute__((unused))
 sd_status_t MicroSD_WriteCSV_Str(const char *cols[], uint16_t num_cols){
 	uint32_t len = 0U;
 	sd_status_t st;
@@ -449,6 +478,10 @@ static sd_status_t MicroSD_InternalInit(void){
 	osMailQDef(microSDQueueName, SD_CARD_QUEUE_LENGTH, sensor_sync_block_t);
 	microsd_queueId = osMailCreate(osMailQ(microSDQueueName), NULL);
 	if(microsd_queueId == NULL) return SD_ERR;
+
+	osThreadDef(microSDTaskName, MicroSD_task, osPriorityLow, 0, 1024 * 3);
+	microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
+	configASSERT(microsd_taskId);
 
 	return SD_OK;
 }
@@ -497,7 +530,42 @@ void MicroSD_dispatch(sensor_sync_block_t *block){
 /*-----------------------------------------------------------*/
 
 void MicroSD_task(void const *pvParameter){
+	(void)pvParameter;
 
+	osEvent evt;
+	sensor_sync_block_t *recev_block = NULL;
+
+	uart_printf("MicroSD task started !\r\n");
+
+	// Mo file nhi phan phang san o che do ghi noi tiep Append Mode.
+	if(MicroSD_Open(BIN_FILE_NAME, false) != SD_OK){
+		uart_printf("[MICRO_SD] MicroSD_Open failed !\r\n");
+		for(;;) osDelay(1000);
+	}
+	uart_printf("[MICRO_SD] MicroSD_Open file %s OK!\r\n", BIN_FILE_NAME);
+
+	while(1){
+		/* Rut Mail tu Queue */
+		evt = osMailGet(microsd_queueId, osWaitForever);
+		if(evt.status == osEventMail){
+			recev_block = (sensor_sync_block_t*)evt.value.p;
+
+			if(recev_block != NULL){
+				if(g_sd_backup_allow_flag){
+					/* Neu co cho phep ghi dang bat (sau khi button nhan giu 3s) */
+					(void)MicroSD_WriteRaw(recev_block, sizeof(sensor_sync_block_t));
+				}
+				/* Bat ke co ghi vao SD Card hay khong thi cung phai giai phong */
+				osMailFree(microsd_queueId, recev_block);
+			}
+		}
+		/* Co che dong bo hoa an toan dinh ky 10s flush 1 lan */
+		uint32_t last_sync_tick = 0;
+		if(g_sd_backup_allow_flag && (osKernelSysTick() - last_sync_tick >= 10000U)){
+			(void)MicroSD_Flush();
+			last_sync_tick = osKernelSysTick();
+		}
+	}
 }
 #endif // SYNC_INTERMEDIARY_USING
 
@@ -507,7 +575,7 @@ void MicroSD_demo_test(void const *pvParameter){
 	(void)(pvParameter);
 	sd_status_t ret;
 	uint8_t count = 0;
-	uart_printf("MicroSD task started !\r\n");
+	uart_printf("MicroSD Demo task started !\r\n");
 
 	/* Demo Line */
 	ret = MicroSD_Open(TXT_FILE_NAME, true);
@@ -538,6 +606,8 @@ void MicroSD_demo_test(void const *pvParameter){
 	ret = MicroSD_Open(CSV_FILE_NAME, true);
 	for(;;)osDelay(1000);
 }
+
+/*-----------------------------------------------------------*/
 
 #ifdef __cplusplus
 }

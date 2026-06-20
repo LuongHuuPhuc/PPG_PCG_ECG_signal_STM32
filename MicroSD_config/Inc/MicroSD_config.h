@@ -57,7 +57,7 @@ extern "C" {
 #define MICROSD_MAX_LINE_LEN    256U /* Kich thuoc toi da cho 1 dong CSV duoc build trong RAM */
 #endif // MICRO_MAX_LINE_LEN
 
-#define SD_CARD_QUEUE_LENGTH	1
+#define SD_CARD_QUEUE_LENGTH	16
 
 /* SD Card Button Event macros */
 #define SD_EVENT_START			(1 << 0)
@@ -66,6 +66,7 @@ extern "C" {
 /* Saved files */
 #define TXT_FILE_NAME		 	 "DEMO1.TXT"
 #define CSV_FILE_NAME			 "TEST.CSV"
+#define BIN_FILE_NAME			 "LOG_DATA.BIN"
 
 typedef enum __SD_STATUS_t {
 	SD_OK = 0,
@@ -81,8 +82,6 @@ typedef enum __SD_STATUS_t {
 	SD_INVALID_ARG,
 	SD_BUFFER_OVERFLOW
 } sd_status_t;
-
-extern osThreadId microsd_taskId;
 
 // ==== FUCNTION PROTOTYPE ====
 
@@ -151,7 +150,7 @@ sd_status_t MicroSD_Close(void);
  * @brief Ham ghi data theo 1 dong vao file hien tai
  *
  * @details
- * Ham nay se ghi chuoi dau vao dung nhu duoc cung cap
+ * Ham nay se ghi chuoi dau vao dung nhu duoc cung cap (dang ASCII)
  * Neu muon xuong 1 dong moi, phai bao gom '\\r\\n'
  *
  * @param[in] line Chuoi ket thuc bang ky tu Null (Null-Terminated)
@@ -159,6 +158,16 @@ sd_status_t MicroSD_Close(void);
  * @retval Trang thai cua the SD
  */
 sd_status_t MicroSD_WriteLine(const char *fmt,...);
+
+/**
+ * @brief Ham ghi du lieu nhi phan Generic (Tho) xuong file hien tai
+ *
+ * @param[in] data Con tro den vung nho can ghi (Buffer, struct, array,...)
+ * @param[in] size Kich thuoc vung nho can ghi
+ *
+ * @retval Trang thai cua the SD
+ */
+sd_status_t MicroSD_WriteRaw(const void *data, uint32_t size);
 
 /**
  * @brief Kiem tra xem Filesystem co dang duoc gan vao khong
