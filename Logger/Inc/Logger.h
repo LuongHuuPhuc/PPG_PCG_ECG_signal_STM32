@@ -34,7 +34,6 @@ extern "C" {
  * Data se nam yen trong RAM -> Tre thap hon
  * Dung Mail vi Mail moi truyen duoc struct, Message thi khong
  */
-extern osThreadId logger_taskId;
 
 // ==== FUNCTION PROTOTYPE ====
 

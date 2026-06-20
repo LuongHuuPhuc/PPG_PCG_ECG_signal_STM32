@@ -23,7 +23,7 @@ static max30102_t max30102_obj;
 static max30102_record record;
 
 osSemaphoreId max30102_semId = NULL;
-osThreadId max30102_taskId = NULL;
+static osThreadId max30102_taskId = NULL;
 
 // Extern protocol variables
 extern void Logger_i2c_scanner(I2C_HandleTypeDef *hi2c);
@@ -42,6 +42,11 @@ HAL_StatusTypeDef Max30102_init(I2C_HandleTypeDef *i2c){
 		uart_printf("[MAX30102] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
+
+	// Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
+	osThreadDef(max30102TaskName, Max30102_task, osPriorityAboveNormal, 0, 1024 * 2);
+	max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
+	configASSERT(max30102_taskId);
 
 	// Khoi tao cam bien voi cac thong so co ban
 	max30102_init(&max30102_obj, i2c);

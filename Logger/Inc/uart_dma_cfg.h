@@ -53,8 +53,6 @@ typedef struct {
 	uint8_t data[UART_DMA_TX_MAX_PACKET_SIZE]; 	/* Mang data cua packet */
 } uart_dma_packet_t;
 
-extern osThreadId uart_dma_taskId;
-
 /*-----------------------------------------------------------*/
 
 /**

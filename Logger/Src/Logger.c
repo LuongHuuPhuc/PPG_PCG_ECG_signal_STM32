@@ -19,7 +19,7 @@ extern "C" {
 #include "uart_dma_cfg.h"	// Su dung UART qua DMA de log
 
 static osMailQId logger_queueId = NULL;
-osThreadId logger_taskId = NULL;
+static osThreadId logger_taskId = NULL;
 
 /*-----------------------------------------------------------*/
 
@@ -31,6 +31,11 @@ HAL_StatusTypeDef Logger_init(void){
 		uart_printf("[LOGGER] Failed to create logger_queueId !\r\n");
 		return HAL_ERROR;
 	}
+
+	osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
+	logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
+	configASSERT(logger_taskId);
+
 	return HAL_OK;
 }
 

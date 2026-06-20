@@ -29,8 +29,6 @@ extern "C" {
 #define VIRTUAL_GND_VOL			ADC_REF_VOL / 2.0f // V
 #define ADC_VOL_LEVEL_12B		((1UL << 12) - 1.0f) // 12-bit ADC
 
-// Task RTOS
-extern osThreadId ad8232_taskId;
 extern osSemaphoreId ad8232_semId;
 
 // ==== FUNCTION PROTOTYPE ====

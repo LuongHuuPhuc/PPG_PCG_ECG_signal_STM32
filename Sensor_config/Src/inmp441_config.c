@@ -41,7 +41,7 @@ extern "C" {
 // ====== VARIABLES DEFINITION ======
 
 osSemaphoreId inmp441_semId = NULL;
-osThreadId inmp441_taskId = NULL;
+static osThreadId inmp441_taskId = NULL;
 
 volatile uint16_t buffer16[I2S_DMA_FRAME_COUNT] = {0};
 __attribute__((unused)) volatile int32_t buffer32[I2S_SAMPLE_COUNT] = {0};
@@ -83,6 +83,11 @@ HAL_StatusTypeDef Inmp441_init(I2S_HandleTypeDef *i2s){
 //		uart_printf("[INMP441] Failed to create Semaphores !\r\n");
 //		return HAL_ERROR;
 //	}
+
+	osThreadDef(inmp441TaskName, Inmp441_task, osPriorityAboveNormal, 0, 1024 * 2);
+	inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
+	configASSERT(inmp441_taskId);
+
 	return ret;
 }
 

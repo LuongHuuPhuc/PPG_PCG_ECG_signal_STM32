@@ -198,43 +198,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 
-  /**
-   * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
-   * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
-   */
-  osThreadDef(uartDMATaskName, uart_dma_task, osPriorityNormal, 0, 512);
-  uart_dma_taskId = osThreadCreate(osThread(uartDMATaskName), NULL);
-  configASSERT(uart_dma_taskId);
-
-  osThreadDef(ad8232TaskName, Ad8232_task, osPriorityNormal, 0, 1024 * 2);
-  ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
-  configASSERT(ad8232_taskId);
-
-  osThreadDef(inmp441TaskName, Inmp441_task, osPriorityAboveNormal, 0, 1024 * 2);
-  inmp441_taskId = osThreadCreate(osThread(inmp441TaskName), NULL);
-  configASSERT(inmp441_taskId);
-
-  // Tang muc priority de MAX30102 doc FIFO nhanh hon (FIFO doc cham hon ADC)
-  osThreadDef(max30102TaskName, Max30102_task, osPriorityAboveNormal, 0, 1024 * 2);
-  max30102_taskId = osThreadCreate(osThread(max30102TaskName), NULL);
-  configASSERT(max30102_taskId);
-
-  osThreadDef(syncTaskName, Sync_Task, osPriorityNormal, 0, 1024);
-  sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
-  configASSERT(sync_taskId);
-
-#if defined(SENSOR_LOGGER_USING) && !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
-  osThreadDef(LoggerTaskName, Logger_three_task, osPriorityBelowNormal, 0, 1024 * 2);
-  logger_taskId = osThreadCreate(osThread(LoggerTaskName), NULL);
-  configASSERT(logger_taskId);
-#endif // SENSOR_LOGGER_USING
-
-#ifdef SENSOR_SD_CARD_USING
-  osThreadDef(microSDTaskName, MicroSD_task, osPriorityLow, 0, 1024 * 3);
-  microsd_taskId = osThreadCreate(osThread(microSDTaskName), NULL);
-  configASSERT(microsd_taskId);
-#endif // SENSOR_SD_CARD_USING
-
   /* Note: Task tao ra ma khong ghi ro stack size thi dung MINIMAL_STACK_SIZE mac dinh trong FreeRTOS) */
 
   StackCheck();
@@ -591,18 +554,15 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_PIN_GPIO_Port, LED_PIN_Pin, GPIO_PIN_RESET);
-
   /*Configure GPIO pins : PC13 PC14 PC15 */
   GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA1 PA8 PA10 PA11
+  /*Configure GPIO pins : PA1 PA8 PA9 PA11
                            PA12 PA15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_8|GPIO_PIN_10|GPIO_PIN_11
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_11
                           |GPIO_PIN_12|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -625,12 +585,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LED_PIN_Pin */
-  GPIO_InitStruct.Pin = LED_PIN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(LED_PIN_GPIO_Port, &GPIO_InitStruct);
+  /*Configure GPIO pin : BUTTON_Pin */
+  GPIO_InitStruct.Pin = BUTTON_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BUTTON_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
   /* USER CODE END MX_GPIO_Init_2 */

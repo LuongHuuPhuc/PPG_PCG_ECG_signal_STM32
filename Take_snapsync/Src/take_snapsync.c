@@ -21,7 +21,7 @@ extern "C" {
 
 #ifdef SYNC_INTERMEDIARY_USING
 
-osThreadId sync_taskId = NULL;
+static osThreadId sync_taskId = NULL;
 static osMailQId sync_queueId = NULL;
 
 #ifdef SYNC_BLOCK_COUNT_DEBUG
@@ -129,6 +129,11 @@ HAL_StatusTypeDef Sync_init(void){
 	if(sync_queueId == NULL){
 		return HAL_ERROR;
 	}
+
+	osThreadDef(syncTaskName, Sync_Task, osPriorityNormal, 0, 1024);
+	sync_taskId = osThreadCreate(osThread(syncTaskName), NULL);
+	configASSERT(sync_taskId);
+
 	return HAL_OK;
 }
 

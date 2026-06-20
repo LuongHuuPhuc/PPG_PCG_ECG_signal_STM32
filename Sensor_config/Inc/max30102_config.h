@@ -30,9 +30,7 @@ extern "C" {
 #define FIFO_A_FULL_SAMPLES		0
 #endif // FIFO_A_FULL_SAMPLES
 
-// Task & RTOS
 extern osSemaphoreId max30102_semId;
-extern osThreadId max30102_taskId;
 
 // ==== FUCNTION PROTOTYPE ====
 

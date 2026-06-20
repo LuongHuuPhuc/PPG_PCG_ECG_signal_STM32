@@ -21,7 +21,7 @@ extern "C" {
 volatile int16_t ecg_buffer[ECG_DMA_BUFFER] = {0};
 
 osSemaphoreId ad8232_semId = NULL;
-osThreadId ad8232_taskId = NULL;
+static osThreadId ad8232_taskId = NULL;
 
 // Extern protocol variable cho function trong .c
 extern ADC_HandleTypeDef hadc1;
@@ -41,6 +41,12 @@ HAL_StatusTypeDef Ad8232_init(ADC_HandleTypeDef *adc){
 		uart_printf("[AD8232] Failed to create Semaphores !\r\n");
 		return HAL_ERROR;
 	}
+
+	/* Khoi tao Task */
+	osThreadDef(ad8232TaskName, Ad8232_task, osPriorityNormal, 0, 1024 * 2);
+	ad8232_taskId = osThreadCreate(osThread(ad8232TaskName), NULL);
+	configASSERT(ad8232_taskId);
+
 	return ret;
 }
 

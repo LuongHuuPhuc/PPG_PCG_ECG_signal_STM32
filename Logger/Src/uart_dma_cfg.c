@@ -41,7 +41,7 @@ static UART_HandleTypeDef *uart_dma_handle = NULL;
 
 /* Queue cho LOG ASCII */
 static osMailQId uart_dma_queueId = NULL;
-osThreadId uart_dma_taskId = NULL;
+static osThreadId uart_dma_taskId = NULL;
 
 /* Current DMA packet pointer - con tro tro den packet hien tai */
 __attribute__((unused)) static uart_dma_packet_t *current_tx_packet = NULL;
@@ -66,6 +66,14 @@ HAL_StatusTypeDef uart_dma_init(UART_HandleTypeDef *huart){
 	osMailQDef(uartDMAQueueName, UART_DMA_TX_QUEUE_LENGTH, uart_dma_packet_t);
 	uart_dma_queueId = osMailCreate(osMailQ(uartDMAQueueName), NULL);
 	if(uart_dma_queueId == NULL) return HAL_ERROR;
+
+    /**
+     * Tang muc priority + tang stack de task doc queue nhanh hon (chong tran queue do doc cham)
+     * Khong duoc uu tien hon Sensor task vi no se lam tre thoi gian xu ly
+     */
+	osThreadDef(uartDMATaskName, uart_dma_task, osPriorityNormal, 0, 512);
+	uart_dma_taskId = osThreadCreate(osThread(uartDMATaskName), NULL);
+	configASSERT(uart_dma_taskId);
 
 	return HAL_OK;
 }

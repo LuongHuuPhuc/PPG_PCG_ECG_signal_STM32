@@ -58,10 +58,6 @@ extern "C" {
 #define BITS_CLEAR_ON_EXIT			(NOTIFY_HALF | NOTIFY_FULL) // Cac bit can xoa sau khi thoat ham (reset event) (sau khi nhan duoc notify)
 #define BITS_CLEAR_ON_ENTRY			0x00	// Cac bit can xoa khoi gia tri notify cua Task ngay truoc khi vao ham (neu notify chua den)
 
-// Task & RTOS
-extern osSemaphoreId inmp441_semId;
-extern osThreadId inmp441_taskId;
-
 //==== FUNCTION PROTOTYPE ====
 
 /**
