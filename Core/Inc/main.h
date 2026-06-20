@@ -71,8 +71,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define CS_PIN_Pin GPIO_PIN_4
 #define CS_PIN_GPIO_Port GPIOA
-#define LED_PIN_Pin GPIO_PIN_9
-#define LED_PIN_GPIO_Port GPIOA
+#define BUTTON_Pin GPIO_PIN_10
+#define BUTTON_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
