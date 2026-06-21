@@ -44,6 +44,7 @@ void SensorConfig_init(void){
 extern void DataDispatcher_Init(DispatchTypeU32_t target);
 extern HAL_StatusTypeDef Logger_init(void);
 extern HAL_StatusTypeDef MicroSD_init(void);
+extern HAL_StatusTypeDef ExtButton_init(void);
 
 void SensorOutput_init(void){
 #ifdef SENSOR_BINARY_PACKET /* Neu dung UART de gui binary packet thi khong dung Logger nua */
@@ -56,14 +57,19 @@ void SensorOutput_init(void){
 
   SERROR_CHECK(Logger_init());
   uart_printf(">> [SENCONF] LOGGER init OK !\r\n");
+#endif // SENSOR_BINARY_PACKET
 
-#elif defined(SENSOR_SD_CARD_USING)
+#ifdef SENSOR_SD_CARD_USING
   /* Dang ky callback */
   DataDispatcher_Init(DISPATCH_SD);
 
   SERROR_CHECK(MicroSD_init());
   uart_printf("[SENCONF] MicroSD init OK !\r\n");
-#endif // SENSOR_BINARY_PACKET
+
+  SERROR_CHECK(ExtButton_init());
+  uart_printf("[SENCONF] ExtButton init OK !\r\n");
+#endif // SENSOR_SD_CARD_USING
+
   uart_printf(">> [SENCONF] Dispatcher init OK !\r\n");
 }
 
