@@ -31,7 +31,7 @@ typedef enum __dispatch_target_type{
 	DISPATCH_TO_NONE 	= DISPATCH_NONE,
 	DISPATCH_TO_UART 	= DISPATCH_UART, 		/* 0x01 Cho phep data den task Logger de in ra qua UART */
 	DISPATCH_TO_SD 	 	= DISPATCH_SD,			/* 0x02 Cho phep data den task cua SD Card */
-	DISPATCH_TO_PACKET	= DISPATCH_PACKET,		/* 0x03 Cho phep data dong goi thanh Binary Packet roi di qua UART */
+	DISPATCH_TO_PACKET	= DISPATCH_PACKET,		/* 0x04 Cho phep data dong goi thanh Binary Packet roi di qua UART */
 	DISPATCH_TO_ALL 	= DISPATCH_ALL		 	/* 0x06 Binary Packet + SD Card */
 } dispatch_target_t;
 
