@@ -43,21 +43,20 @@ void ExtButton_process_task(void const *pvParameter){
 	uint32_t press_start_tick = 0;
 	bool is_pressing = false;
 
-	uart_printf("ExtButton Task started !");
+	uart_printf("ExtButton Task started !\r\n");
 	while(1){
 		/* Doc trang thai vat ly chan PA10 (Active-Low: Nhan nut = RESET/0V) */
 		if(HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_RESET){
 			if(!is_pressing){
-				// Nhip cham phim dau tien: Ghi nhan goc thoi gian tai phan cung
+				// Nhip cham phim dau tien: Ghi nhan goc thoi gian tai phan cung & bat co is_pressing
 				is_pressing = true;
 				press_start_tick = osKernelSysTick();
 			}
 			else{
-				// Neu he thong chua ghi SD -> Kiem tra du 3s de bat che do ghi vao SD Card
+				// Neu is_pressing = true va DEM DU 3s -> Bat che do ghi vao SD Card bang cach set flag g_sd_backup_allow_flag
 				if(!g_sd_backup_allow_flag){
 					if((osKernelSysTick() - press_start_tick) >= BUTTON_HOLD_DURATION_MS){
-						/* Kich no trang thai cho phep ghi SD card */
-						g_sd_backup_allow_flag = true;
+						g_sd_backup_allow_flag = true; /* Kich no trang thai cho phep ghi SD card */
 
 #ifdef DEBUG_SWV_ITM
 						SWV_LOG("[EXT_BUTTON] Held 3s ! Start write data to SD Card...");
@@ -65,11 +64,11 @@ void ExtButton_process_task(void const *pvParameter){
 
 						/* Wait USER buong tay de khong bi dinh vao logic tat */
 						while(HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_RESET) osDelay(50);
-						is_pressing = false;
 					}
 				}
 			}
 		}
+		/* Khi nhan nut lai de huy (<1.5s) - no se van doc trang thai nhung khong thuc hien nhanh if-else o tren vi is_pressing = true */
 		else{
 			/* Quay lai trang thai gui data qua UART neu nhan lai */
 			if(is_pressing){
@@ -80,10 +79,9 @@ void ExtButton_process_task(void const *pvParameter){
 
 					/* Tat ghi SD Card - Quay lai UART */
 					g_sd_backup_allow_flag = false;
-					MicroSD_Flush(); // Day not du lieu con ton du trong Sector Buffer xuong Flash
 
 #ifdef DEBUG_SWV_ITM
-						SWV_LOG("[EXT_BUTTON] Stopped writing to SD. Changing to UART...");
+					SWV_LOG("[EXT_BUTTON] Stopped writing to SD. Changing to UART...");
 #endif // DEBUG_SWV_ITM
 
 				}

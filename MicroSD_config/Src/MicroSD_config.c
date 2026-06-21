@@ -19,6 +19,10 @@ extern "C" {
 #include "take_snapsync.h" // Lay struct `sensor_sync_block_t`
 #include "ExtButton_handle.h" // Lay global variable `g_sd_backup_allow_flag`
 
+#ifdef DEBUG_SWV_ITM
+#include "SWV_debug.h"
+#endif // DEBUG_SWV_ITM
+
 /* Dung object do CubeMX sinh ra trong FATFS/App/fatfs.c */
 
 extern FATFS USERFatFS;
@@ -252,7 +256,6 @@ sd_status_t MicroSD_Open(const char *filename, bool wanna_clearfile){
 			MicroSD_MUTEXUNLOCK();
 			return SD_ERR;
 		}
-		uart_printf("[MICRO_SD] Clear file %s success!\r\n", filename);
 	}
 	else{
 		// Di chuyen con tro ve cuoi file
@@ -534,16 +537,12 @@ void MicroSD_task(void const *pvParameter){
 
 	osEvent evt;
 	sensor_sync_block_t *recev_block = NULL;
+	uint32_t last_sync_tick = osKernelSysTick();
+	bool last_flag_state = false;	/* Bien trang thai co cu kiem tra suon len xuong cua button */
 
 	uart_printf("MicroSD task started !\r\n");
 
-	// Mo file nhi phan phang san o che do ghi noi tiep Append Mode.
-	if(MicroSD_Open(BIN_FILE_NAME, false) != SD_OK){
-		uart_printf("[MICRO_SD] MicroSD_Open failed !\r\n");
-		for(;;) osDelay(1000);
-	}
-	uart_printf("[MICRO_SD] MicroSD_Open file %s OK!\r\n", BIN_FILE_NAME);
-
+	/* Chi mo file luc can khi. Khong mo file bua bai o day */
 	while(1){
 		/* Rut Mail tu Queue */
 		evt = osMailGet(microsd_queueId, osWaitForever);
@@ -551,17 +550,37 @@ void MicroSD_task(void const *pvParameter){
 			recev_block = (sensor_sync_block_t*)evt.value.p;
 
 			if(recev_block != NULL){
-				if(g_sd_backup_allow_flag){
-					/* Neu co cho phep ghi dang bat (sau khi button nhan giu 3s) */
-					(void)MicroSD_WriteRaw(recev_block, sizeof(sensor_sync_block_t));
+
+				/* Dong mo file theo suon nut bam truoc khi ghi */
+				if(g_sd_backup_allow_flag != last_flag_state){
+
+					/* 1. Nut bam vua moi duoc giu 3s -> flag duoc bat -> Mo file nhi phan o che do ghi noi tiep Append Mode */
+					if(g_sd_backup_allow_flag){
+
+						if(MicroSD_Open(BIN_FILE_NAME, false) != SD_OK){
+							uart_printf("[MICRO_SD] MicroSD_Open failed !\r\n");
+							g_sd_backup_allow_flag = false;
+						}
+						uart_printf("[MICRO_SD] MicroSD_Open file %s OK!\r\n", BIN_FILE_NAME);
+					}
+
+					else{
+						/* 2. Nut bam click nha -> flag duoc tat -> Ngung ghi */
+						MicroSD_Close();
+					}
+
+					last_flag_state = g_sd_backup_allow_flag; // Cap nhat lai trang thai
 				}
+
+				/* Neu co cho phep ghi dang bat (sau khi button nhan giu 3s) */
+				if(g_sd_backup_allow_flag && is_Opened) (void)MicroSD_WriteRaw(recev_block, sizeof(sensor_sync_block_t));
+
 				/* Bat ke co ghi vao SD Card hay khong thi cung phai giai phong */
 				osMailFree(microsd_queueId, recev_block);
 			}
 		}
 		/* Co che dong bo hoa an toan dinh ky 10s flush 1 lan */
-		uint32_t last_sync_tick = 0;
-		if(g_sd_backup_allow_flag && (osKernelSysTick() - last_sync_tick >= 10000U)){
+		if(g_sd_backup_allow_flag && is_Opened && (osKernelSysTick() - last_sync_tick >= 10000U)){
 			(void)MicroSD_Flush();
 			last_sync_tick = osKernelSysTick();
 		}
