@@ -53,7 +53,7 @@ void SensorOutput_init(void){
 
 #elif defined(SENSOR_LOGGER_USING) && !defined(SENSOR_BINARY_PACKET) /* Neu dung Logger thi khong dung Binary packet */
   /* Dang ky callback */
-  DataDispatcher_Init(DISPATCH_UART);
+  DataDispatcher_Init(DISPATCH_LOGGER);
 
   SERROR_CHECK(Logger_init());
   uart_printf(">> [SENCONF] LOGGER init OK !\r\n");

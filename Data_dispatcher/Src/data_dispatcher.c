@@ -29,8 +29,8 @@ static inline void DataDispatcher_SetTarget(DispatchTypeU32_t target){
 /*-----------------------------------------------------------*/
 
 void DataDispatcher_RegisterCb(dispatch_target_t type, dispatch_callback_t cb){
-	if(type == DISPATCH_TO_UART){
-		cb_map[0].type = DISPATCH_TO_UART;
+	if(type == DISPATCH_TO_LOGGER){
+		cb_map[0].type = DISPATCH_TO_LOGGER;
 		cb_map[0].cb = cb;
 	}
 
@@ -61,8 +61,8 @@ __attribute__((weak)) void DataDispatcher_Init(DispatchTypeU32_t target){
 	DataDispatcher_SetTarget(target);
 
 	/* Dang ky callback tuong ung voi target */
-	if(target & DISPATCH_TO_UART){
-		DataDispatcher_RegisterCb(DISPATCH_TO_UART, Logger_dispatch);
+	if(target & DISPATCH_TO_LOGGER){
+		DataDispatcher_RegisterCb(DISPATCH_TO_LOGGER, Logger_dispatch);
 	}
 
 	if(target & DISPATCH_TO_SD){
@@ -80,7 +80,7 @@ osStatus DataDispatcher_Send(sensor_sync_block_t *block){
 	if(block == NULL) return osErrorParameter;
 
 	/* UART */
-	if(curr_target & DISPATCH_TO_UART)
+	if(curr_target & DISPATCH_TO_LOGGER)
 		if(cb_map[0].cb) cb_map[0].cb(block);
 
 	/* SD Card */
