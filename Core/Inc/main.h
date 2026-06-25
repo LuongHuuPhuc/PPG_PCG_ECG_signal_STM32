@@ -51,7 +51,7 @@ extern "C" {
 #define SYNC_INTERMEDIARY_USING		1 	/* Su dung sync task trung gian cho dong bo, uncomment neu muon logger nhan truc tiep tu sensor task */
 #define SENSOR_BINARY_PACKET		1	/* Dung UART de gui Binary packet */
 //#define SENSOR_LOGGER_USING			1	/* Dung UART de log data */
-//#define SENSOR_SD_CARD_USING		1	/* Dung SD Card de luu data */
+#define SENSOR_SD_CARD_USING		1	/* Dung SD Card de luu data */
 
 /* Debug Macros */
 //#define SYNC_BLOCK_COUNT_DEBUG  	1	/* Debug block data tu Sync Task */
@@ -69,10 +69,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BUTTON_Pin GPIO_PIN_1
+#define BUTTON_GPIO_Port GPIOA
 #define CS_PIN_Pin GPIO_PIN_4
 #define CS_PIN_GPIO_Port GPIOA
-#define BUTTON_Pin GPIO_PIN_10
-#define BUTTON_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
