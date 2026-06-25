@@ -45,7 +45,7 @@ void ExtButton_process_task(void const *pvParameter){
 
 	uart_printf("ExtButton Task started !\r\n");
 	while(1){
-		/* Doc trang thai vat ly chan PA10 (Active-Low: Nhan nut = RESET/0V) */
+		/* Doc trang thai vat ly cua GPIO (Active-Low: Nhan nut = RESET/0V) */
 		if(HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_RESET){
 			if(!is_pressing){
 				// Nhip cham phim dau tien: Ghi nhan goc thoi gian tai phan cung & bat co is_pressing
