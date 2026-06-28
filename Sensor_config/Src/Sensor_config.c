@@ -71,6 +71,12 @@ void SensorOutput_init(void){
 #endif // SENSOR_SD_CARD_USING
 
   uart_printf(">> [SENCONF] Dispatcher init OK !\r\n");
+
+  /* Khoi tao Sync function */
+#ifdef SYNC_INTERMEDIARY_USING
+  SERROR_CHECK(Sync_init());
+  uart_printf(">> [APP] SYNC init OK !\r\n");
+#endif // SYNC_INTERMEDIARY_USING
 }
 
 /*-----------------------------------------------------------*/
