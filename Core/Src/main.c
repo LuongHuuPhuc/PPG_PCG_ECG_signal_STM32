@@ -40,9 +40,13 @@
 
 #ifdef DEBUG_SEGGER_RTT
 #include "SEGGER_RTT.h"
-#elif defined(DEBUG_SWV_ITM) || defined(DEBUG_DWT)
-#include "SWV_debug.h"
 #endif // DEBUG_SEGGER_RTT
+#if defined(DEBUG_SWV_ITM) || defined(DEBUG_DWT)
+#include "SWV_debug.h"
+#endif // DEBUG_SWV_ITM & DEBUG_DWT
+#ifdef DEBUG_TESTCASE
+#include "TestCase.h"
+#endif // DEBUG_TESTCASE
 
 /* USER CODE END Includes */
 
@@ -150,12 +154,17 @@ int main(void)
 #ifdef DEBUG_SEGGER_RTT
   SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
   SEGGER_RTT_printf(0, "[APP] SEGGER RTT debug OK !\r\n");
-#elif defined(DEBUG_DWT)
+#endif // DEBUG_SEGGER_RTT
+#ifdef DEBUG_DWT
   DWT_Init(); /* Data Watchdog & Trace */
-#elif defined(DEBUG_SWV_ITM)
+#endif // DEBUG_DWT
+#ifdef DEBUG_SWV_ITM
   SERROR_CHECK(SWV_Init()); /* Serial Wire Viewer */
   SWV_LOG("[APP] SWV debug OK !\r\n");
-#endif // DebugHelper
+#endif // DEBUG_SWV_ITM
+#ifdef DEBUG_TESTCASE
+  TestCase_init();
+#endif // DEBUG_TESTCASE
 
   /* Note: Phai khoi tao dau tien de co the log ! */
   SERROR_CHECK(uart_dma_init(&huart2));
@@ -165,13 +174,7 @@ int main(void)
   SensorConfig_init();
 
   /* Khoi tao Output cua data */
-  SensorOutput_init();
-
-  /* Khoi tao Sync function */
-#ifdef SYNC_INTERMEDIARY_USING
-  SERROR_CHECK(Sync_init());
-  uart_printf(">> [APP] SYNC init OK !\r\n");
-#endif // SYNC_INTERMEDIARY_USING
+  // SensorOutput_init();
 
   /* USER CODE END 2 */
 
@@ -630,6 +633,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   static uint8_t counter_sync = 0;
 
   if(htim->Instance == TIM3){
+
+#if defined(DEBUG_TESTCASE) && defined(TIM3_TESTCASE)
+	  g_tim3_debug_cnt++; // Tang bien dem moi khi TIM3 ngat (1ms tang 1 lan)
+#endif // DEBUG_TESTCASE & TIM3_TESTCASE
 
 	  // TIMER trigger moi 1ms -> Period count du 32 lan (~32ms) thi Give Semaphore (Trigger Data theo block 32 samples)
 	  // Semaphore dong vai tro tao khoang thoi gian chinh xac cho sensor task xu ly theo chu ky 32ms
