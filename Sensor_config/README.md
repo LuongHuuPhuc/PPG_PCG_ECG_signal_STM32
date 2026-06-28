@@ -166,6 +166,21 @@ $$Gain_{total} = Gain_{IA} \cdot Gain_{A1})$$
 	
 ![](../Images/AD8323_ACLeadOffs.png)
 
+### Lý do khiến tín hiệu ECG xuất ra bị lệch so với trục 0 
+- Việc cấp nguồn DC đơn (Single Supply) ví dụ `Vcc = 3.3V` và `GND = 0V` là lý do cốt lõi buộc tín hiệu phải lệch khỏi gốc 0 !
+- **Giới hạn vật lý**: IC AD8232 không thể xuất ra tín hiệu âm (dưới 0V)
+- **Đặc tính ECG**: Sóng điện tâm đồ có cả pha dương (nhô lên) và pha âm (hạ xuống).
+- **Hậu quả nếu ở gốc 0**: Nếu đặt đường nền ở đúng 0V, toàn bộ tín hiệu pha âm của ECG sẽ bị cắt phẳng (bão hòa).
+- **Giải pháp**: Mạch bắt buộc phải tự cộng thêm 1 điện áp DC mồi để nâng toàn bộ dải sóng lên dải dương. Đây chính là **Virtual Ground** và nó được tính theo điện áp tham chiếu Vref.
+
+### Điên áp tham chiếu (Vref) triệt tiêu và thay thế nhiễu DC như thế nào 
+- Bản thân Vref không trực tiếp xóa nhiễu DC mà bộ lọc thông cao (HPF) được nối bên ngoài phối hợp với Vref để làm điều đó.
+	- **Bước 1: Chặn nhiễu DC từ da**: Điện thế DC sinh ra do tiếp xúc giữa da và điện cực rất lớn (±300mV) và không ổn đinh, nó có thể làm lệch tâm sóng, trong khi tín hiệu ECG thực tế lại vô cùng nhỏ, chỉ nằm trong khoảng 1-5mV. Nếu khuếch đại trực tiếp cả tín hiệu này, phần DC offset khổng lồ sẽ làm bão hòa mạch khuếch đại (**DC xấu**). Khi đi qua tụ điện của mạch lọc thông cao (HPF) trên module, toàn bộ thành phần DC nhiễu này bị chặn đứng hoàn toàn.
+   > Một bộ lọc HPF được sử dụng để loại bỏ **DC offset** vì dòng điện DC có tần số 0Hz. Do HPF chỉ cho phép tín hiệu cao hơn tần số cắt đi qua nên thành phần 0Hz sẽ bị chặn đứng và loại bỏ hoàn toàn. Ở mạch phần cứng (Analog HPF), cách đơn giản nhất là mắc 1 tụ điện nối tiếp với đường dẫn tín hiệu, nó hoạt động bằng cách chỉ cho AC đi qua và chặn đứng DC. 
+    - **Bước 2: Tạo Virtual Ground**: Sau khi đi qua tụ lọc, ECG lúc này rất sạch nhưng lại mất đi điểm tự điện áp (nằm lơ lửng). Lúc này, dòng điện từ chân Vref (được thiết kế bằng đúng Vcc/2) được bơm vào mạch.
+    - **Bước 3: Thay thế nền**: Điện áp Vref đóng vai trò như một mặt đất mới ổn định tuyệt đối. Tín hiệu ECG sau khi bị tước bỏ đi nhiễu DC cũ từ da sẽ bám vào và giao động quanh trục Vref này.
+- Tóm lại, mạch dùng bộ lọc để vứt bỏ nhiễu **DC xấu** từ da và dùng Vref để **thế chỗ** bằng 1 điện áp **DC tốt** giúp MCU đọc được trọn vẹn tín hiệu.
+
 ### TÓM LẠI DÒNG TÍN HIỆU CỦA AD8232 
 
 ```java
